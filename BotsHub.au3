@@ -151,6 +151,8 @@ Global $GUI_Group_RarityLootOptions, _
 		$GUI_Checkbox_LootGoldItems, $GUI_Checkbox_LootPurpleItems, $GUI_Checkbox_LootBlueItems, $GUI_Checkbox_LootWhiteItems, $GUI_Checkbox_LootGreenItems
 Global $GUI_Group_FarmSpecificLootOptions, _
 		$GUI_Checkbox_LootGlacialStones, $GUI_Checkbox_LootMapPieces, $GUI_Checkbox_LootTrophies
+Global $GUI_Group_WeaponOptions, _
+		$GUI_Checkbox_UsePickupOptions
 Global $GUI_Group_ConsumablesLootOption, _
 		$GUI_Checkbox_LootCandyCaneShards, $GUI_Checkbox_LootLunarTokens, $GUI_Checkbox_LootToTBags, $GUI_Checkbox_LootFestiveItems, $GUI_Checkbox_LootAlcohols, $GUI_Checkbox_LootSweets
 Global $GUI_Label_CharacterBuild, $GUI_Label_HeroBuild, $GUI_Edit_CharacterBuild, $GUI_Edit_HeroBuild, $GUI_Label_FarmInformations
@@ -163,20 +165,20 @@ Global $GUI_Label_ToDoList
 ; Description.....:	Create the main GUI
 ;------------------------------------------------------
 Func createGUI()
-	$GUI_GWBotHub = GUICreate('GW Bot Hub', 600, 450, 851, 263)
+	$GUI_GWBotHub = GUICreate('GW Bot Hub', 650, 600, 851, 263)
 	GUISetBkColor($GUI_GREY_COLOR, $GUI_GWBotHub)
 
-	$GUI_Combo_CharacterChoice = GUICtrlCreateCombo('No character selected', 10, 420, 136, 20)
-	$GUI_Combo_FarmChoice = GUICtrlCreateCombo('Choose a farm', 155, 420, 136, 20)
+	$GUI_Combo_CharacterChoice = GUICtrlCreateCombo('No character selected', 10, 570, 136, 20)
+	$GUI_Combo_FarmChoice = GUICtrlCreateCombo('Choose a farm', 155, 570, 136, 20)
 	GUICtrlSetData($GUI_Combo_FarmChoice, $AVAILABLE_FARMS, 'Choose a farm')
 	GUICtrlSetOnEvent($GUI_Combo_FarmChoice, 'GuiButtonHandler')
-	$GUI_StartButton = GUICtrlCreateButton('Start', 300, 420, 136, 21)
+	$GUI_StartButton = GUICtrlCreateButton('Start', 300, 570, 136, 21)
 	GUICtrlSetBkColor($GUI_StartButton, $GUI_BLUE_COLOR)
 	GUICtrlSetOnEvent($GUI_StartButton, 'GuiButtonHandler')
 	GUISetOnEvent($GUI_EVENT_CLOSE, 'GuiButtonHandler')
-	$GUI_FarmProgress = GUICtrlCreateProgress(445, 420, 141, 21)
+	$GUI_FarmProgress = GUICtrlCreateProgress(445, 570, 141, 21)
 
-	$GUI_Tabs_Parent = GUICtrlCreateTab(10, 10, 581, 401)
+	$GUI_Tabs_Parent = GUICtrlCreateTab(10, 10, 631, 551)
 	$GUI_Tab_Main = GUICtrlCreateTabItem('Main')
 	GUICtrlSetOnEvent($GUI_Tabs_Parent, 'GuiButtonHandler')
 	_GUICtrlTab_SetBkColor($GUI_GWBotHub, $GUI_Tabs_Parent, $GUI_GREY_COLOR)
@@ -317,6 +319,10 @@ Func createGUI()
 	$GUI_Checkbox_LootTrophies = GUICtrlCreateCheckbox('Trophies', 30, 310, 81, 20)
 	GUICtrlCreateGroup('', -99, -99, 1, 1)
 
+	$GUI_Group_WeaponOptions = GUICtrlCreateGroup('Weapons', 23, 405, 136, 50)
+	$GUI_Checkbox_UsePickupOptions = GUICtrlCreateCheckbox('Use Pickup Options', 31, 430, 110, 20)
+	GUICtrlCreateGroup('', -99, -99, 1, 1)
+
 	$GUI_Group_ConsumablesLootOption = GUICtrlCreateGroup('Consumables loot', 306, 39, 271, 361)
 	$GUI_Checkbox_LootSweets = GUICtrlCreateCheckbox('Sweets', 316, 64, 121, 20)
 	$GUI_Checkbox_LootAlcohols = GUICtrlCreateCheckbox('Alcohols', 446, 64, 121, 20)
@@ -452,10 +458,10 @@ Func createGUI()
 	; Reset tab item (back to main tab flow)
 	GUICtrlCreateTabItem("")
 
-	$GUI_Combo_ConfigChoice = GUICtrlCreateCombo('Default Configuration', 425, 12, 136, 20)
+	$GUI_Combo_ConfigChoice = GUICtrlCreateCombo('Default Configuration', 475, 12, 136, 20)
 	GUICtrlSetOnEvent($GUI_Combo_ConfigChoice, 'GuiButtonHandler')
 
-	$GUI_Icon_SaveConfig = GUICtrlCreatePic(@ScriptDir & '/doc/save.jpg', 565, 12, 20, 20)
+	$GUI_Icon_SaveConfig = GUICtrlCreatePic(@ScriptDir & '/doc/save.jpg', 615, 12, 20, 20)
 	GUICtrlSetOnEvent($GUI_Icon_SaveConfig, 'GuiButtonHandler')
 
 	GUICtrlSetState($GUI_Checkbox_HM, $GUI_CHECKED)
@@ -1168,6 +1174,8 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'loot.consumables.trick_or_treat_bags', GUICtrlRead($GUI_Checkbox_LootToTBags) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.consumables.candy_cane_shards', GUICtrlRead($GUI_Checkbox_LootCandyCaneShards) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.consumables.lunar_tokens', GUICtrlRead($GUI_Checkbox_LootLunarTokens) == 1)
+	
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Enabled',  GUICtrlRead($GUI_Checkbox_UsePickupOptions)  == 1)
 	; Axe
 	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.White',  GUICtrlRead($GUI_Checkbox_Pickup_Axe_White)  == 1)
 	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Axe_Blue)   == 1)
@@ -1302,6 +1310,8 @@ Func ReadConfigFromJson($jsonString)
 	GUICtrlSetState($GUI_Checkbox_LootLunarTokens, _JSON_Get($jsonObject, 'loot.consumables.lunar_tokens') ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 	; === Pickup Options ===
+	GUICtrlSetState($GUI_Checkbox_UsePickupOptions,   _JSON_Get($jsonObject, 'PickupOptions.Enabled')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
 	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_White,   _JSON_Get($jsonObject, 'PickupOptions.Axe.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_Blue,    _JSON_Get($jsonObject, 'PickupOptions.Axe.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_Purple,  _JSON_Get($jsonObject, 'PickupOptions.Axe.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
