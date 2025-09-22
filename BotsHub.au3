@@ -352,6 +352,106 @@ Func createGUI()
 	GUICtrlSetOnEvent($GUI_ApplyComponentsButton, 'GuiButtonHandler')
 	GUICtrlCreateTabItem('')
 
+	; =========================
+	; Pickup Options Tab
+	; =========================
+	GUICtrlCreateTabItem("Pickup Options")
+
+	; Section: Martial Weapons - Melee
+	GUICtrlCreateGroup("Martial Weapons - Melee", 10, 60, 400, 90)
+	GUICtrlCreateLabel("Axe", 20, 80, 60, 20)
+	Global $chkAxeWhite  = GUICtrlCreateCheckbox("White", 100, 80)
+	Global $chkAxeBlue   = GUICtrlCreateCheckbox("Blue", 160, 80)
+	Global $chkAxePurple = GUICtrlCreateCheckbox("Purple", 220, 80)
+	Global $chkAxeGreen  = GUICtrlCreateCheckbox("Green", 280, 80)
+	Global $chkAxeGold   = GUICtrlCreateCheckbox("Gold", 340, 80)
+
+	GUICtrlCreateLabel("Sword", 20, 100, 60, 20)
+	Global $chkSwordWhite  = GUICtrlCreateCheckbox("White", 100, 100)
+	Global $chkSwordBlue   = GUICtrlCreateCheckbox("Blue", 160, 100)
+	Global $chkSwordPurple = GUICtrlCreateCheckbox("Purple", 220, 100)
+	Global $chkSwordGreen  = GUICtrlCreateCheckbox("Green", 280, 100)
+	Global $chkSwordGold   = GUICtrlCreateCheckbox("Gold", 340, 100)
+
+	GUICtrlCreateLabel("Daggers", 20, 120, 60, 20)
+	Global $chkDaggersWhite  = GUICtrlCreateCheckbox("White", 100, 120)
+	Global $chkDaggersBlue   = GUICtrlCreateCheckbox("Blue", 160, 120)
+	Global $chkDaggersPurple = GUICtrlCreateCheckbox("Purple", 220, 120)
+	Global $chkDaggersGreen  = GUICtrlCreateCheckbox("Green", 280, 120)
+	Global $chkDaggersGold   = GUICtrlCreateCheckbox("Gold", 340, 120)
+	GUICtrlCreateGroup("", -99, -99, 1, 1) ; End group
+
+	; Section: Martial Weapons - Two-handed
+	GUICtrlCreateGroup("Martial Weapons - Two-handed", 10, 160, 400, 70)
+	GUICtrlCreateLabel("Hammer", 20, 180, 60, 20)
+	Global $chkHammerWhite  = GUICtrlCreateCheckbox("White", 100, 180)
+	Global $chkHammerBlue   = GUICtrlCreateCheckbox("Blue", 160, 180)
+	Global $chkHammerPurple = GUICtrlCreateCheckbox("Purple", 220, 180)
+	Global $chkHammerGreen  = GUICtrlCreateCheckbox("Green", 280, 180)
+	Global $chkHammerGold   = GUICtrlCreateCheckbox("Gold", 340, 180)
+
+	GUICtrlCreateLabel("Scythe", 20, 200, 60, 20)
+	Global $chkScytheWhite  = GUICtrlCreateCheckbox("White", 100, 200)
+	Global $chkScytheBlue   = GUICtrlCreateCheckbox("Blue", 160, 200)
+	Global $chkScythePurple = GUICtrlCreateCheckbox("Purple", 220, 200)
+	Global $chkScytheGreen  = GUICtrlCreateCheckbox("Green", 280, 200)
+	Global $chkScytheGold   = GUICtrlCreateCheckbox("Gold", 340, 200)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Martial Weapons - Ranged
+	GUICtrlCreateGroup("Martial Weapons - Ranged", 10, 240, 400, 70)
+	GUICtrlCreateLabel("Spear", 20, 260, 60, 20)
+	Global $chkSpearWhite  = GUICtrlCreateCheckbox("White", 100, 260)
+	Global $chkSpearBlue   = GUICtrlCreateCheckbox("Blue", 160, 260)
+	Global $chkSpearPurple = GUICtrlCreateCheckbox("Purple", 220, 260)
+	Global $chkSpearGreen  = GUICtrlCreateCheckbox("Green", 280, 260)
+	Global $chkSpearGold   = GUICtrlCreateCheckbox("Gold", 340, 260)
+
+	GUICtrlCreateLabel("Bow", 20, 280, 60, 20)
+	Global $chkBowWhite  = GUICtrlCreateCheckbox("White", 100, 280)
+	Global $chkBowBlue   = GUICtrlCreateCheckbox("Blue", 160, 280)
+	Global $chkBowPurple = GUICtrlCreateCheckbox("Purple", 220, 280)
+	Global $chkBowGreen  = GUICtrlCreateCheckbox("Green", 280, 280)
+	Global $chkBowGold   = GUICtrlCreateCheckbox("Gold", 340, 280)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Spellcasting Weapons - Ranged
+	GUICtrlCreateGroup("Spellcasting Weapons - Ranged", 10, 320, 400, 70)
+	GUICtrlCreateLabel("Wand", 20, 340, 60, 20)
+	Global $chkWandWhite  = GUICtrlCreateCheckbox("White", 100, 340)
+	Global $chkWandBlue   = GUICtrlCreateCheckbox("Blue", 160, 340)
+	Global $chkWandPurple = GUICtrlCreateCheckbox("Purple", 220, 340)
+	Global $chkWandGreen  = GUICtrlCreateCheckbox("Green", 280, 340)
+	Global $chkWandGold   = GUICtrlCreateCheckbox("Gold", 340, 340)
+
+	GUICtrlCreateLabel("Staff", 20, 360, 60, 20)
+	Global $chkStaffWhite  = GUICtrlCreateCheckbox("White", 100, 360)
+	Global $chkStaffBlue   = GUICtrlCreateCheckbox("Blue", 160, 360)
+	Global $chkStaffPurple = GUICtrlCreateCheckbox("Purple", 220, 360)
+	Global $chkStaffGreen  = GUICtrlCreateCheckbox("Green", 280, 360)
+	Global $chkStaffGold   = GUICtrlCreateCheckbox("Gold", 340, 360)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Off-hand Items
+	GUICtrlCreateGroup("Off-hand Items", 10, 400, 400, 70)
+	GUICtrlCreateLabel("Focus Item", 20, 420, 70, 20)
+	Global $chkFocusWhite  = GUICtrlCreateCheckbox("White", 100, 420)
+	Global $chkFocusBlue   = GUICtrlCreateCheckbox("Blue", 160, 420)
+	Global $chkFocusPurple = GUICtrlCreateCheckbox("Purple", 220, 420)
+	Global $chkFocusGreen  = GUICtrlCreateCheckbox("Green", 280, 420)
+	Global $chkFocusGold   = GUICtrlCreateCheckbox("Gold", 340, 420)
+
+	GUICtrlCreateLabel("Shield", 20, 440, 60, 20)
+	Global $chkShieldWhite  = GUICtrlCreateCheckbox("White", 100, 440)
+	Global $chkShieldBlue   = GUICtrlCreateCheckbox("Blue", 160, 440)
+	Global $chkShieldPurple = GUICtrlCreateCheckbox("Purple", 220, 440)
+	Global $chkShieldGreen  = GUICtrlCreateCheckbox("Green", 280, 440)
+	Global $chkShieldGold   = GUICtrlCreateCheckbox("Gold", 340, 440)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Reset tab item (back to main tab flow)
+	GUICtrlCreateTabItem("")
+
 	$GUI_Combo_ConfigChoice = GUICtrlCreateCombo('Default Configuration', 425, 12, 136, 20)
 	GUICtrlSetOnEvent($GUI_Combo_ConfigChoice, 'GuiButtonHandler')
 
