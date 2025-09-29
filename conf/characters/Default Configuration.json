@@ -1,6 +1,6 @@
 ﻿{
 	"main": {
-		"character": "No character selected",
+		"character": "Jacko Sin",
 		"farm": "Choose a farm"
 	},
 	"run": {
@@ -53,6 +53,86 @@
 			"trick_or_treat_bags": true,
 			"candy_cane_shards": true,
 			"lunar_tokens": true
+		}
+	},
+	"PickupOptions": {
+		"Enabled": false,
+		"Axe": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
+		},
+		"Sword": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
+		},
+		"Daggers": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
+		},
+		"Hammer": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": true
+		},
+		"Scythe": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": true
+		},
+		"Spear": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": true
+		},
+		"Bow": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": true
+		},
+		"Wand": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
+		},
+		"Staff": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
+		},
+		"Focus": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
+		},
+		"Shield": {
+			"White": true,
+			"Blue": true,
+			"Purple": true,
+			"Green": true,
+			"Gold": true
 		}
 	}
 }
