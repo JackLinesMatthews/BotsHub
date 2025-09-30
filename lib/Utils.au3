@@ -432,6 +432,168 @@ Func CheckPickupOptions($item)
 	Return False
 EndFunc
 
+Func CheckSalvageOptions($item)
+	If GUICtrlRead($GUI_Checkbox_UseSalvageOptions) == $GUI_CHECKED Then
+		Local $rarity = GetRarity($item)
+		Local $type = DllStructGetData($Item, "Type")
+		; Axe
+		If $type == $ID_Type_Axe Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Sword
+		ElseIf $type == $ID_Type_Sword Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect	
+		; Daggers
+		ElseIf $type == $ID_Type_Dagger Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Hammer
+		ElseIf $type == $ID_Type_Hammer Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Scythe
+		ElseIf $type == $ID_Type_Scythe Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Spear
+		ElseIf $type == $ID_Type_Spear Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Bow
+		ElseIf $type == $ID_Type_Bow Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Wand
+		ElseIf $type == $ID_Type_Wand Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Staff
+		ElseIf $type == $ID_Type_Staff Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Focus Item
+		ElseIf $type == $ID_Type_Offhand Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Shield
+		ElseIf $type == $ID_Type_Shield Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		EndIf
+	EndIf
+	Return False
+EndFunc
 
 #Region Loot Chests
 ;~ Find chests in the given range (earshot by default)

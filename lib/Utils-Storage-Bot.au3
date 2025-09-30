@@ -884,7 +884,7 @@ Func DefaultShouldSalvageItem($item)
 	If IsArmorSalvageItem($item) Then Return GetIsIdentified($item) And Not ContainsValuableUpgrades($item)
 	If IsWeapon($item) Then
 		If Not DllStructGetData($item, 'IsMaterialSalvageable') Then Return False
-		Return Not ShouldKeepWeapon($item)
+		If (ShouldKeepWeapon($item) == False and CheckSalvageOptions($item) == True) Then Return True
 	EndIf
 	Return False
 EndFunc
