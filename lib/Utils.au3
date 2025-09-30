@@ -1483,9 +1483,36 @@ Func SalvageItem($item, $salvageKit)
 	Return True
 EndFunc
 
+Func CountSalvageKits()
+	Local $SalvageCount = 0
+	For $bagIndex = 1 To _Min(4, $BAG_NUMBER)
+		Local $bagSize = DllStructGetData(GetBag($bagIndex), 'slots')
+		For $slot = 1 To $bagSize
+			Local $item = GetItemBySlot($bagIndex, $slot)
+			If DllStructGetData($item, "ModelID") = 2992 Then
+				Local $uses = DllStructGetData($item, 'Value') / 2
+				$SalvageCount = $SalvageCount + $uses
+			EndIf
+		Next
+	Next
+	Debug('Salvage Uses: ' & $SalvageCount)
+	Return $SalvageCount
+EndFunc
+
+; Function to calculate required salvage kits
+Func SalvageKitsRequired($current, $MIN_REQUIRED = 100, $USES_PER_KIT = 25)
+    If $current >= $MIN_REQUIRED Then
+        Return 0
+    EndIf
+    Local $remaining = $MIN_REQUIRED - $current
+    Local $kits = Ceiling($remaining / $USES_PER_KIT)
+	Debug('Salvage kits required: ' & $kits)
+    Return $kits
+EndFunc
 
 ;~ Buy salvage kits in EOTN
 Func BuySalvageKitInEOTN($amount = 1)
+	Debug('Buying ' & $amount & ' basic salvage kits in EOTN')
 	While $amount > 10
 		BuyInEOTN($ID_Salvage_Kit, 2, 100, 10, False)
 		$amount -= 10

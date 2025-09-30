@@ -77,6 +77,7 @@ Func ActiveInventoryManagement()
 	; 7-Sell items
 	; 8-Buy ectos with excedent
 	; 9-Store items
+	; 10-Buy Kits
 	If GUICtrlRead($GUI_Checkbox_StoreUnidentifiedGoldItems) == $GUI_CHECKED Then StoreEverythingInXunlaiStorage(GetIsUnidentified)
 	If GUICtrlRead($GUI_Checkbox_SortItems) == $GUI_CHECKED Then SortInventory()
 	If GUICtrlRead($GUI_Checkbox_IdentifyGoldItems) == $GUI_CHECKED And HasUnidentifiedItems() Then
@@ -121,6 +122,13 @@ Func ActiveInventoryManagement()
 	EndIf
 	If GUICtrlRead($GUI_Checkbox_BuyEctoplasm) == $GUI_CHECKED And GetGoldCharacter() > 10000 Then BuyRareMaterialFromMerchantUntilPoor($ID_Glob_of_Ectoplasm, 10000, $ID_Obsidian_Shard)
 	If GUICtrlRead($GUI_Checkbox_StoreTheRest) == $GUI_CHECKED Then StoreEverythingInXunlaiStorage()
+	; Buy kits for next run.
+	Local $salvage_uses = CountSalvageKits()
+	Local $salvage_kits_required = SalvageKitsRequired($salvage_uses)
+	If $salvage_kits_required > 0 Then
+		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
+		BuySalvageKitInEOTN($salvage_kits_required)
+	Endif
 EndFunc
 
 
