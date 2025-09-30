@@ -843,6 +843,8 @@ Func DefaultShouldStoreItem($item)
 		Return ShouldKeepWeapon($item)
 	ElseIf isArmorSalvageItem($item) Then
 		Return ContainsValuableUpgrades($item)
+	ElseIf (IsTrophy($itemID) and $quantity == 250) Then
+		Return True
 	EndIf
 	Return False
 EndFunc
