@@ -872,6 +872,7 @@ EndFunc
 ;~ Return True if the item should be salvaged
 Func DefaultShouldSalvageItem($item)
 	Local $itemID = DllStructGetData($item, 'ModelID')
+	Debug("Evaluating item for salvage: " & $itemID)
 	Local $rarity = GetRarity($item)
 
 	If $rarity == $RARITY_Green Then Return False
@@ -887,7 +888,11 @@ Func DefaultShouldSalvageItem($item)
 		If Not DllStructGetData($item, 'IsMaterialSalvageable') Then Return False
 		; If Salvage options are enabled, check them first to see if we should keep the item.
 		If GUICtrlRead($GUI_Checkbox_UseSalvageOptions) == $GUI_CHECKED Then
-			If (ShouldKeepWeapon($item) == False and CheckSalvageOptions($item) == True) Then Return True
+			Local $shouldKeepWeapon = ShouldKeepWeapon($item)
+			Debug('ShouldKeepWeapon: ' & $shouldKeepWeapon)
+			Local $checkSalvageOptions = CheckSalvageOptions($item)
+			Debug('CheckSalvageOptions: ' & $checkSalvageOptions)
+			If ($shouldKeepWeapon == False and $checkSalvageOptions == True) Then Return True
 		EndIf
 		Return Not ShouldKeepWeapon($item)
 	EndIf
