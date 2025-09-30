@@ -843,6 +843,7 @@ Func DefaultShouldStoreItem($item)
 		Return ShouldKeepWeapon($item)
 	ElseIf isArmorSalvageItem($item) Then
 		Return ContainsValuableUpgrades($item)
+	; Storing trophies only if we have a full stack of 250
 	ElseIf (IsTrophy($itemID) and $quantity == 250) Then
 		Return True
 	EndIf
