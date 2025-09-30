@@ -105,7 +105,7 @@ Global $STATUS = 'STOPPED'
 ; -1 = did not start, 0 = ran fine, 1 = failed, 2 = pause
 Global $RUN_MODE = 'AUTOLOAD'
 Global $PROCESS_ID = ''
-Global $LOG_LEVEL = 1
+Global $LOG_LEVEL = 0
 Global $CHARACTER_NAME = ''
 Global $DISTRICT_NAME = 'Random'
 Global $BAG_NUMBER = 5
