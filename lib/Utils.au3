@@ -1214,19 +1214,21 @@ Func SalvageAllItems($buyKit = True)
 		EndIf
 	EndIf
 
-	For $i = 0 To $trophyIndex - 1
-		If DefaultShouldSalvageItem($trophiesItems[$i]) Then
-			For $k = 0 To DllStructGetData($trophiesItems[$k], 'Quantity') - 1
-				SalvageItem($trophiesItems[$i], $kit)
-				$uses -= 1
-				If $uses < 1 Then
-					$kit = GetSalvageKit($buyKit)
-					If $kit == 0 Then Return False
-					$uses = DllStructGetData($kit, 'Value') / 2
-				EndIf
-			Next
-		EndIf
-	Next
+	If GUICtrlRead($GUI_Checkbox_SalvageTrophies) == $GUI_CHECKED Then
+		For $i = 0 To $trophyIndex - 1
+			If DefaultShouldSalvageItem($trophiesItems[$i]) Then
+				For $k = 0 To DllStructGetData($trophiesItems[$k], 'Quantity') - 1
+					SalvageItem($trophiesItems[$i], $kit)
+					$uses -= 1
+					If $uses < 1 Then
+						$kit = GetSalvageKit($buyKit)
+						If $kit == 0 Then Return False
+						$uses = DllStructGetData($kit, 'Value') / 2
+					EndIf
+				Next
+			EndIf
+		Next
+	EndIf
 EndFunc
 
 
