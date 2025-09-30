@@ -819,6 +819,7 @@ EndFunc
 Func DefaultShouldStoreItem($item)
 	Local $itemID = DllStructGetData(($item), 'ModelID')
 	Local $rarity = GetRarity($item)
+	local $quantity = DllStructGetData($item, 'Quantity')
 	If IsConsumable($itemID) Then
 		Return True
 	ElseIf IsBasicMaterial($item) Then
@@ -884,7 +885,11 @@ Func DefaultShouldSalvageItem($item)
 	If IsArmorSalvageItem($item) Then Return GetIsIdentified($item) And Not ContainsValuableUpgrades($item)
 	If IsWeapon($item) Then
 		If Not DllStructGetData($item, 'IsMaterialSalvageable') Then Return False
-		If (ShouldKeepWeapon($item) == False and CheckSalvageOptions($item) == True) Then Return True
+		; If Salvage options are enabled, check them first to see if we should keep the item.
+		If GUICtrlRead($GUI_Checkbox_UseSalvageOptions) == $GUI_CHECKED Then
+			If (ShouldKeepWeapon($item) == False and CheckSalvageOptions($item) == True) Then Return True
+		EndIf
+		Return Not ShouldKeepWeapon($item)
 	EndIf
 	Return False
 EndFunc
