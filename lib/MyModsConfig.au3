@@ -1,50 +1,50 @@
 ; Daggers
-$MyMods_DaggerTangZealous = False
-$MyMods_DaggerTangVampiric = False
+Global $MyMods_DaggerTangZealous = False
+Global $MyMods_DaggerTangVampiric = False
 
 ; Sword
-$MyMods_SwordPommelEnchanting = False
-$MyMods_SwordHiltZealous = False
+Global $MyMods_SwordPommelEnchanting = False
+Global $MyMods_SwordHiltZealous = False
 
 ; Shield
-$MyMods_ShieldHandleDevotion = True
-$MyMods_ShieldHandleFortitude = True
+Global $MyMods_ShieldHandleDevotion = True
+Global $MyMods_ShieldHandleFortitude = True
 
 ; Staff
-$MyMods_StaffHeadInsightful = False
-$MyMods_StaffHeadAdept = False
-$MyMods_StaffHeadSwift = False
-$MyMods_StaffWrappingFortitude = False
-$MyMods_StaffWrappingEnchanting = False
+Global $MyMods_StaffHeadInsightful = False
+Global $MyMods_StaffHeadAdept = False
+Global $MyMods_StaffHeadSwift = False
+Global $MyMods_StaffWrappingFortitude = False
+Global $MyMods_StaffWrappingEnchanting = False
 
 ; Wand
-$MyMods_WandWrappingMemory = False
+Global $MyMods_WandWrappingMemory = False
 
 ; Focus
-$MyMods_FocusCoreAptitude = False
-$MyMods_FocusCoreSwift = False
+Global $MyMods_FocusCoreAptitude = False
+Global $MyMods_FocusCoreSwift = False
 
 ; Inscriptions
-$MyMods_AptitudeNotAttitude = True
-$MyMods_ForgetMeNot = True
-$MyMods_HaleAndHearty = False
-$MyMods_MeasureForMeasure = True
-$MyMods_ShelteredByFaith = False
-$MyMods_StrengthAndHonor = False
-$MyMods_GuidedByFate = False
-$MyMods_ThroughThickAndThin = False
-$MyMods_NotTheFace = False
-$MyMods_LeafOnTheWind = False
-$MyMods_SleepNowInTheFire = False
-$MyMods_RidersOnTheStorm = False
-$MyMods_TheRiddleOfSteel = False
-$MyMods_LikeARollingStone = False
+Global $MyMods_AptitudeNotAttitude = True
+Global $MyMods_ForgetMeNot = True
+Global $MyMods_HaleAndHearty = False
+Global $MyMods_MeasureForMeasure = True
+Global $MyMods_ShelteredByFaith = False
+Global $MyMods_StrengthAndHonor = False
+Global $MyMods_GuidedByFate = False
+Global $MyMods_ThroughThickAndThin = False
+Global $MyMods_NotTheFace = False
+Global $MyMods_LeafOnTheWind = False
+Global $MyMods_SleepNowInTheFire = False
+Global $MyMods_RidersOnTheStorm = False
+Global $MyMods_TheRiddleOfSteel = False
+Global $MyMods_LikeARollingStone = False
 
 ; Armor
-$MyMods_SuperiorVigor = True
-$MyMods_WindWalkerInsignia = True
-$MyMods_SuperiorEarthPrayers = True
-$MyMods_ShamansInsignia = True
-$MyMods_SuperiorDomination = True
-$MyMods_ProdigyInsignia = True
-$MyMods_BlessedInsignia = True
+Global $MyMods_SuperiorVigor = True
+Global $MyMods_WindWalkerInsignia = True
+Global $MyMods_SuperiorEarthPrayers = True
+Global $MyMods_ShamansInsignia = True
+Global $MyMods_SuperiorDomination = True
+Global $MyMods_ProdigyInsignia = True
+Global $MyMods_BlessedInsignia = True

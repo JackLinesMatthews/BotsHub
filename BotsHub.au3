@@ -1019,7 +1019,7 @@ Func RunFarmLoop($Farm)
 			$INVENTORY_SPACE_NEEDED = 10
 			$result = LightbringerFarm($STATUS)
 		Case 'Luxon'
-			$INVENTORY_SPACE_NEEDED = 10
+			$INVENTORY_SPACE_NEEDED = 20
 			$result = LuxonFactionFarm($STATUS)
 		Case 'Mantids'
 			$INVENTORY_SPACE_NEEDED = 5
