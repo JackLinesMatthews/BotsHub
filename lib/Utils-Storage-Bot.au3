@@ -122,13 +122,7 @@ Func ActiveInventoryManagement()
 	EndIf
 	If GUICtrlRead($GUI_Checkbox_BuyEctoplasm) == $GUI_CHECKED And GetGoldCharacter() > 10000 Then BuyRareMaterialFromMerchantUntilPoor($ID_Glob_of_Ectoplasm, 10000, $ID_Obsidian_Shard)
 	If GUICtrlRead($GUI_Checkbox_StoreTheRest) == $GUI_CHECKED Then StoreEverythingInXunlaiStorage()
-	; Buy kits for next run.
-	Local $salvage_uses = CountSalvageKits()
-	Local $salvage_kits_required = SalvageKitsRequired($salvage_uses)
-	If $salvage_kits_required > 0 Then
-		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
-		BuySalvageKitInEOTN($salvage_kits_required)
-	Endif
+	If GUICtrlRead($GUI_Checkbox_MidStorageOptions_BuyKits) == $GUI_CHECKED Then BuyKitsForMidRun()
 EndFunc
 
 
@@ -778,6 +772,22 @@ Func StoreEverythingInXunlaiStorage($shouldStoreItem = DefaultShouldStoreItem)
 	Next
 EndFunc
 
+Func BuyKitsForMidRun()
+	; Buy kits for mid run salvage.
+	Local $salvage_uses = CountSalvageKits()
+	Local $salvage_kits_required = SalvageKitsRequired($salvage_uses, Number(GUICtrlRead($GUI_Input_MidStorageOptions_Uses)))
+	If $salvage_kits_required > 0 Then
+		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
+		BuySalvageKitInEOTN($salvage_kits_required)
+	EndIf
+	Local $identification_uses = CountIdentificationKits()
+	Local $identification_kits_required = IdentificationKitsRequired($identification_uses, Number(GUICtrlRead($GUI_Input_MidStorageOptions_Uses)))
+	If $identification_kits_required > 0 Then
+		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
+		BuySuperiorIdentificationKitInEOTN($identification_kits_required)
+	EndIf
+EndFunc
+
 
 ;~ Store an item in the Xunlai Storage
 Func StoreItemInXunlaiStorage($item)
@@ -873,6 +883,12 @@ Func DefaultShouldSellItem($item)
 	If IsWeapon($item) Then
 		Return Not ShouldKeepWeapon($item)
 	EndIf
+	If IsMaterial($item) Then
+		; Some materials should just be sold to the general merchant.
+		If $itemID == $ID_Wood_Plank Then Return True
+		If $itemID == $ID_Bolt_of_Cloth Then Return True
+		If $itemID == $ID_Tanned_Hide_Square Then Return True
+	EndIf
 	Return False
 EndFunc
 
@@ -901,8 +917,9 @@ Func DefaultShouldSalvageItem($item)
 			Local $checkSalvageOptions = CheckSalvageOptions($item)
 			Debug('CheckSalvageOptions: ' & $checkSalvageOptions)
 			If ($shouldKeepWeapon == False and $checkSalvageOptions == True) Then Return True
+		Else
+			Return Not ShouldKeepWeapon($item)
 		EndIf
-		Return Not ShouldKeepWeapon($item)
 	EndIf
 	Return False
 EndFunc

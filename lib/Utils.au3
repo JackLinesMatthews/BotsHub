@@ -1540,6 +1540,34 @@ Func BuySuperiorSalvageKitInEOTN($amount = 1)
 	If $amount > 0 Then BuyInEOTN($ID_Superior_Salvage_Kit, 4, 2000, $amount, False)
 EndFunc
 
+Func CountIdentificationKits()
+	Local $IdentificationCount = 0
+	For $bagIndex = 1 To _Min(4, $BAG_NUMBER)
+		Local $bagSize = DllStructGetData(GetBag($bagIndex), 'slots')
+		For $slot = 1 To $bagSize
+			Local $item = GetItemBySlot($bagIndex, $slot)
+			If DllStructGetData($item, "ModelID") = 5899 Then
+				Local $uses = DllStructGetData($item, 'Value') / 2.5
+				Debug('Found identification kit in slot ' & $bagIndex & ':' & $slot & ' with ' & $uses & ' uses')
+				$IdentificationCount = $IdentificationCount + $uses
+			EndIf
+		Next
+	Next
+	Debug('Identification Uses: ' & $IdentificationCount)
+	Return $IdentificationCount
+EndFunc
+
+; Function to calculate required identification kits
+Func IdentificationKitsRequired($current, $MIN_REQUIRED = 100, $USES_PER_KIT = 100)
+    If $current >= $MIN_REQUIRED Then
+        Return 0
+    EndIf
+    Local $remaining = $MIN_REQUIRED - $current
+    Local $kits = Ceiling($remaining / $USES_PER_KIT)
+	Debug('Identification kits required: ' & $kits)
+    Return $kits
+EndFunc
+
 
 ;~ Buy superior identification kits in EOTN
 Func BuySuperiorIdentificationKitInEOTN($amount = 1)

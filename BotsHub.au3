@@ -143,6 +143,8 @@ Global $GUI_Group_Titles, _
 Global $GUI_Group_GlobalOptions, _
 		$GUI_Checkbox_LoopRuns, $GUI_Checkbox_HM, $GUI_Checkbox_StoreUnidentifiedGoldItems, $GUI_Checkbox_SortItems, $GUI_Checkbox_CollectData, $GUI_Checkbox_IdentifyGoldItems, _
 		$GUI_Checkbox_SalvageItems, $GUI_Checkbox_SalvageTrophies, $GUI_Checkbox_SellItems, $GUI_Checkbox_SellMaterials, $GUI_Checkbox_StoreTheRest, $GUI_Checkbox_StoreGold, $GUI_Checkbox_BuyEctoplasm
+Global $GUI_Group_MidStorageOptions, _
+		$GUI_Checkbox_MidStorageOptions_Enable, $GUI_Checkbox_MidStorageOptions_BuyKits, $GUI_Label_MidStorageOptions_Uses, $GUI_Input_MidStorageOptions_Uses
 Global $GUI_Group_ConsumableOptions, $GUI_Checkbox_UseConsumables, $GUI_Checkbox_FarmMaterials, $GUI_Checkbox_DisableRendering
 Global $GUI_Group_BaseLootOptions, _
 		$GUI_Checkbox_LootEverything, $GUI_Checkbox_LootNothing, $GUI_Checkbox_LootRareMaterials, $GUI_Checkbox_LootBasicMaterials, $GUI_Checkbox_LootKeys, $GUI_Checkbox_LootArmorSalvageables, _
@@ -271,6 +273,13 @@ Func createGUI()
 	$GUI_Checkbox_BuyEctoplasm = GUICtrlCreateCheckbox('Buy ectoplasm', 31, 334, 156, 20)
 	$GUI_Checkbox_StoreTheRest = GUICtrlCreateCheckbox('Store the rest', 31, 364, 100, 20)
 	$GUI_Checkbox_StoreGold = GUICtrlCreateCheckbox('Store Gold', 168, 364, 100, 20)
+	GUICtrlCreateGroup('', -99, -99, 1, 1)
+
+	$GUI_Group_MidStorageOptions = GUICtrlCreateGroup('Inventory Management (mid run)', 21, 405, 271, 100)
+	$GUI_Checkbox_MidStorageOptions_Enable = GUICtrlCreateCheckbox('Enable', 31, 430, 156, 20)
+	$GUI_Checkbox_MidStorageOptions_BuyKits = GUICtrlCreateCheckbox('Buy Kits', 31, 455, 60, 20)
+	$GUI_Label_MidStorageOptions_Uses = GUICtrlCreateLabel('Uses:', 100, 458, 30, 20)
+	$GUI_Input_MidStorageOptions_Uses = GUICtrlCreateInput('100', 131, 455, 30, 20, $ES_NUMBER)
 	GUICtrlCreateGroup('', -99, -99, 1, 1)
 
 	$GUI_Group_ConsumableOptions = GUICtrlCreateGroup('More options', 305, 40, 271, 361)
@@ -1252,6 +1261,11 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'run.bag_number', Number(GUICtrlRead($GUI_Input_BagNumber)))
 	_JSON_addChangeDelete($jsonObject, 'run.farm_materials', GUICtrlRead($GUI_Checkbox_FarmMaterials) == 1)
 	_JSON_addChangeDelete($jsonObject, 'run.disable_rendering', GUICtrlRead($GUI_Checkbox_DisableRendering) == 1)
+
+	_JSON_addChangeDelete($jsonObject, 'midrun.enable', GUICtrlRead($GUI_Checkbox_MidStorageOptions_Enable) == 1)
+	_JSON_addChangeDelete($jsonObject, 'midrun.buykits', GUICtrlRead($GUI_Checkbox_MidStorageOptions_BuyKits) == 1)
+	_JSON_addChangeDelete($jsonObject, 'midrun.uses', Number(GUICtrlRead($GUI_Input_MidStorageOptions_Uses)))
+
 	_JSON_addChangeDelete($jsonObject, 'consumables.consume', GUICtrlRead($GUI_Checkbox_UseConsumables) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.everything', GUICtrlRead($GUI_Checkbox_LootEverything) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.nothing', GUICtrlRead($GUI_Checkbox_LootNothing) == 1)
@@ -1455,6 +1469,12 @@ Func ReadConfigFromJson($jsonString)
 	GUICtrlSetState($GUI_Checkbox_BuyEctoplasm, _JSON_Get($jsonObject, 'run.buy_ectos') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_StoreTheRest, _JSON_Get($jsonObject, 'run.store_leftovers') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_StoreGold, _JSON_Get($jsonObject, 'run.store_gold') ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	; Mid-run storage options
+	GUICtrlSetState($GUI_Checkbox_MidStorageOptions_Enable, _JSON_Get($jsonObject, 'midrun.enable') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_MidStorageOptions_BuyKits, _JSON_Get($jsonObject, 'midrun.buykits') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetData($GUI_Input_MidStorageOptions_Uses, Number(_JSON_Get($jsonObject, 'midrun.uses')))
+
 	Local $district = _JSON_Get($jsonObject, 'run.district')
 	GUICtrlSetData($GUI_Combo_DistrictChoice, $AVAILABLE_DISTRICTS, $district)
 	$DISTRICT_NAME = $district

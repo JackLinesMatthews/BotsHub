@@ -168,18 +168,18 @@ Func VaettirsFarmLoop()
 	Local $slots_empty = CountSlots(1, _Min($BAG_NUMBER, 4))
 	Debug('Slots empty: ' & $slots_empty)
 
-	; If we dont have enough space, attempt to identify and salvage.
-	If (CountSlots(1, _Min($BAG_NUMBER, 4)) <= $INVENTORY_SPACE_NEEDED) Then
-		Debug('Not enough space, identifying and salvaging')
-		; Identify everything
-		Local $identified = IdentifyAllItems(False) ; Don't attempt to buy a kit, as we don't want to travel back.
-		If $identified == False Then Debug('Ran out of identification kits')
-		; Salvage everything
-		Local $salvaged = SalvageAllItems(False) ; Don't attempt to buy a kit, as we don't want to travel back.
-		If $salvaged == False Then Debug('Ran out of salvage kits')
-
+	If GUICtrlRead($GUI_Checkbox_MidStorageOptions_Enable) == $GUI_CHECKED Then
+		; If we dont have enough space, attempt to identify and salvage.
+		If (CountSlots(1, _Min($BAG_NUMBER, 4)) <= ($INVENTORY_SPACE_NEEDED + 5)) Then
+			Debug('Not enough space, identifying and salvaging')
+			; Identify everything
+			Local $identified = IdentifyAllItems(False) ; Don't attempt to buy a kit, as we don't want to travel back.
+			If $identified == False Then Debug('Ran out of identification kits')
+			; Salvage everything
+			Local $salvaged = SalvageAllItems(False) ; Don't attempt to buy a kit, as we don't want to travel back.
+			If $salvaged == False Then Debug('Ran out of salvage kits')
+		EndIf
 	EndIf
-
 
 	Return $success
 EndFunc
