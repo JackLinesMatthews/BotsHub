@@ -22,6 +22,7 @@
 #include 'Utils.au3'
 #include 'Utils-Items_Modstructs.au3'
 #include 'Utils-Debugger.au3'
+#include 'WantedMods.au3'
 
 Opt('MustDeclareVars', 1)
 
@@ -939,6 +940,8 @@ Func ShouldKeepWeapon($item)
 	If DllStructGetData($item, 'Equipped') Then Return True
 	; Keeping customized items
 	If DllStructGetData($item, 'Customized') <> 0 Then Return True
+	; Keeping items from WantedMods.au3
+	If IsModIWant($item) Then Return True
 	; Throwing white items
 	If $rarity == $RARITY_White Then Return False
 	; Keeping green items
