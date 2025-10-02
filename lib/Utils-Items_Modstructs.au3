@@ -781,26 +781,29 @@ Func DefaultCreateValuableRunesAndInsigniasArray()
 		_ ;$Struct_Monk_Runes_Minor_Divine_Favor, _
 		_ ;$Struct_Necromancer_Insignias_Bloodstained, _
 		$Struct_Necromancer_Insignias_Tormentors, _
+		$Struct_Necromancer_Runes_Minor_Curses, _
 		_ ;$Struct_Necromancer_Runes_Minor_Soul_Reaping, _
-		$Struct_Necromancer_Runes_Major_Soul_Reaping, _
+		_ ;$Struct_Necromancer_Runes_Major_Soul_Reaping, _
+		$Struct_Necromancer_Runes_Superior_Soul_Reaping, _
 		_ ;$Struct_Necromancer_Runes_Superior_Death_Magic, _
 		$Struct_Mesmer_Insignias_Prodigys, _
 		$Struct_Mesmer_Runes_Minor_Fast_Casting, _
 		$Struct_Mesmer_Runes_Minor_Inspiration_Magic, _
-		$Struct_Mesmer_Runes_Major_Fast_Casting, _
-		$Struct_Mesmer_Runes_Major_Domination_Magic, _
+		_ ;$Struct_Mesmer_Runes_Major_Fast_Casting, _
+		_ ;$Struct_Mesmer_Runes_Major_Domination_Magic, _
 		$Struct_Mesmer_Runes_Superior_Domination_Magic, _
 		_ ;$Struct_Mesmer_Runes_Superior_Illusion_Magic, _
 		_ ;$Struct_Elementalist_Runes_Minor_Energy_Storage, _
-		$Struct_Assassin_Insignias_Nightstalkers, _
-		_ ;$Struct_Assassin_Runes_Minor_Critical_Strikes, _
+		_ ;$Struct_Assassin_Insignias_Nightstalkers, _
+		$Struct_Assassin_Runes_Minor_Critical_Strikes, _
 		$Struct_Ritualist_Insignias_Shamans, _
+		$Struct_Ritualist_Runes_Minor_Communing, _
 		_ ;$Struct_Ritualist_Runes_Minor_Spawning_Power, _
-		$Struct_Ritualist_Runes_Minor_Restoration_Magic, _
-		$Struct_Ritualist_Runes_Superior_Communing, _
-		$Struct_Ritualist_Runes_Superior_Spawning_Power, _
+		_ ;$Struct_Ritualist_Runes_Minor_Restoration_Magic, _
+		_ ;$Struct_Ritualist_Runes_Superior_Communing, _
+		_ ;$Struct_Ritualist_Runes_Superior_Spawning_Power, _
 		$Struct_Dervish_Insignias_Windwalker, _
-		_ ;$Struct_Dervish_Runes_Minor_Mysticism, _
+		$Struct_Dervish_Runes_Minor_Mysticism, _
 		$Struct_Dervish_Runes_Minor_Scythe_Mastery, _
 		_ ;$Struct_Dervish_Runes_Superior_Earth_Prayers, _
 		$Struct_Paragon_Insignias_Centurions, _

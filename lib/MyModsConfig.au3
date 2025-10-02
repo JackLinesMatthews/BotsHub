@@ -7,8 +7,8 @@ Global $MyMods_SwordPommelEnchanting = False
 Global $MyMods_SwordHiltZealous = False
 
 ; Shield
-Global $MyMods_ShieldHandleDevotion = True
-Global $MyMods_ShieldHandleFortitude = True
+Global $MyMods_ShieldHandleDevotion = False
+Global $MyMods_ShieldHandleFortitude = False
 
 ; Staff
 Global $MyMods_StaffHeadInsightful = False
@@ -28,7 +28,7 @@ Global $MyMods_FocusCoreSwift = False
 Global $MyMods_AptitudeNotAttitude = True
 Global $MyMods_ForgetMeNot = True
 Global $MyMods_HaleAndHearty = False
-Global $MyMods_MeasureForMeasure = True
+Global $MyMods_MeasureForMeasure = False
 Global $MyMods_ShelteredByFaith = False
 Global $MyMods_StrengthAndHonor = False
 Global $MyMods_GuidedByFate = False
@@ -38,7 +38,7 @@ Global $MyMods_LeafOnTheWind = False
 Global $MyMods_SleepNowInTheFire = False
 Global $MyMods_RidersOnTheStorm = False
 Global $MyMods_TheRiddleOfSteel = False
-Global $MyMods_LikeARollingStone = False
+Global $MyMods_LikeARollingStone = True
 
 ; Armor
 Global $MyMods_SuperiorVigor = True
