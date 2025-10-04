@@ -21,8 +21,19 @@ Global $MyMods_StaffWrappingEnchanting = False
 Global $MyMods_WandWrappingMemory = False
 
 ; Focus
-Global $MyMods_FocusCoreAptitude = False
+Global $MyMods_FocusCoreAptitude = True
 Global $MyMods_FocusCoreSwift = False
+
+; Bow
+Global $MyMods_VampiricBowString = True
+
+; Scythe
+Global $MyMods_ScytheSnatheZealous = True
+Global $MyMods_ScytheGripEnchanting = True
+
+; Spear
+Global $MyMods_SpearHeadZealous = True
+Global $MyMods_SpearGripEnchanting = True
 
 ; Inscriptions
 Global $MyMods_AptitudeNotAttitude = True
@@ -39,6 +50,7 @@ Global $MyMods_SleepNowInTheFire = False
 Global $MyMods_RidersOnTheStorm = False
 Global $MyMods_TheRiddleOfSteel = False
 Global $MyMods_LikeARollingStone = True
+Global $MyMods_SeizeTheDay = False
 
 ; Armor
 Global $MyMods_SuperiorVigor = True

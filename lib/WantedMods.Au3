@@ -62,6 +62,41 @@ Func IsModIWant($item)
 			EndIf
 		EndIf
 	EndIf
+	; Bow
+	If $Type = 5 Then
+		If $MyMods_VampiricBowString = True Then
+			If StringInStr($ModStruct, '00052825') > 0 Then
+				Return True
+			EndIf
+		EndIf
+	EndIf
+	; Scythe
+	If $Type = 35 Then
+		If $MyMods_ScytheSnatheZealous = True Then
+			If StringInStr($ModStruct, '01001825') > 0 Then
+				Return True
+			EndIf
+		EndIf
+		If $MyMods_ScytheGripEnchanting = True Then
+			If StringInStr($ModStruct, '1400B822') > 0 Then
+				Return True
+			EndIf
+		EndIf
+	EndIf
+	; Spear
+	If $Type = 36 Then
+		If $MyMods_SpearHeadZealous = True Then
+			If StringInStr($ModStruct, '01001825') > 0 Then
+				Return True
+			EndIf
+		EndIf
+		If $MyMods_SpearGripEnchanting = True Then
+			If StringInStr($ModStruct, '1400B822') > 0 Then
+				Return True
+			EndIf
+		EndIf
+	EndIf
+	; Inscriptions
 	; HCT 20
 	If StringInStr($ModStruct, '00140828') > 0 Then
 		; Aptitude Not Attitude or Adept Staff Head
@@ -164,6 +199,12 @@ Func IsModIWant($item)
 	; Like A Rolling Stone
 	If $MyMods_LikeARollingStone = True Then
 		If StringInStr($ModStruct, '0A0B18A1') > 0 Then
+			Return True
+		EndIf
+	EndIf
+	; Seize The Day
+	If $MyMods_SeizeTheDay = True Then
+		If StringInStr($ModStruct, '0F00D822') > 0 Then
 			Return True
 		EndIf
 	EndIf

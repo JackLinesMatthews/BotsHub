@@ -984,7 +984,7 @@ Func DefaultShouldSellMaterial($item)
 	If Not IsBasicMaterial($item) Then Return False
 
 	; Lazy instantiation
-	Local Static $materialsKeptArray = [$ID_Pile_of_Glittering_Dust, $ID_Feather]
+	Local Static $materialsKeptArray = [$ID_Feather]
 	;Local Static $materialsKeptArray = []
 	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
 
