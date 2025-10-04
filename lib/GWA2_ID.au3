@@ -174,6 +174,11 @@ Global Const $ID_Olafstead					= 645
 Global Const $ID_Dalada_Uplands				= 647
 Global Const $ID_Doomlore_Shrine			= 648
 Global Const $ID_Longeyes_Ledge				= 650
+; Prophecies
+Global Const $ID_Elona_Reach				= 118
+Global Const $ID_Augury_Rock				= 38
+Global Const $ID_Prophets_Path				= 113
+
 #EndRegion Game Locations
 
 

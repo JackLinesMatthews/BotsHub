@@ -59,6 +59,7 @@
 #include 'src/Farm-Luxon.au3'
 #include 'src/Farm-Mantids.au3'
 #include 'src/Farm-MinisterialCommendations.au3'
+#include 'src/Farm-MinotaurHornFarm.au3'
 #include 'src/Farm-Pongmei.au3'
 #include 'src/Farm-Raptors.au3'
 #include 'src/Farm-SoO.au3'
@@ -112,7 +113,7 @@ Global $BAG_NUMBER = 5
 Global $INVENTORY_SPACE_NEEDED = 5
 Global $TIMESDEPOSITED = 0
 
-Global $AVAILABLE_FARMS = 'Corsairs|Dragon Moss|Eden Iris|Feathers|Follow|FoW|Froggy|Gemstone|Jade Brotherhood|Kournans|Kurzick|Lightbringer|Lightbringer 2|Luxon|Mantids|Ministerial Commendations|Nexus Challenge|Norn|OmniFarm|Pongmei|Raptors|SoO|SpiritSlaves|Sunspear Armor|Tasca|Vaettirs|Vanguard|Voltaic|Storage|Tests|Dynamic'
+Global $AVAILABLE_FARMS = 'Corsairs|Dragon Moss|Eden Iris|Feathers|Follow|FoW|Froggy|Gemstone|Jade Brotherhood|Kournans|Kurzick|Lightbringer|Lightbringer 2|Luxon|Mantids|Ministerial Commendations|Minotaur Horn|Nexus Challenge|Norn|OmniFarm|Pongmei|Raptors|SoO|SpiritSlaves|Sunspear Armor|Tasca|Vaettirs|Vanguard|Voltaic|Storage|Tests|Dynamic'
 Global $AVAILABLE_DISTRICTS = '|Random|America|China|English|French|German|International|Italian|Japan|Korea|Polish|Russian|Spanish'
 #EndRegion Variables
 
@@ -1027,6 +1028,9 @@ Func RunFarmLoop($Farm)
 		Case 'Ministerial Commendations'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = MinisterialCommendationsFarm($STATUS)
+		Case 'Minotaur Horn'
+			$INVENTORY_SPACE_NEEDED = 5
+			$result = MinotaurHornFarm($STATUS)
 		Case 'OmniFarm'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = OmniFarm($STATUS)

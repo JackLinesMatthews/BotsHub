@@ -2625,7 +2625,13 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 	Local $coordsY = DllStructGetData($me, 'Y')
 	Local $blocked = 0
 
+	If IsRecharged(8) Then
+		UseSkillEx(8)
+		RndSleep(20)
+	EndIf
 	Move($x, $y)
+	; Use Skill 8
+
 
 	Local $oldCoordsX
 	Local $oldCoordsY
