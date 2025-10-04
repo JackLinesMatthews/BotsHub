@@ -1808,6 +1808,21 @@ Func EnterChallenge()
 	Enqueue($enterMissionStructPtr, 4)
 EndFunc
 
+Func PartyEnterMission($a_b_Foreign = False, $a_b_WaitMapIsLoaded = True)
+	Local $g_d_EnterMission = DllStructCreate('ptr;dword')
+	Local $g_p_EnterMission = DllStructGetPtr($g_d_EnterMission)
+	DllStructSetData($g_d_EnterMission, 1, Memory_GetValue('CommandEnterMission'))
+	DllStructSetData($g_d_EnterMission, 2, Not $a_b_Foreign)
+	
+    If $a_b_WaitMapIsLoaded Then
+        Map_InitMapIsLoaded()
+        Core_Enqueue($g_p_EnterMission, 8)
+        Map_WaitMapIsLoaded()
+    Else
+	    Core_Enqueue($g_p_EnterMission, 8)
+    EndIf
+EndFunc   ;==>Ui_EnterChallenge
+
 ;~ Enter a foreign challenge mission/pvp.
 Func EnterChallengeForeign()
 	Return SendPacket(0x8, $HEADER_PARTY_ENTER_FOREIGN_MISSION, 0)
@@ -5289,8 +5304,8 @@ EndFunc
 ;~ Create UI commands like EnterMission
 Func CreateUICommands()
 	_('CommandEnterMission:')
-	_('push 1')
-	_('call EnterMissionFunction')
+	_('push dword[eax+4]')
+	_('call EnterMission')
 	_('add esp,4')
 	_('ljmp CommandReturn')
 EndFunc

@@ -63,17 +63,17 @@ EndFunc
 
 ;~ Vanquish the map
 Func FarmMinotaurHorns()
-	If MoveAggroAndKill(18870, -6, '1') Then Return 1
-	If MoveAggroAndKill(18828, 2201, '2') Then Return 1
-	If MoveAggroAndKill(17106, 1459, '3') Then Return 1
-	If MoveAggroAndKill(14424, 134, '4') Then Return 1
-	If MoveAggroAndKill(10852, 1967, '5') Then Return 1
-	If MoveAggroAndKill(10704, 6422, '5') Then Return 1
-	If MoveAggroAndKill(9081, 7155, '5') Then Return 1
-	If MoveAggroAndKill(8755, 10512, '5') Then Return 1
-	If MoveAggroAndKill(12348, 10156, '5') Then Return 1
-	If MoveAggroAndKill(7001, 8789, '5') Then Return 1
-	If MoveAggroAndKill(5155, 8838, '5') Then Return 1
-	If MoveAggroAndKill(2616, 7615, '5') Then Return 1
+	If MoveAggroAndKill(18870, -6, '1',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(18828, 2201, '2',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(17106, 1459, '3',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(14424, 134, '4',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(10852, 1967, '5',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(10704, 6422, '6',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(9081, 7155, '7',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(8755, 10512, '8',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(12348, 10156, '9',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(7001, 8789, '10',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(5155, 8838, '11',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
+	If MoveAggroAndKill(2616, 7615, '12',$RANGE_EARSHOT * 1.5,Null,True) Then Return 1
 	Return 0
 EndFunc
