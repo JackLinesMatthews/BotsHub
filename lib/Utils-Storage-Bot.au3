@@ -901,12 +901,8 @@ Func DefaultShouldSalvageItem($item)
 	Local $rarity = GetRarity($item)
 
 	If $rarity == $RARITY_Green Then Return False
-	If IsTrophy($itemID) Then
-		If $Map_Feather_Trophies[$itemID] <> Null Then Return True
-		If $Map_Dust_Trophies[$itemID] <> Null Then Return True
-		If $Map_Bones_Trophies[$itemID] <> Null Then Return True
-		If $Map_Fiber_Trophies[$itemID] <> Null Then Return True
-		Return False
+	If IsTrophy($itemID) and GUICtrlRead($GUI_Checkbox_SalvageTrophies) == $GUI_CHECKED Then
+		Return True
 	EndIf
 	If IsArmorSalvageItem($item) Then Return GetIsIdentified($item) And Not ContainsValuableUpgrades($item)
 	If IsWeapon($item) Then

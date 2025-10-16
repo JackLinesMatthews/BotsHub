@@ -1475,10 +1475,10 @@ EndFunc
 Func SalvageItem($item, $salvageKit)
 	Local $rarity = GetRarity($item)
 	StartSalvageWithKit($item, $salvageKit)
-	Sleep(GetPing() + 400)
+	Sleep(GetPing() + 800)
 	If $rarity == $RARITY_gold Or $rarity == $RARITY_purple Then
 		ValidateSalvage()
-		Sleep(GetPing() + 400)
+		Sleep(GetPing() + 800)
 	EndIf
 	Return True
 EndFunc
@@ -2630,8 +2630,6 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 		RndSleep(20)
 	EndIf
 	Move($x, $y)
-	; Use Skill 8
-
 
 	Local $oldCoordsX
 	Local $oldCoordsY

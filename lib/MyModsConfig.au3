@@ -25,7 +25,7 @@ Global $MyMods_FocusCoreAptitude = True
 Global $MyMods_FocusCoreSwift = False
 
 ; Bow
-Global $MyMods_VampiricBowString = True
+Global $MyMods_VampiricBowString = False
 
 ; Scythe
 Global $MyMods_ScytheSnatheZealous = True
@@ -49,7 +49,7 @@ Global $MyMods_LeafOnTheWind = False
 Global $MyMods_SleepNowInTheFire = False
 Global $MyMods_RidersOnTheStorm = False
 Global $MyMods_TheRiddleOfSteel = False
-Global $MyMods_LikeARollingStone = True
+Global $MyMods_LikeARollingStone = False
 Global $MyMods_SeizeTheDay = False
 
 ; Armor
