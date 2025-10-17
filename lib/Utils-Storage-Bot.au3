@@ -988,14 +988,17 @@ Func ShoppingListWeapons($item)
 			If $attribute == $ID_Spawning_Power Then Return True
 			If $attribute == $ID_Channeling_Magic Then Return True
 			If $attribute == $ID_Restoration_Magic Then Return True
+			If $itemID == 2099 Then Return True ; Dolyak Prod Staff
 		EndIf
 		; Wands
 		If $type == $ID_Type_Wand Then
 			If $attribute == $ID_Domination_Magic Then Return True
+			If $attribute == $ID_Restoration_Magic Then Return True
 		EndIf
 		; Off Hands
 		If $type == $ID_Type_Offhand Then
 			If $attribute == $ID_Domination_Magic Then Return True
+			If $attribute == $ID_Restoration_Magic Then Return True
 		EndIf
 		; Spears
 		If $type == $ID_Type_Spear Then Return True
@@ -1005,6 +1008,9 @@ Func ShoppingListWeapons($item)
 		If $type == $ID_Type_Shield Then
 			If $itemID == 1892 Then Return True ; Adamantine Shield
 		EndIf
+	EndIf
+	If IsInscribable($item) AND $rarity == $RARITY_Gold Then
+		If $type == $ID_Type_Scythe Then Return True
 	EndIf
 EndFunc
 

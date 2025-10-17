@@ -67,6 +67,7 @@
 #include 'src/Farm-Tasca.au3'
 #include 'src/Farm-Vaettirs.au3'
 #include 'src/Farm-Voltaic.au3'
+#include 'src/Farm-Boreal.au3'
 
 #include 'src/Farm-Norn.au3'
 #include 'src/Farm-NexusChallenge.au3'
@@ -113,7 +114,7 @@ Global $BAG_NUMBER = 5
 Global $INVENTORY_SPACE_NEEDED = 5
 Global $TIMESDEPOSITED = 0
 
-Global $AVAILABLE_FARMS = 'Corsairs|Dragon Moss|Eden Iris|Feathers|Follow|FoW|Froggy|Gemstone|Jade Brotherhood|Kournans|Kurzick|Lightbringer|Lightbringer 2|Luxon|Mantids|Ministerial Commendations|Minotaur Horn|Nexus Challenge|Norn|OmniFarm|Pongmei|Raptors|SoO|SpiritSlaves|Sunspear Armor|Tasca|Vaettirs|Vanguard|Voltaic|Storage|Tests|Dynamic'
+Global $AVAILABLE_FARMS = 'Boreal|Corsairs|Dragon Moss|Eden Iris|Feathers|Follow|FoW|Froggy|Gemstone|Jade Brotherhood|Kournans|Kurzick|Lightbringer|Lightbringer 2|Luxon|Mantids|Ministerial Commendations|Minotaur Horn|Nexus Challenge|Norn|OmniFarm|Pongmei|Raptors|SoO|SpiritSlaves|Sunspear Armor|Tasca|Vaettirs|Vanguard|Voltaic|Storage|Tests|Dynamic'
 Global $AVAILABLE_DISTRICTS = '|Random|America|China|English|French|German|International|Italian|Japan|Korea|Polish|Russian|Spanish'
 #EndRegion Variables
 
@@ -966,7 +967,9 @@ Func RunFarmLoop($Farm)
 			$STATUS = 'INITIALIZED'
 			GUICtrlSetData($GUI_StartButton, 'Start')
 			GUICtrlSetBkColor($GUI_StartButton, $GUI_BLUE_COLOR)
-
+		Case 'Boreal'
+			$INVENTORY_SPACE_NEEDED = 5
+			$result = BorealChestFarm($STATUS)
 		Case 'Norn'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = NornTitleFarm($STATUS)
@@ -1080,6 +1083,7 @@ EndFunc
 ;~ Reset the setups of the bots when porting to a city for instance
 Func ResetBotsSetups()
 	$RAPTORS_FARM_SETUP						= False
+	$BOREAL_FARM_SETUP						= False
 	$DM_FARM_SETUP							= False
 	$IRIS_FARM_SETUP						= False
 	$FEATHERS_FARM_SETUP					= False

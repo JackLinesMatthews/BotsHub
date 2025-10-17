@@ -228,7 +228,7 @@ Func DefaultShouldPickItem($item)
 		Return CheckPickupOptions($item)
 	ElseIf $rarity <> $RARITY_White And IsWeapon($item) And IsLowReqMaxDamage($item) Then
 		Return True
-	ElseIf $rarity <> $RARITY_White And isArmorSalvageItem($item) Then
+	ElseIf $rarity <> $RARITY_White And isArmorSalvageItem($item) AND GUICtrlRead($GUI_Checkbox_LootArmorSalvageables) == $GUI_CHECKED Then
 		Return True
 	ElseIf ($rarity == $RARITY_Gold) Then
 		Return GUICtrlRead($GUI_Checkbox_LootGoldItems) == $GUI_CHECKED
@@ -674,7 +674,7 @@ EndFunc
 
 
 ;~ Find and open chests in the given range (earshot by default)
-Func FindAndOpenChests($range = $RANGE_EARSHOT, $DefendFunction = null, $BlockedFunction = null)
+Func FindAndOpenChests($range = $RANGE_EARSHOT, $DefendFunction = null, $BlockedFunction = null, $MoveFunction = null)
 	If GetIsDead() Then Return
 	If FindInInventory($ID_Lockpick)[0] == 0 Then Return
 	Local $gadgetID
@@ -688,8 +688,13 @@ Func FindAndOpenChests($range = $RANGE_EARSHOT, $DefendFunction = null, $Blocked
 		If $chestsMap[DllStructGetData($agents[$i], 'ID')] <> 2 Then
 			;MoveTo(DllStructGetData($agents[$i], 'X'), DllStructGetData($agents[$i], 'Y'))		;Fail half the time
 			;GoSignpost($agents[$i])															;Seems to work but serious rubberbanding
-			;GoToSignpost($agents[$i])															;Much better solution BUT character doesn't defend itself while going to chest + function kind of sucks
-			GoToSignpostWhileDefending($agents[$i], $DefendFunction, $BlockedFunction)			;Final solution
+			;GoToSignpost($agents[$i])		
+			If $MoveFunction <> null Then 
+				$MoveFunction(DllStructGetData($agents[$i], 'X'), DllStructGetData($agents[$i], 'Y'))
+				GoSignpost($agents[$i])											;Much better solution BUT character doesn't defend itself while going to chest + function kind of sucks
+			Else
+				GoToSignpostWhileDefending($agents[$i], $DefendFunction, $BlockedFunction)			;Final solution
+			EndIf
 			If GetIsDead() Then Return
 			RndSleep(200)
 			OpenChest()
