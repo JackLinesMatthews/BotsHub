@@ -946,6 +946,8 @@ Func ShouldKeepWeapon($item)
 	If Not GetIsIdentified($item) Then Return True
 	; Keeping super-rare items, good in all cases, items (BDS, voltaic, etc)
 	If $Map_UltraRareWeapons[$itemID] <> null Then Return True
+	; Keeping Shopping List Weapons
+	If ShoppingListWeapons($item) Then Return True
 	; Keeping items that contain good upgrades
 	If ContainsValuableUpgrades($item) Then Return True
 	; Throwing items without good damage/energy/armor
@@ -974,6 +976,37 @@ Func ShouldKeepWeapon($item)
 	Return False
 EndFunc
 
+Func ShoppingListWeapons($item)
+	Local $req = GetItemReq($item)
+	Local $attribute = GetItemAttribute($item)
+	Local $type = DllStructGetData($item, 'Type')
+	Local $rarity = GetRarity($item)
+	Local $itemID = DllStructGetData($item, 'ModelID')
+	If IsInscribable($item) AND $req == 9 AND $rarity == $RARITY_Gold Then
+		; Staffs
+		If $type == $ID_Type_Staff Then
+			If $attribute == $ID_Spawning_Power Then Return True
+			If $attribute == $ID_Channeling_Magic Then Return True
+			If $attribute == $ID_Restoration_Magic Then Return True
+		EndIf
+		; Wands
+		If $type == $ID_Type_Wand Then
+			If $attribute == $ID_Domination_Magic Then Return True
+		EndIf
+		; Off Hands
+		If $type == $ID_Type_Offhand Then
+			If $attribute == $ID_Domination_Magic Then Return True
+		EndIf
+		; Spears
+		If $type == $ID_Type_Spear Then Return True
+		; Scythes
+		If $type == $ID_Type_Scythe Then Return True
+		; Shields
+		If $type == $ID_Type_Shield Then
+			If $itemID == 1892 Then Return True ; Adamantine Shield
+		EndIf
+	EndIf
+EndFunc
 
 ;~ Return true if the item should be sold to the material merchant
 Func DefaultShouldSellMaterial($item)

@@ -130,6 +130,7 @@ EndFunc
 
 ;~ Follower loop
 Func FollowerLoop($RunFunction = DefaultRun, $FightFunction = DefaultFight)
+	Debug('Starting follower loop')
 	Local Static $firstPlayer = GetFirstPlayerOfGroup()
 	$RunFunction()
 	GoPlayer($firstPlayer)
