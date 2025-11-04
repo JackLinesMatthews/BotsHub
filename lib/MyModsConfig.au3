@@ -11,7 +11,7 @@ Global $MyMods_ShieldHandleDevotion = False
 Global $MyMods_ShieldHandleFortitude = False
 
 ; Staff
-Global $MyMods_StaffHeadInsightful = False
+Global $MyMods_StaffHeadInsightful = True
 Global $MyMods_StaffHeadAdept = False
 Global $MyMods_StaffHeadSwift = False
 Global $MyMods_StaffWrappingFortitude = False

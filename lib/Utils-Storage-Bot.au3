@@ -991,26 +991,31 @@ Func ShoppingListWeapons($item)
 			If $itemID == 2099 Then Return True ; Dolyak Prod Staff
 		EndIf
 		; Wands
-		If $type == $ID_Type_Wand Then
-			If $attribute == $ID_Domination_Magic Then Return True
-			If $attribute == $ID_Restoration_Magic Then Return True
-		EndIf
+		;If $type == $ID_Type_Wand Then
+		;	If $attribute == $ID_Domination_Magic Then Return True
+		;	If $attribute == $ID_Restoration_Magic Then Return True
+		;EndIf
 		; Off Hands
-		If $type == $ID_Type_Offhand Then
-			If $attribute == $ID_Domination_Magic Then Return True
-			If $attribute == $ID_Restoration_Magic Then Return True
-		EndIf
+		;If $type == $ID_Type_Offhand Then
+		;	If $attribute == $ID_Domination_Magic Then Return True
+		;	If $attribute == $ID_Restoration_Magic Then Return True
+		;EndIf
 		; Spears
-		If $type == $ID_Type_Spear Then Return True
+		;If $type == $ID_Type_Spear Then Return True
 		; Scythes
-		If $type == $ID_Type_Scythe Then Return True
+		;If $type == $ID_Type_Scythe Then Return True
 		; Shields
 		If $type == $ID_Type_Shield Then
 			If $itemID == 1892 Then Return True ; Adamantine Shield
 		EndIf
 	EndIf
-	If IsInscribable($item) AND $rarity == $RARITY_Gold Then
-		If $type == $ID_Type_Scythe Then Return True
+	;If IsInscribable($item) AND $rarity == $RARITY_Gold Then
+	;	If $type == $ID_Type_Scythe Then Return True
+	;EndIf
+	; Low Req Daggers
+	If $type == $ID_Type_Dagger Then
+		Local $damage = GetItemMaxDmg($item)
+		If $req <= 6 And $damage >= 13 Then Return True
 	EndIf
 EndFunc
 

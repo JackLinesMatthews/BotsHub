@@ -833,30 +833,40 @@ Func Error($TEXT)
 EndFunc
 
 
-;~ Print to console with timestamp
-;~ LOGLEVEL= 0-Debug, 1-Info, 2-Notice, 3-Warning, 4-Error
+;~ Print to console with timestamp and log to file
+;~ LOGLEVEL = 0-Debug, 1-Info, 2-Notice, 3-Warning, 4-Error
 Func Out($TEXT, $LOGLEVEL = 1)
-	If $LOGLEVEL >= $LOG_LEVEL Then
-		Local $logColor
-		Switch $LOGLEVEL
-			Case $LVL_DEBUG
-				$logColor = $GUI_CONSOLE_GREEN_COLOR
-			Case $LVL_INFO
-				$logColor = $GUI_CONSOLE_GREY_COLOR
-			Case $LVL_NOTICE
-				$logColor = $GUI_CONSOLE_BLUE_COLOR
-			Case $LVL_WARNING
-				$logColor = $GUI_CONSOLE_YELLOW_COLOR
-			Case $LVL_ERROR
-				$logColor = $GUI_CONSOLE_RED_COLOR
-		EndSwitch
-		_GUICtrlRichEdit_SetCharColor($GUI_Console, $logColor)
-		_GUICtrlRichEdit_AppendText($GUI_Console, @HOUR & ':' & @MIN & ':' & @SEC & ' - ' & $TEXT & @CRLF)
-	EndIf
-EndFunc
-#EndRegion Console
-#EndRegion GUI
+    If $LOGLEVEL >= $LOG_LEVEL Then
+        Local $logColor, $timestamp, $logLine
+        $timestamp = @HOUR & ':' & @MIN & ':' & @SEC
+        $logLine = $timestamp & ' - ' & $TEXT & @CRLF
 
+        ; Choose console color
+        Switch $LOGLEVEL
+            Case $LVL_DEBUG
+                $logColor = $GUI_CONSOLE_GREEN_COLOR
+            Case $LVL_INFO
+                $logColor = $GUI_CONSOLE_GREY_COLOR
+            Case $LVL_NOTICE
+                $logColor = $GUI_CONSOLE_BLUE_COLOR
+            Case $LVL_WARNING
+                $logColor = $GUI_CONSOLE_YELLOW_COLOR
+            Case $LVL_ERROR
+                $logColor = $GUI_CONSOLE_RED_COLOR
+        EndSwitch
+
+        ; Output to GUI console
+        _GUICtrlRichEdit_SetCharColor($GUI_Console, $logColor)
+        _GUICtrlRichEdit_AppendText($GUI_Console, $logLine)
+
+        ; Also log to file
+		Local $hFile = FileOpen(@ScriptDir & "\logs\" & $characterName & "_logs.log", $FO_APPEND)
+		If $hFile <> -1 Then
+			FileWrite($hFile, $logLine)
+			FileClose($hFile)
+		EndIf
+    EndIf
+EndFunc
 
 #Region Main loops
 main()
