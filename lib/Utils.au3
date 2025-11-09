@@ -2616,7 +2616,7 @@ EndFunc
 
 ;~ Clear a zone around the coordinates provided
 ;~ Credits to Shiva for auto-attack improvement
-Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null, $skill_8_mobility = False)
+Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
 	If Not $groupIsAlive Then Return True
 
 	If $options = Null Then $options = $DEFAULT_MOVEAGGROANDKILL_OPTIONS
@@ -2630,10 +2630,6 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 	Local $coordsY = DllStructGetData($me, 'Y')
 	Local $blocked = 0
 
-	If (IsRecharged(8) and $skill_8_mobility == True) Then
-		UseSkillEx(8)
-		RndSleep(20)
-	EndIf
 	Move($x, $y)
 
 	Local $oldCoordsX
