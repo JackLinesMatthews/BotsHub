@@ -11,7 +11,7 @@ Global $MyMods_ShieldHandleDevotion = False
 Global $MyMods_ShieldHandleFortitude = False
 
 ; Staff
-Global $MyMods_StaffHeadInsightful = True
+Global $MyMods_StaffHeadInsightful = False
 Global $MyMods_StaffHeadAdept = False
 Global $MyMods_StaffHeadSwift = False
 Global $MyMods_StaffWrappingFortitude = False
@@ -21,8 +21,9 @@ Global $MyMods_StaffWrappingEnchanting = False
 Global $MyMods_WandWrappingMemory = False
 
 ; Focus
-Global $MyMods_FocusCoreAptitude = True
+Global $MyMods_FocusCoreAptitude = False
 Global $MyMods_FocusCoreSwift = False
+Global $MyMods_FocusCoreFortitude = True
 
 ; Bow
 Global $MyMods_VampiricBowString = False

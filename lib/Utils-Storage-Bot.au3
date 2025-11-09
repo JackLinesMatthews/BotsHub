@@ -991,15 +991,17 @@ Func ShoppingListWeapons($item)
 			If $itemID == 2099 Then Return True ; Dolyak Prod Staff
 		EndIf
 		; Wands
-		;If $type == $ID_Type_Wand Then
-		;	If $attribute == $ID_Domination_Magic Then Return True
-		;	If $attribute == $ID_Restoration_Magic Then Return True
-		;EndIf
+		If $type == $ID_Type_Wand Then
+			;If $attribute == $ID_Domination_Magic Then Return True
+			;If $attribute == $ID_Restoration_Magic Then Return True
+			If $attribute == $ID_Spawning_Power Then Return True
+		EndIf
 		; Off Hands
-		;If $type == $ID_Type_Offhand Then
+		If $type == $ID_Type_Offhand Then
 		;	If $attribute == $ID_Domination_Magic Then Return True
 		;	If $attribute == $ID_Restoration_Magic Then Return True
-		;EndIf
+			If $attribute == $ID_Spawning_Power Then Return True
+		EndIf
 		; Spears
 		;If $type == $ID_Type_Spear Then Return True
 		; Scythes
@@ -1015,7 +1017,7 @@ Func ShoppingListWeapons($item)
 	; Low Req Daggers
 	If $type == $ID_Type_Dagger Then
 		Local $damage = GetItemMaxDmg($item)
-		If $req <= 6 And $damage >= 13 Then Return True
+		If $req <= 5 And $damage >= 12 Then Return True
 	EndIf
 EndFunc
 

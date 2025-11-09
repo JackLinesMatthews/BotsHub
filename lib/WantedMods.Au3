@@ -96,6 +96,14 @@ Func IsModIWant($item)
 			EndIf
 		EndIf
 	EndIf
+	; Focus
+	If $Type = $ID_Type_Offhand Then
+		If $MyMods_FocusCoreFortitude = True Then
+			If StringInStr($ModStruct, '001E4823') > 0 Then
+				Return True
+			EndIf
+		EndIf
+	EndIf
 	; Inscriptions
 	; HCT 20
 	If StringInStr($ModStruct, '00140828') > 0 Then
