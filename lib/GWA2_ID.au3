@@ -439,6 +439,8 @@ Global Const $ID_Displacement					= 1249
 ; Paragon
 Global Const $ID_Burning_Refrain				= 1576
 Global Const $ID_Heroic_Refrain					= 3431
+Global Const $ID_Aggressive_Refrain				= 1774
+Global Const $ID_Theyre_On_Fire					= 1597
 ; PvE
 Global Const $ID_Ebon_Battle_Standard_of_Honor	= 2233
 Global Const $ID_Mental_Block					= 2417

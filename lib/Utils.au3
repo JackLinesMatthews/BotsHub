@@ -24,7 +24,7 @@
 Opt('MustDeclareVars', 1)
 
 ; Mobs aggro correspond to earshot range
-Global Const $RANGE_ADJACENT=156, $RANGE_NEARBY=240, $RANGE_AREA=312, $RANGE_EARSHOT=1000, $RANGE_SPELLCAST = 1085, $RANGE_SPIRIT = 2500, $RANGE_COMPASS = 5000
+Global Const $RANGE_ADJACENT=156, $RANGE_NEARBY=240, $RANGE_AREA=312, $RANGE_EARSHOT=1000, $RANGE_SPELLCAST = 1085, $RANGE_SPIRIT = 2500, $RANGE_COMPASS = 5000, $RANGE_LONGBOW = 1250
 Global Const $RANGE_ADJACENT_2=156^2, $RANGE_NEARBY_2=240^2, $RANGE_AREA_2=312^2, $RANGE_EARSHOT_2=1000^2, $RANGE_SPELLCAST_2=1085^2, $RANGE_SPIRIT_2=2500^2, $RANGE_COMPASS_2=5000^2
 
 Global Const $SpiritTypes_Array[3] = [278528, 311296]
@@ -2365,8 +2365,8 @@ EndFunc
 
 
 ;~ Did run fail ?
-Func IsRunFailed()
-	If ($groupFailuresCount > 5) Then
+Func IsRunFailed($number_of_fails=5)
+	If ($groupFailuresCount > $number_of_fails) Then
 		Notice('Group wiped ' & $groupFailuresCount & ' times, run is considered failed.')
 		Return True
 	EndIf
@@ -2616,7 +2616,7 @@ EndFunc
 
 ;~ Clear a zone around the coordinates provided
 ;~ Credits to Shiva for auto-attack improvement
-Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
+Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null, $AttackBar=DefaultKillFoes, $MoveBar=Move)
 	If Not $groupIsAlive Then Return True
 
 	If $options = Null Then $options = $DEFAULT_MOVEAGGROANDKILL_OPTIONS
@@ -2630,7 +2630,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 	Local $coordsY = DllStructGetData($me, 'Y')
 	Local $blocked = 0
 
-	Move($x, $y)
+	$MoveBar($x, $y)
 
 	Local $oldCoordsX
 	Local $oldCoordsY
@@ -2643,7 +2643,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 		$me = GetMyAgent()
 		$target = GetNearestEnemyToAgent($me)
 		If GetDistance($me, $target) < $range And DllStructGetData($target, 'ID') <> 0 Then
-			DefaultKillFoes($flagHeroes)
+			$AttackBar($flagHeroes)
 			PickUpItems(null, DefaultShouldPickItem, $range)
 			; If one member of group is dead, go to rez him before proceeding
 		EndIf
@@ -2652,9 +2652,9 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 		If $oldCoordsX = $coordsX And $oldCoordsY = $coordsY Then
 			$blocked += 1
 			If $blocked > 6 Then
-				Move($coordsX, $coordsY, 500)
+				$MoveBar($coordsX, $coordsY, 500)
 				RndSleep(500)
-				Move($x, $y)
+				$MoveBar($x, $y)
 			EndIf
 		EndIf
 		RndSleep(500)
@@ -2662,7 +2662,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 			$chest = FindChest($chestOpenRange)
 			If $chest <> Null Then
 				$options['openChests'] = False
-				MoveAggroAndKill(DllStructGetData($chest, 'X'), DllStructGetData($chest, 'Y'), 'Found a chest', $range, $options)
+				MoveAggroAndKill(DllStructGetData($chest, 'X'), DllStructGetData($chest, 'Y'), 'Found a chest', $range, $options, $AttackBar, $MoveBar)
 				$options['openChests'] = True
 				FindAndOpenChests($chestOpenRange)
 			EndIf
@@ -2713,9 +2713,197 @@ Func DefaultKillFoes($flagHeroesOnFight = False)
 	PickUpItems()
 EndFunc
 
+;~ Kill foes by casting skills from 1 to 8
+Func ParagonHrFight($flagHeroesOnFight = False)
+	Debug('ParagonHrFight Called')
+	Local $me = GetMyAgent()
+	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent($me), $targetId = DllStructGetData($target, 'ID')
+	Local $FirstTarget = True
+	GetAlmostInRangeOfAgent($target)
+	;GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW )
+	;ChangeWeaponSet(2)
+	;RndSleep(300)
+	If $flagHeroesOnFight Then FanFlagHeroes()
+	While $groupIsAlive And $foesCount > 0
+		;Debug("ParagonHrFight:2727 While Group is alive and foes greater than 0")
+		$target = GetAgentById($targetId)
+		;Debug("Null Target: " & $target == Null & "; Dead Target: " & GetIsDead($target))
+		#cs
+ 		If ($target == Null Or GetIsDead($target) Or $FirstTarget == True) Then
+			Debug("ParagonHrFight:2730 Target Null|Target Dead|First Target")
+			If $FirstTarget == True Then
+				Debug("ParagonHrFight:2732 First Target")
+				$target = GetNearestEnemyToAgent($me)
+				$targetId = DllStructGetData($target, 'ID')
+				RndSleep(20)
+				Attack($target)
+				RndSleep(2400)
+				CallTarget($target)
+				CancelAction()
+				ChangeWeaponSet(1)
+				RndSleep(300)
+				Attack($target)
+				$FirstTarget = False
+			EndIf
+			Debug("ParagonHrFight:2745 Get High Priority Target")
+			$target = GetHighestPriorityFoe(GetMyAgent(), $RANGE_SPELLCAST + 200)
+			If $target == Null Then $target = GetNearestEnemyToAgent($me)
+			Debug("ParagonHrFight:2747 Change Target")
+			ChangeTarget($target)
+			Sleep(GetPing() + 20)
+			Debug("ParagonHrFight:2750 Call Target")
+			CallTarget($target)
+			; Start auto-attack on new target
+			Attack($target)
+			RndSleep(20)
+		EndIf 
+		#ce
+		If ($target == Null Or GetIsDead($target)) Then
+			$target = GetNearestEnemyToAgent($me)
+			$targetId = DllStructGetData($target, 'ID')
+			CallTarget($target)
+			; Start auto-attack on new target
+			Attack($target)
+			RndSleep(20)
+		EndIf
+
+		; Always ensure auto-attack is active before using skills
+		Attack($target)
+		RndSleep(20)
+		; Always ensure auto-attack is active before using skills
+		EnableHeroSkillSlot(7,8)
+		Attack($target)
+		RndSleep(300)
+		If IsRecharged(1) and GetEnergy() >= 10 Then
+			UseSkillEx(1)
+			RndSleep(20)
+		EndIf
+		If IsRecharged(2) and GetEnergy() >= 10 Then
+			UseSkillEx(2)
+			RndSleep(20)
+		EndIf
+		If IsRecharged(3) and GetEnergy() >= 5 Then
+			UseSkillEx(3)
+			RndSleep(20)
+		EndIf
+		If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+			UseSkillEx(4)
+			RndSleep(20)
+		EndIf
+		If IsRecharged(5) and GetEnergy() >= 10 Then
+			UseSkillEx(5)
+			RndSleep(20)
+		EndIf
+		; Just wait for auto-attack to continue
+		RndSleep(1000)
+		PickUpItems(null, DefaultShouldPickItem, $RANGE_AREA)
+		$me = GetMyAgent()
+		$foesCount = CountFoesInRangeOfAgent($me, $RANGE_SPELLCAST + 200)
+	WEnd
+	If $flagHeroesOnFight Then CancelAllHeroes()
+	RndSleep(1000)
+	PickUpItems()
+EndFunc
+
+Func ParagonHrMove($X, $Y, $random = 50)
+	If GetAgentExists(GetMyID()) Then
+		DisableHeroSkillSlot(7,8)
+		DllStructSetData($moveStruct, 2, $X + Random(-$random, $random))
+		DllStructSetData($moveStruct, 3, $Y + Random(-$random, $random))
+		Enqueue($moveStructPtr, 16)
+		Return True
+	Else
+		Return False
+	EndIf
+EndFunc
+
+Func DefaultSkillMaintenance()
+	Debug('DefaultSkillMaintenance')
+	Return
+EndFunc
+
+;~ Heroic Refrain maintenance usage.
+Func HeroicRefrainMaintenance()
+	If GetInstanceType() == 2 Then
+		AdlibUnRegister('HeroicRefrainMaintenance')
+		Return
+	EndIf
+	Local $me = GetMyAgent()
+
+	Local Const $Skill_Theyre_On_Fire = 6 ; 1597
+	Local Const $Skill_Aggressive_Refrain = 7; ID 1774
+	Local Const $Skill_Heroic_Refrain = 8 ; ID 3431
+
+	Local $partyMembers = GetParty()
+	
+	If GetIsDead($me) == False Then
+		; First cast two stacks of Heroic Refrain
+		If GetEffectTimeRemaining(GetEffect($ID_Heroic_Refrain)) == 0 Then
+			; There is no Heroic Refrain, clear vars.
+			Global $HeroicRefrain_Stacks = 0
+			Global $Hero_HR = CreateHeroHFArray($partyMembers[0])
+			If IsRecharged($Skill_Heroic_Refrain) And GetEnergy() > 15 Then
+				UseSkillEx($Skill_Heroic_Refrain)
+				$HeroicRefrain_Stacks += 1
+			EndIf
+		ElseIf $HeroicRefrain_Stacks == 1 Then
+			If IsRecharged($Skill_Heroic_Refrain) And GetEnergy() > 15 Then
+				UseSkillEx($Skill_Heroic_Refrain)
+				$HeroicRefrain_Stacks += 1
+				If IsRecharged($Skill_Theyre_On_Fire) And GetEnergy() > 10 Then
+					UseSkillEx($Skill_Theyre_On_Fire)
+				EndIf
+			EndIf
+		ElseIf $HeroicRefrain_Stacks == 2 And IsRecharged($Skill_Theyre_On_Fire) And GetEffectTimeRemaining(GetEffect($ID_Theyre_On_Fire)) == 0 And GetEnergy() > 10 Then
+			UseSkillEx($Skill_Theyre_On_Fire)
+		EndIf
+		
+		; Cast Aggressive Refrain
+		If $HeroicRefrain_Stacks == 2 And IsRecharged($Skill_Aggressive_Refrain) And GetEffectTimeRemaining(GetEffect($ID_Aggressive_Refrain)) == 0 And GetEnergy() > 25 Then
+			UseSkillEx($Skill_Aggressive_Refrain)
+			UseHeroSkill(6, 1, $me) ; Hit yourself with a BIP for energy recovery
+		EndIf
+
+		; Cast Heroic Refrain on Heroes
+		If $HeroicRefrain_Stacks == 2 And IsRecharged($Skill_Heroic_Refrain) And GetEnergy() > 15 And AllHeroesHaveHR($Hero_HR) == False Then
+			Local Static $i = 1
+			If $partyMembers[0] > 1 Then
+				If DllStructGetData($partyMembers[$i], 'ID') == DllStructGetData($me, 'ID') Or $i > $partyMembers[0] Then $i = Mod($i, $partyMembers[0]) + 1
+				UseSkillEx($Skill_Heroic_Refrain, $partyMembers[$i])
+				$Hero_HR[$i - 2] = True
+				$i = Mod($i, $partyMembers[0]) + 1
+				If AllHeroesHaveHR($Hero_HR) == True Then
+					Global $hr_timer = TimerInit()
+				EndIf
+			EndIf
+		ElseIf AllHeroesHaveHR($Hero_HR) == True Then
+			If TimerDiff($hr_timer) > 300000 Then
+				; Refresh HR if 5 minutes have passed.
+				Global $Hero_HR = CreateHeroHFArray($partyMembers[0])
+			EndIf
+		EndIf
+	EndIf
+EndFunc
+
+Func CreateHeroHFArray($partySize)
+	Local $hero_array[$partySize - 1]
+	For $i = 0 To $partySize - 2
+		$hero_array[$i] = False
+	Next
+	Return $hero_array
+EndFunc
+
+Func AllHeroesHaveHR($HrArray)
+    For $i = 0 To UBound($HrArray) - 1
+        If Not $Hero_HR[$i] Then
+            Return False ; stop immediately if any hero doesn’t have HR
+        EndIf
+    Next
+    Return True ; all heroes have HR
+EndFunc
 
 ;~ Kill foes by casting skills from 1 to 8
-Func PriorityKillFoes($lootInFights = True)
+Func PriorityKillFoes($lootInFights = False)
 	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent(GetMyAgent())
 	GetAlmostInRangeOfAgent($target)
 	ChangeTarget($target)
@@ -2750,6 +2938,53 @@ Func PriorityKillFoes($lootInFights = True)
 	PickUpItems()
 EndFunc
 
+;~ Kill foes by casting skills from 1 to 8
+Func KillFoesHrSlavers($flagHeroesOnFight = False)
+	Local $me = GetMyAgent()
+	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent(GetMyAgent())
+	GetAlmostInRangeOfAgent($target)
+	ChangeTarget($target)
+	; At first we target the closest mob to have the surprise effect
+	While $groupIsAlive And $target <> Null
+		If GetCurrentTarget() == Null Then
+			$target = GetHighestPriorityFoe(GetMyAgent(), $RANGE_SPIRIT)
+			ChangeTarget($target)
+			Sleep(GetPing() + 20)
+			CallTarget($target)
+			; Start auto-attack on new target
+			Attack($target)
+			Sleep(GetPing() + 20)
+		EndIf
+		If $target <> Null Then
+			If TimerDiff($FrozenSoilTimer) > 30000 and GetIsDead($me) == False Then
+				UseHeroSkill(7, 8) ; Use Frozen Soil
+				$FrozenSoilTimer = TimerInit()
+			EndIf
+			If IsRecharged(1) and GetEnergy() >= 10 Then
+				UseSkillEx(1)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(2) and GetEnergy() >= 10 Then
+				UseSkillEx(2)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(3) and GetEnergy() >= 5 Then
+				UseSkillEx(3)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+				Debug("Adrenaline: " & GetSkillbarSkillAdrenaline(4))
+				UseSkillEx(4)
+				RndSleep(20)
+			EndIf
+			; Just wait for auto-attack to continue
+			RndSleep(1000)
+		EndIf
+	WEnd
+	RndSleep(1000)
+	PickUpItems()
+EndFunc
+
 
 ;~ Create a map containing foes and their priority level
 Func CreateMobsPriorityMap()
@@ -2763,12 +2998,14 @@ Func CreateMobsPriorityMap()
 	Local $PN_SS_Blasphemer		= 6496
 	Local $PN_SS_Dreamer		= 6494
 	Local $PN_SS_Contaminator	= 6495
+	Local $PN_SS_Zealot			= 6506
 
 	; Priority map : 0 biggest kill priority, and then it's decreasing
 	Local $map[]
 	$map[$PN_SS_Defender] = 0
 	$map[$PN_SS_Priest] = 0
 	$map[$PN_Modniir_Priest] = 0
+	$map[$PN_SS_Zealot] = 0
 	$map[$PN_SS_Summoner] = 1
 	$map[$PN_SS_Warder] = 2
 	$map[$PN_SS_Dominator] = 2
