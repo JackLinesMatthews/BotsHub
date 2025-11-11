@@ -31,7 +31,8 @@ Global Const $VoltaicFarmInformations = 'For best results, have :' & @CRLF _
 	& 'In NM, bot takes 13min (with cons), 15min (without cons) on average' & @CRLF _
 	& 'Not tested in HM.'
 Global Const $VOLTAIC_FARM_DURATION = 16 * 60 * 1000
-Global Const $VSAggroRange = $RANGE_SPELLCAST + 300
+Global Const $VSAggroRange = $RANGE_LONGBOW + 100
+Global Const $VSAggroRangeRun = $RANGE_SPELLCAST + 100
 
 Global $VOLTAIC_FARM_SETUP = False
 
@@ -81,23 +82,23 @@ Func VoltaicFarmLoop()
 	AdlibRegister('TrackGroupStatus', 10000)
 
 	Local $timer = TimerInit()
-	MoveAggroAndKill(-19887, 6074, '1', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
 	Info('Making way to Slavers')
-	MoveAggroAndKill(-10273, 3251, '2', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(-6878, -329, '3', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(-3041, -3446, '4', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(3571, -9501, '5', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(10764, -6448, '6', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(13063, -4396, '7', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
 	If IsRunFailed(3) Then
 		AdlibUnregister('TrackGroupStatus')
 		Return 1
 	EndIf
 
 	Info('At the Troll Bridge - TROLL TOLL')
-	MoveAggroAndKill(18054, -3275, '8', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(20966, -6476, '9', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(25298, -9456, '10', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
 	If IsRunFailed(3) Then
 		AdlibUnregister('TrackGroupStatus')
 		Return 1
@@ -134,17 +135,16 @@ Func VoltaicFarmLoop()
 		WEnd
 		UseMoraleConsumableIfNeeded()
 		UseConsumable($ID_Legionnaire_Summoning_Crystal, False)
-		Global $FrozenSoilTimer = TimerInit()
-		MoveAggroAndKill(-13500, -15750, 'In front of the door', 1250, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-12500, -15000, 'Before the bridge', 1350, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-10400, -14800, 'After the bridge', 1350, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-11500, -13300, 'First group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-13400, -11500, 'Second group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-13700, -9550, 'Third group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-14100, -8600, 'Fourth group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-15000, -7500, 'Fourth group, again', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-16500, -8000, 'Fifth group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-18500, -8000, 'To the shrine', 1550, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13500, -15750, 'In front of the door', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-12500, -15000, 'Before the bridge', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-10400, -14800, 'After the bridge', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-11500, -13300, 'First group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13400, -11500, 'Second group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13700, -9550, 'Third group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-14100, -8600, 'Fourth group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-15000, -7500, 'Fourth group, again', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-16500, -8000, 'Fifth group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-18500, -8000, 'To the shrine', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
 	WEnd
 	$groupFailuresCount = 0
 	While Not IsRunFailed(3) And Not IsAgentInRange(GetMyAgent(), -17500, -14250, 1250)

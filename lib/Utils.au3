@@ -2714,12 +2714,12 @@ Func DefaultKillFoes($flagHeroesOnFight = False)
 EndFunc
 
 ;~ Kill foes by casting skills from 1 to 8
-Func ParagonHrFight($flagHeroesOnFight = False)
+Func ParagonHrFight($flagHeroesOnFight=False)
 	Debug('ParagonHrFight Called')
 	Local $me = GetMyAgent()
 	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent($me), $targetId = DllStructGetData($target, 'ID')
 	Local $FirstTarget = True
-	GetAlmostInRangeOfAgent($target)
+	GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW+100)
 	;GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW )
 	;ChangeWeaponSet(2)
 	;RndSleep(300)
@@ -2758,6 +2758,15 @@ Func ParagonHrFight($flagHeroesOnFight = False)
 			RndSleep(20)
 		EndIf 
 		#ce
+		If $FirstTarget == True Then
+			ChangeWeaponSet(2)
+			RndSleep(200)
+			Attack($target)
+			Sleep(2400)
+			CancelAction()
+			ChangeWeaponSet(1)
+			$FirstTarget = False
+		EndIf
 		If ($target == Null Or GetIsDead($target)) Then
 			$target = GetNearestEnemyToAgent($me)
 			$targetId = DllStructGetData($target, 'ID')
@@ -2766,7 +2775,6 @@ Func ParagonHrFight($flagHeroesOnFight = False)
 			Attack($target)
 			RndSleep(20)
 		EndIf
-
 		; Always ensure auto-attack is active before using skills
 		Attack($target)
 		RndSleep(20)
@@ -2795,26 +2803,19 @@ Func ParagonHrFight($flagHeroesOnFight = False)
 			RndSleep(20)
 		EndIf
 		; Just wait for auto-attack to continue
-		RndSleep(1000)
+		RndSleep(500)
 		PickUpItems(null, DefaultShouldPickItem, $RANGE_AREA)
 		$me = GetMyAgent()
 		$foesCount = CountFoesInRangeOfAgent($me, $RANGE_SPELLCAST + 200)
 	WEnd
 	If $flagHeroesOnFight Then CancelAllHeroes()
-	RndSleep(1000)
+	RndSleep(500)
 	PickUpItems()
 EndFunc
 
 Func ParagonHrMove($X, $Y, $random = 50)
-	If GetAgentExists(GetMyID()) Then
-		DisableHeroSkillSlot(7,8)
-		DllStructSetData($moveStruct, 2, $X + Random(-$random, $random))
-		DllStructSetData($moveStruct, 3, $Y + Random(-$random, $random))
-		Enqueue($moveStructPtr, 16)
-		Return True
-	Else
-		Return False
-	EndIf
+	DisableHeroSkillSlot(7,8)
+	Move($X, $Y)
 EndFunc
 
 Func DefaultSkillMaintenance()
