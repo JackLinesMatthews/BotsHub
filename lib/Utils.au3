@@ -2715,7 +2715,6 @@ EndFunc
 
 ;~ Kill foes by casting skills from 1 to 8
 Func ParagonHrFight($flagHeroesOnFight=False)
-	Debug('ParagonHrFight Called')
 	Local $me = GetMyAgent()
 	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent($me), $targetId = DllStructGetData($target, 'ID')
 	Local $FirstTarget = True
