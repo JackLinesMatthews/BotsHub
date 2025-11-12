@@ -2765,7 +2765,7 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 			$target = GetNearestEnemyToAgent($me)
 			$targetId = DllStructGetData($target, 'ID')
 			Debug("Target ID: " & $targetId)
-			;CallTarget($target)
+			CallTarget($target)
 			; Start auto-attack on new target
 			Attack($target)
 			RndSleep(20)
