@@ -1019,6 +1019,12 @@ Func ShoppingListWeapons($item)
 		Local $damage = GetItemMaxDmg($item)
 		If $req <= 5 And $damage >= 12 Then Return True
 	EndIf
+	; Restoration Staff
+	If $type == $ID_Type_Staff Then
+		If $attribute == $ID_Restoration_Magic Then Return True
+	EndIf
+	; Amethyst Aegis
+	If $itemID = $ID_Amethyst_Aegis_1 or $itemID = $ID_Amethyst_Aegis_2 Then Return True
 EndFunc
 
 ;~ Return true if the item should be sold to the material merchant

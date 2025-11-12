@@ -184,6 +184,28 @@ Func PickUpItems($defendFunction = null, $ShouldPickItem = DefaultShouldPickItem
 	EndIf
 EndFunc
 
+#Region Loot items
+;~ Loot items around character
+Func LogItems($range)
+	If (GUICtrlRead($GUI_Checkbox_LootNothing) == $GUI_CHECKED) Then Return
+
+	Local $item
+	Local $agentID
+	Local $deadlock
+	Local $agents = GetAgentArray(0x400)
+	For $i = $agents[0] To 1 Step -1
+		Local $agent = $agents[$i]
+		If GetIsDead() Then Return
+		If Not GetCanPickUp($agent) Then ContinueLoop
+		If GetDistance(GetMyAgent(), $agent) > $range Then ContinueLoop
+
+		$agentID = DllStructGetData($agent, 'ID')
+		$item = GetItemByAgentID($agentID)
+		Local $model_id = DllStructGetData(($item), 'ModelID')
+		Local $rarity = GetRarity($item)
+	Next
+EndFunc
+
 
 ;~ Return True if the item should be picked up
 ;~ Most general implementation, pick most of the important stuff and is heavily configurable from GUI
@@ -2769,7 +2791,7 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 		If ($target == Null Or GetIsDead($target)) Then
 			$target = GetNearestEnemyToAgent($me)
 			$targetId = DllStructGetData($target, 'ID')
-			CallTarget($target)
+			;CallTarget($target)
 			; Start auto-attack on new target
 			Attack($target)
 			RndSleep(20)

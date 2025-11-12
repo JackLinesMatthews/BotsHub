@@ -82,37 +82,42 @@ Func VoltaicFarmLoop()
 	AdlibRegister('TrackGroupStatus', 10000)
 
 	Local $timer = TimerInit()
-	MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	Info('Making way to Slavers')
-	MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	If IsRunFailed(3) Then
-		AdlibUnregister('TrackGroupStatus')
-		Return 1
-	EndIf
 
-	Info('At the Troll Bridge - TROLL TOLL')
-	MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-	If IsRunFailed(3) Then
-		AdlibUnregister('TrackGroupStatus')
-		Return 1
-	EndIf
+	While Not IsRunFailed() And GetMapID() == $ID_Verdant_Cascades
+		MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		Info('Making way to Slavers')
+		MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		If IsRunFailed(3) Then
+			AdlibUnregister('TrackGroupStatus')
+			Return 1
+		EndIf
 
-	AdlibUnregister('HeroicRefrainMaintenance')
-	Move(25729, -9360)
-	Info('Entering Slavers')
-	While Not WaitMapLoading($ID_Slavers_Exile)
-		Sleep(50)
+		Info('At the Troll Bridge - TROLL TOLL')
+		MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		If IsRunFailed(3) Then
+			AdlibUnregister('TrackGroupStatus')
+			Return 1
+		EndIf
+
+		AdlibUnregister('HeroicRefrainMaintenance')
+		Move(25729, -9360)
+		Info('Entering Slavers')
+		While Not WaitMapLoading($ID_Slavers_Exile)
+			Sleep(50)
+		WEnd
 	WEnd
+
 	MoveTo(-16797, 9251)
 	MoveTo(-17835, 12524)
 	Move(-18300, 12527)
+
 	; The map has the same ID as slavers
 	While Not WaitMapLoading()
 		Sleep(50)
