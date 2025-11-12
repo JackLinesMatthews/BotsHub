@@ -2737,6 +2737,7 @@ EndFunc
 
 ;~ Kill foes by casting skills from 1 to 8
 Func ParagonHrFight($flagHeroesOnFight=False)
+	Debug('ParagonHrFight')
 	Local $me = GetMyAgent()
 	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent($me), $targetId = DllStructGetData($target, 'ID')
 	Local $FirstTarget = True
@@ -2746,40 +2747,11 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 	;RndSleep(300)
 	If $flagHeroesOnFight Then FanFlagHeroes()
 	While $groupIsAlive And $foesCount > 0
-		;Debug("ParagonHrFight:2727 While Group is alive and foes greater than 0")
+		Debug("ParagonHrFight:2727 While Group is alive and foes greater than 0")
 		$target = GetAgentById($targetId)
-		;Debug("Null Target: " & $target == Null & "; Dead Target: " & GetIsDead($target))
-		#cs
- 		If ($target == Null Or GetIsDead($target) Or $FirstTarget == True) Then
-			Debug("ParagonHrFight:2730 Target Null|Target Dead|First Target")
-			If $FirstTarget == True Then
-				Debug("ParagonHrFight:2732 First Target")
-				$target = GetNearestEnemyToAgent($me)
-				$targetId = DllStructGetData($target, 'ID')
-				RndSleep(20)
-				Attack($target)
-				RndSleep(2400)
-				CallTarget($target)
-				CancelAction()
-				ChangeWeaponSet(1)
-				RndSleep(300)
-				Attack($target)
-				$FirstTarget = False
-			EndIf
-			Debug("ParagonHrFight:2745 Get High Priority Target")
-			$target = GetHighestPriorityFoe(GetMyAgent(), $RANGE_SPELLCAST + 200)
-			If $target == Null Then $target = GetNearestEnemyToAgent($me)
-			Debug("ParagonHrFight:2747 Change Target")
-			ChangeTarget($target)
-			Sleep(GetPing() + 20)
-			Debug("ParagonHrFight:2750 Call Target")
-			CallTarget($target)
-			; Start auto-attack on new target
-			Attack($target)
-			RndSleep(20)
-		EndIf 
-		#ce
+		Debug("Target ID: " & $targetId & "; Null Target: " & $target == Null & "; Dead Target: " & GetIsDead($target))
 		If $FirstTarget == True Then
+			Debug("First Target: " & $FirstTarget == True)
 			ChangeWeaponSet(2)
 			RndSleep(200)
 			Attack($target)
@@ -2789,14 +2761,17 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 			$FirstTarget = False
 		EndIf
 		If ($target == Null Or GetIsDead($target)) Then
+			Debug("Selecting new target.")
 			$target = GetNearestEnemyToAgent($me)
 			$targetId = DllStructGetData($target, 'ID')
+			Debug("Target ID: " & $targetId)
 			;CallTarget($target)
 			; Start auto-attack on new target
 			Attack($target)
 			RndSleep(20)
 		EndIf
 		; Always ensure auto-attack is active before using skills
+		Debug("Attacking Target.")
 		Attack($target)
 		RndSleep(20)
 		; Always ensure auto-attack is active before using skills
