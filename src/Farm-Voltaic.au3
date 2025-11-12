@@ -78,7 +78,7 @@ Func VoltaicFarmLoop()
 	RndSleep(1000)
 	WaitMapLoading($ID_Verdant_Cascades)
 
-	AdlibRegister('HeroicRefrainMaintenance', 3000)
+	;AdlibRegister('HeroicRefrainMaintenance', 3000)
 	AdlibRegister('TrackGroupStatus', 10000)
 
 	Local $timer = TimerInit()

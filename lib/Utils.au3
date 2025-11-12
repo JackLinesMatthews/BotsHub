@@ -2660,6 +2660,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 	Local $chest
 	; GroupIsAlive is caller's responsibility to fill
 	While $groupIsAlive And ComputeDistance($coordsX, $coordsY, $x, $y) > $RANGE_NEARBY And $blocked < 10
+		Debug("While group is alive and not reached coordinates.")
 		$oldCoordsX = $coordsX
 		$oldCoordsY = $coordsY
 		$me = GetMyAgent()
