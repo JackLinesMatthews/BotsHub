@@ -36,10 +36,10 @@ Global Const $VSAggroRangeRun = $RANGE_SPELLCAST + 100
 
 Global $VOLTAIC_FARM_SETUP = False
 
-Global $LAST_ROOM_OPTIONS[]
-$LAST_ROOM_OPTIONS['openChests'] = True
-$LAST_ROOM_OPTIONS['chestOpenRange'] = $RANGE_SPIRIT
-$LAST_ROOM_OPTIONS['flagHeroesOnFight'] = True
+Global $VS_FARM_OPTIONS[]
+$VS_FARM_OPTIONS['openChests'] = False
+$VS_FARM_OPTIONS['chestOpenRange'] = $RANGE_SPIRIT
+$VS_FARM_OPTIONS['flagHeroesOnFight'] = False
 
 ;~ Main method to farm Voltaic
 Func VoltaicFarm($STATUS)
@@ -84,23 +84,23 @@ Func VoltaicFarmLoop()
 	Local $timer = TimerInit()
 
 	While Not IsRunFailed() And GetMapID() == $ID_Verdant_Cascades
-		MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 		Info('Making way to Slavers')
-		MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 		If IsRunFailed(3) Then
 			AdlibUnregister('TrackGroupStatus')
 			Return 1
 		EndIf
 
 		Info('At the Troll Bridge - TROLL TOLL')
-		MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 		If IsRunFailed(3) Then
 			AdlibUnregister('TrackGroupStatus')
 			Return 1
@@ -140,16 +140,16 @@ Func VoltaicFarmLoop()
 		WEnd
 		UseMoraleConsumableIfNeeded()
 		UseConsumable($ID_Legionnaire_Summoning_Crystal, False)
-		MoveAggroAndKill(-13500, -15750, 'In front of the door', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-12500, -15000, 'Before the bridge', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-10400, -14800, 'After the bridge', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-11500, -13300, 'First group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-13400, -11500, 'Second group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-13700, -9550, 'Third group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-14100, -8600, 'Fourth group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-15000, -7500, 'Fourth group, again', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-16500, -8000, 'Fifth group', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-18500, -8000, 'To the shrine', $VSAggroRange, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13500, -15750, 'In front of the door', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-12500, -15000, 'Before the bridge', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-10400, -14800, 'After the bridge', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-11500, -13300, 'First group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13400, -11500, 'Second group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13700, -9550, 'Third group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-14100, -8600, 'Fourth group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-15000, -7500, 'Fourth group, again', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-16500, -8000, 'Fifth group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-18500, -8000, 'To the shrine', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 	WEnd
 	$groupFailuresCount = 0
 	While Not IsRunFailed(3) And Not IsAgentInRange(GetMyAgent(), -17500, -14250, 1250)
@@ -159,9 +159,9 @@ Func VoltaicFarmLoop()
 		WEnd
 		UseMoraleConsumableIfNeeded()
 		UseConsumable($ID_Legionnaire_Summoning_Crystal, False)
-		MoveAggroAndKill(-18500, -11500, 'Pre-Boss group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-17700, -12500, 'Boss group', 1550, Null, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-17500, -14250, 'Final group', 1550, Null, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-18500, -11500, 'Pre-Boss group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-17700, -12500, 'Boss group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-17500, -14250, 'Final group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 	WEnd
 	If IsRunFailed(3) Then
 		AdlibUnregister('TrackGroupStatus')
