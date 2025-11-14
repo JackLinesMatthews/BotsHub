@@ -152,8 +152,9 @@ EndFunc
 #Region Loot items
 ;~ Loot items around character
 Func PickUpItems($defendFunction = null, $ShouldPickItem = DefaultShouldPickItem, $range = $RANGE_COMPASS)
+	
 	If (GUICtrlRead($GUI_Checkbox_LootNothing) == $GUI_CHECKED) Then Return
-
+	Debug("Picking up items.")
 	Local $item
 	Local $agentID
 	Local $deadlock
@@ -2388,7 +2389,7 @@ EndFunc
 
 ;~ Did run fail ?
 Func IsRunFailed($number_of_fails=5)
-	If ($groupFailuresCount > $number_of_fails) Then
+	If ($groupFailuresCount >= $number_of_fails) Then
 		Notice('Group wiped ' & $groupFailuresCount & ' times, run is considered failed.')
 		Return True
 	EndIf
@@ -2658,6 +2659,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 	Local $oldCoordsY
 	Local $target
 	Local $chest
+	Debug("Entering MAAK Loop")
 	; GroupIsAlive is caller's responsibility to fill
 	While $groupIsAlive And ComputeDistance($coordsX, $coordsY, $x, $y) > $RANGE_NEARBY And $blocked < 10
 		Debug("While group is alive and not reached coordinates.")
@@ -2667,12 +2669,14 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 		$target = GetNearestEnemyToAgent($me)
 		If GetDistance($me, $target) < $range And DllStructGetData($target, 'ID') <> 0 Then
 			$AttackBar($flagHeroes)
+			Debug("Left attacked bar function.")
 			PickUpItems(null, DefaultShouldPickItem, $range)
 			; If one member of group is dead, go to rez him before proceeding
 		EndIf
 		$coordsX = DllStructGetData($me, 'X')
 		$coordsY = DllStructGetData($me, 'Y')
 		If $oldCoordsX = $coordsX And $oldCoordsY = $coordsY Then
+			Debug("Blocked.")
 			$blocked += 1
 			If $blocked > 6 Then
 				$MoveBar($coordsX, $coordsY, 500)
@@ -2690,7 +2694,9 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 				FindAndOpenChests($chestOpenRange)
 			EndIf
 		EndIf
+		Debug("End of MoveAggroAndKill Loop")
 	WEnd
+	Debug("Exiting MAAK Loop.")
 	Return Not $groupIsAlive
 EndFunc
 
@@ -2750,7 +2756,9 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 	While $groupIsAlive And $foesCount > 0
 		Debug("ParagonHrFight:2727 While Group is alive and foes greater than 0")
 		$target = GetAgentById($targetId)
-		Debug("Target ID: " & $targetId & "; Null Target: " & $target == Null & "; Dead Target: " & GetIsDead($target))
+		Debug("Target ID: " & $targetId)
+		Debug("Null Target: " & $target == Null)
+		Debug("Dead Target: " & GetIsDead($target))
 		If $FirstTarget == True Then
 			Debug("First Target: " & $FirstTarget == True)
 			ChangeWeaponSet(2)
@@ -2774,37 +2782,54 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 		; Always ensure auto-attack is active before using skills
 		Debug("Attacking Target.")
 		Attack($target)
+
 		RndSleep(20)
 		; Always ensure auto-attack is active before using skills
 		EnableHeroSkillSlot(7,8)
 		Attack($target)
 		RndSleep(300)
+		Debug("Using Skills.")
+		Debug("Evaluating skill 1.")
 		If IsRecharged(1) and GetEnergy() >= 10 Then
+			Debug("Using skill 1.")
 			UseSkillEx(1)
 			RndSleep(20)
 		EndIf
+		Debug("Evaluating skill 2.")
 		If IsRecharged(2) and GetEnergy() >= 10 Then
+			Debug("Using skill 2.")
 			UseSkillEx(2)
 			RndSleep(20)
 		EndIf
+		Debug("Evaluating skill 3.")
 		If IsRecharged(3) and GetEnergy() >= 5 Then
+			Debug("Using skill 3.")
 			UseSkillEx(3)
 			RndSleep(20)
 		EndIf
+		Debug("Evaluating skill 4.")
 		If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+			Debug("Using skill 4.")
 			UseSkillEx(4)
 			RndSleep(20)
 		EndIf
+		Debug("Evaluating skill 5.")
 		If IsRecharged(5) and GetEnergy() >= 10 Then
+			Debug("Using skill 5.")
 			UseSkillEx(5)
 			RndSleep(20)
 		EndIf
+		Debug("Finished Using Skills.")
 		; Just wait for auto-attack to continue
 		RndSleep(500)
-		PickUpItems(null, DefaultShouldPickItem, $RANGE_AREA)
+		;PickUpItems(null, DefaultShouldPickItem, $RANGE_AREA)
+		Debug("Getting My Agent.")
 		$me = GetMyAgent()
+		Debug("Getting Foe Count.")
 		$foesCount = CountFoesInRangeOfAgent($me, $RANGE_SPELLCAST + 200)
+		Debug("Foes count: " & $foesCount)
 	WEnd
+	Debug("Exiting Fight Loop")
 	If $flagHeroesOnFight Then CancelAllHeroes()
 	RndSleep(500)
 	PickUpItems()

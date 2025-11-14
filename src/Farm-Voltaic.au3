@@ -83,38 +83,36 @@ Func VoltaicFarmLoop()
 
 	Local $timer = TimerInit()
 
-	While Not IsRunFailed() And GetMapID() == $ID_Verdant_Cascades
-		MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		Info('Making way to Slavers')
-		MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		If IsRunFailed(3) Then
-			AdlibUnregister('TrackGroupStatus')
-			Return 1
-		EndIf
+	MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	Info('Making way to Slavers')
+	MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	If IsRunFailed(1) Then
+		AdlibUnregister('TrackGroupStatus')
+		Return 1
+	EndIf
 
-		Info('At the Troll Bridge - TROLL TOLL')
-		MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
-		If IsRunFailed(3) Then
-			AdlibUnregister('TrackGroupStatus')
-			Return 1
-		EndIf
+	Info('At the Troll Bridge - TROLL TOLL')
+	MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(20966, -6476, 'Move To Shrine', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	If IsRunFailed(1) Then
+		AdlibUnregister('TrackGroupStatus')
+		Return 1
+	EndIf
 
-		AdlibUnregister('HeroicRefrainMaintenance')
-		Move(25729, -9360)
-		Info('Entering Slavers')
-		While Not WaitMapLoading($ID_Slavers_Exile)
-			Sleep(50)
-		WEnd
+	AdlibUnregister('HeroicRefrainMaintenance')
+	Move(25729, -9360)
+	Info('Entering Slavers')
+	While Not WaitMapLoading($ID_Slavers_Exile)
+		Sleep(50)
 	WEnd
-
-	MoveTo(-16797, 9251)
+	MoveTo(-17251, 9284)
 	MoveTo(-17835, 12524)
 	Move(-18300, 12527)
 
@@ -150,9 +148,9 @@ Func VoltaicFarmLoop()
 		MoveAggroAndKill(-15000, -7500, 'Fourth group, again', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 		MoveAggroAndKill(-16500, -8000, 'Fifth group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 		MoveAggroAndKill(-18500, -8000, 'To the shrine', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveTo(-18758, -7923)
 	WEnd
-	$groupFailuresCount = 0
-	While Not IsRunFailed(3) And Not IsAgentInRange(GetMyAgent(), -17500, -14250, 1250)
+	While Not IsRunFailed() And Not IsAgentInRange(GetMyAgent(), -17500, -14250, 1250)
 		; Waiting to be alive before retrying
 		While Not IsGroupCurrentlyAlive()
 			Sleep(2000)
@@ -163,7 +161,7 @@ Func VoltaicFarmLoop()
 		MoveAggroAndKill(-17700, -12500, 'Boss group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 		MoveAggroAndKill(-17500, -14250, 'Final group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 	WEnd
-	If IsRunFailed(3) Then
+	If IsRunFailed() Then
 		AdlibUnregister('TrackGroupStatus')
 		AdlibUnregister('HeroicRefrainMaintenance')
 		Return 1
