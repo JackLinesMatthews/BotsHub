@@ -2627,13 +2627,13 @@ $DEFAULT_FLAGMOVEAGGROANDKILL_OPTIONS['flagHeroesOnFight'] = True
 
 ;~ Version to flag heroes before fights
 ;~ Better against heavy AoE - dangerous when flags can end up in a non accessible spot
-Func FlagMoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
+Func FlagMoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null, $AttackBar=DefaultKillFoes, $MoveBar=Move)
 	If $options = Null Then
 		$options = $DEFAULT_FLAGMOVEAGGROANDKILL_OPTIONS
 	Else
 		$options['flagHeroesOnFight'] = True
 	EndIf
-	Return MoveAggroAndKill($x, $y, $log, $range, $options)
+	Return MoveAggroAndKill($x, $y, $log, $range, $options, $AttackBar, $MoveBar)
 EndFunc
 
 
@@ -2659,24 +2659,24 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 	Local $oldCoordsY
 	Local $target
 	Local $chest
-	Debug("Entering MAAK Loop")
+	;Debug("Entering MAAK Loop")
 	; GroupIsAlive is caller's responsibility to fill
 	While $groupIsAlive And ComputeDistance($coordsX, $coordsY, $x, $y) > $RANGE_NEARBY And $blocked < 10
-		Debug("While group is alive and not reached coordinates.")
+		;Debug("While group is alive and not reached coordinates.")
 		$oldCoordsX = $coordsX
 		$oldCoordsY = $coordsY
 		$me = GetMyAgent()
 		$target = GetNearestEnemyToAgent($me)
 		If GetDistance($me, $target) < $range And DllStructGetData($target, 'ID') <> 0 Then
 			$AttackBar($flagHeroes)
-			Debug("Left attacked bar function.")
+			;Debug("Left attack bar function.")
 			PickUpItems(null, DefaultShouldPickItem, $range)
 			; If one member of group is dead, go to rez him before proceeding
 		EndIf
 		$coordsX = DllStructGetData($me, 'X')
 		$coordsY = DllStructGetData($me, 'Y')
 		If $oldCoordsX = $coordsX And $oldCoordsY = $coordsY Then
-			Debug("Blocked.")
+			;Debug("Blocked.")
 			$blocked += 1
 			If $blocked > 6 Then
 				$MoveBar($coordsX, $coordsY, 500)
@@ -2694,9 +2694,9 @@ Func MoveAggroAndKill($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options
 				FindAndOpenChests($chestOpenRange)
 			EndIf
 		EndIf
-		Debug("End of MoveAggroAndKill Loop")
+		;Debug("End of MoveAggroAndKill Loop")
 	WEnd
-	Debug("Exiting MAAK Loop.")
+	;Debug("Exiting MAAK Loop.")
 	Return Not $groupIsAlive
 EndFunc
 
@@ -2744,11 +2744,101 @@ EndFunc
 
 ;~ Kill foes by casting skills from 1 to 8
 Func ParagonHrFight($flagHeroesOnFight=False)
-	Debug('ParagonHrFight')
+	;Debug('ParagonHrFight')
 	Local $me = GetMyAgent()
 	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent($me), $targetId = DllStructGetData($target, 'ID')
 	Local $FirstTarget = True
 	GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW+100)
+	;GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW )
+	;ChangeWeaponSet(2)
+	;RndSleep(300)
+	If $flagHeroesOnFight Then FanFlagHeroes()
+	While $groupIsAlive And $foesCount > 0
+		;Debug("ParagonHrFight:2727 While Group is alive and foes greater than 0")
+		$target = GetAgentById($targetId)
+
+		If $FirstTarget == True Then
+			;Debug("First Target: " & $FirstTarget == True)
+			ChangeWeaponSet(2)
+			RndSleep(200)
+			Attack($target)
+			Sleep(2400)
+			CancelAction()
+			ChangeWeaponSet(1)
+			$FirstTarget = False
+		EndIf
+		If ($target == Null Or GetIsDead($target)) Then
+			;Debug("Selecting new target.")
+			$target = GetNearestEnemyToAgent($me)
+			$targetId = DllStructGetData($target, 'ID')
+			;Debug("Target ID: " & $targetId)
+			CallTarget($target)
+			; Start auto-attack on new target
+			Attack($target)
+			RndSleep(20)
+		EndIf
+		; Always ensure auto-attack is active before using skills
+		;Debug("Attacking Target.")
+		Attack($target)
+
+		RndSleep(20)
+		; Always ensure auto-attack is active before using skills
+		EnableHeroSkillSlot(7,8)
+		Attack($target)
+		RndSleep(300)
+		;Debug("Using Skills.")
+		;Debug("Evaluating skill 1.")
+		If IsRecharged(1) and GetEnergy() >= 10 Then
+			;Debug("Using skill 1.")
+			UseSkillEx(1)
+			RndSleep(20)
+		EndIf
+		;Debug("Evaluating skill 2.")
+		If IsRecharged(2) and GetEnergy() >= 10 Then
+			;Debug("Using skill 2.")
+			UseSkillEx(2)
+			RndSleep(20)
+		EndIf
+		;Debug("Evaluating skill 3.")
+		If IsRecharged(3) and GetEnergy() >= 5 Then
+			;Debug("Using skill 3.")
+			UseSkillEx(3)
+			RndSleep(20)
+		EndIf
+		;Debug("Evaluating skill 4.")
+		If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+			;Debug("Using skill 4.")
+			UseSkillEx(4)
+			RndSleep(20)
+		EndIf
+		;Debug("Evaluating skill 5.")
+		If IsRecharged(5) and GetEnergy() >= 10 Then
+			;Debug("Using skill 5.")
+			UseSkillEx(5)
+			RndSleep(20)
+		EndIf
+		;Debug("Finished Using Skills.")
+		; Just wait for auto-attack to continue
+		RndSleep(500)
+		;PickUpItems(null, DefaultShouldPickItem, $RANGE_AREA)
+		;Debug("Getting My Agent.")
+		$me = GetMyAgent()
+		;Debug("Getting Foe Count.")
+		$foesCount = CountFoesInRangeOfAgent($me, $RANGE_SPELLCAST + 200)
+		;Debug("Foes count: " & $foesCount)
+	WEnd
+	;Debug("Exiting Fight Loop")
+	If $flagHeroesOnFight Then CancelAllHeroes()
+	RndSleep(500)
+	PickUpItems()
+EndFunc
+
+Func ParagonHrFightSoo($flagHeroesOnFight=False)
+	Debug('ParagonHrFight')
+	Local $me = GetMyAgent()
+	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent($me), $targetId = DllStructGetData($target, 'ID')
+	Local $FirstTarget = True
+	;GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW+100)
 	;GetAlmostInRangeOfAgent($target, $RANGE_LONGBOW )
 	;ChangeWeaponSet(2)
 	;RndSleep(300)
@@ -2785,32 +2875,31 @@ Func ParagonHrFight($flagHeroesOnFight=False)
 
 		RndSleep(20)
 		; Always ensure auto-attack is active before using skills
-		EnableHeroSkillSlot(7,8)
 		Attack($target)
 		RndSleep(300)
 		Debug("Using Skills.")
 		Debug("Evaluating skill 1.")
 		If IsRecharged(1) and GetEnergy() >= 10 Then
 			Debug("Using skill 1.")
-			UseSkillEx(1)
+			UseSkill(1,-2)
 			RndSleep(20)
 		EndIf
 		Debug("Evaluating skill 2.")
 		If IsRecharged(2) and GetEnergy() >= 10 Then
 			Debug("Using skill 2.")
-			UseSkillEx(2)
+			UseSkill(2,-2)
 			RndSleep(20)
 		EndIf
 		Debug("Evaluating skill 3.")
 		If IsRecharged(3) and GetEnergy() >= 5 Then
 			Debug("Using skill 3.")
-			UseSkillEx(3)
+			UseSkill(3,-2)
 			RndSleep(20)
 		EndIf
 		Debug("Evaluating skill 4.")
 		If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
 			Debug("Using skill 4.")
-			UseSkillEx(4)
+			UseSkill(4,-2)
 			RndSleep(20)
 		EndIf
 		Debug("Evaluating skill 5.")
@@ -2874,11 +2963,11 @@ Func HeroicRefrainMaintenance()
 				UseSkillEx($Skill_Heroic_Refrain)
 				$HeroicRefrain_Stacks += 1
 				If IsRecharged($Skill_Theyre_On_Fire) And GetEnergy() > 10 Then
-					UseSkillEx($Skill_Theyre_On_Fire)
+					UseSkill($Skill_Theyre_On_Fire,-2)
 				EndIf
 			EndIf
 		ElseIf $HeroicRefrain_Stacks == 2 And IsRecharged($Skill_Theyre_On_Fire) And GetEffectTimeRemaining(GetEffect($ID_Theyre_On_Fire)) == 0 And GetEnergy() > 10 Then
-			UseSkillEx($Skill_Theyre_On_Fire)
+			UseSkill($Skill_Theyre_On_Fire,-2)
 		EndIf
 		
 		; Cast Aggressive Refrain
