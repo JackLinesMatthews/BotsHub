@@ -57,14 +57,12 @@ Func AsuranTitle()
 	WaitMapLoading($ID_Magus_Stones, 10000, 2000)
 
 	Info('Taking Blessing')
-	GoToNPC(GoNearestNPCToCoords(14796, 13170))
-	RndSleep(2000)
-	Dialog(0x83)
-	RndSleep(2000)
+    MoveTo(14865,13160)
+    RndSleep(1000)
+	GoNearestNPCToCoords(14865,13160)
+	RndSleep(1000)
 	Dialog(0x84)
-	RndSleep(2000)
-	Dialog(0x85)
-	RndSleep(2000)
+	RndSleep(1000)
 
     If MoveAggroAndKill(16722, 11774, 'Moving') Then Return 1 
     If MoveAggroAndKill(17383, 8685, 'Moving') Then Return 1
@@ -78,7 +76,7 @@ Func AsuranTitle()
 	If MoveAggroAndKill(18111, -8030, "Krait Group") Then Return 1
 
 	Info("Taking Blessing")
-    GoToNPC(GoNearestNPCToCoords(18409, -8474))
+    GoNearestNPCToCoords(18409, -8474)
 	RndSleep(2000)
 	If MoveAggroAndKill(18613, -11799, "Froggy Group") Then Return 1
 	If MoveAggroAndKill(17154, -15669, "Krait Patrol") Then Return 1
@@ -101,7 +99,7 @@ Func AsuranTitle()
 	If MoveAggroAndKill(-7814, -17796, "Spider Group") Then Return 1
 
 	Info("Taking Blessing")
-    GoToNPC(GoNearestNPCToCoords(-10109, -17520))
+    GoNearestNPCToCoords(-10109, -17520)
 	RndSleep(2000)
 	Info("Moving")
 	If MoveAggroAndKill(-9111, -17237) Then Return 1
@@ -122,7 +120,7 @@ Func AsuranTitle()
 	If MoveAggroAndKill(-17090, 5252, "Krait Group") Then Return 1
 
 	Info("Taking Blessing")
-    GoToNPC(GoNearestNPCToCoords(-19292, 8994))
+    GoNearestNPCToCoords(-19292, 8994)
 	RndSleep(2000)
 	Info("Moving")
 	If MoveAggroAndKill(-18640, 8724) Then Return 1
@@ -142,7 +140,7 @@ Func AsuranTitle()
 	If MoveAggroAndKill(-3468, 10837, "Lonely Patrol") Then Return 1
 
 	Info("Taking Blessing")
-    GoToNPC(GoNearestNPCToCoords(-2037, 10758))
+    GoNearestNPCToCoords(-2037, 10758)
 	RndSleep(2000)
 
 	If MoveAggroAndKill(-3804, 8017, "Krait Group") Then Return 1
@@ -159,7 +157,7 @@ Func AsuranTitle()
 	If MoveAggroAndKill(7097, 92, "Krait Group") Then Return 1
 
 	Info("Taking Blessing")
-    GoToNPC(GoNearestNPCToCoords(4893, 445))
+    GoNearestNPCToCoords(4893, 445)
 	RndSleep(2000)
 	If MoveAggroAndKill(8943, -985, "Krait Boss") Then Return 1
 	If MoveAggroAndKill(10949, -2056, "Krait Patrol") Then Return 1
@@ -177,7 +175,7 @@ Func AsuranTitle()
 	If MoveAggroAndKill(-6322, -2565, "Krait Group") Then Return 1
 
 	Info("Taking Blessing")
-    GoToNPC(GoNearestNPCToCoords(-9231, -2629))
+    GoNearestNPCToCoords(-9231, -2629)
 	RndSleep(3000)
 
 	If MoveAggroAndKill(-11414, 4055, "Leftovers Krait") Then Return 1
