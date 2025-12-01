@@ -775,18 +775,20 @@ Global $PerfectModsByWeaponType = CreatePerfectModsByOSWeaponTypeMap()
 ;~ Creates an array of all valuable runes and insignias
 Func DefaultCreateValuableRunesAndInsigniasArray()
 	Local $Valuable_Runes_And_Insignias_Structs_Array[]	= [ _
-		$Struct_Warrior_Insignias_Sentinels, _
+		_ ;$Struct_Warrior_Insignias_Sentinels, _
 		_ ;$Struct_Ranger_Insignias_Beastmasters, _
 		_ ;$Struct_Monk_Insignias_Anchorites, _
 		_ ;$Struct_Monk_Runes_Minor_Divine_Favor, _
 		_ ;$Struct_Necromancer_Insignias_Bloodstained, _
+		$Struct_Mesmer_Insignias_Prodigys, _
 		$Struct_Necromancer_Insignias_Tormentors, _
+		$Struct_Ritualist_Insignias_Shamans, _
+		$Struct_Assassin_Insignias_Nightstalkers, _
 		$Struct_Necromancer_Runes_Minor_Curses, _
 		_ ;$Struct_Necromancer_Runes_Minor_Soul_Reaping, _
 		_ ;$Struct_Necromancer_Runes_Major_Soul_Reaping, _
 		$Struct_Necromancer_Runes_Superior_Soul_Reaping, _
 		_ ;$Struct_Necromancer_Runes_Superior_Death_Magic, _
-		$Struct_Mesmer_Insignias_Prodigys, _
 		$Struct_Mesmer_Runes_Minor_Fast_Casting, _
 		$Struct_Mesmer_Runes_Minor_Inspiration_Magic, _
 		_ ;$Struct_Mesmer_Runes_Major_Fast_Casting, _
@@ -796,7 +798,6 @@ Func DefaultCreateValuableRunesAndInsigniasArray()
 		_ ;$Struct_Elementalist_Runes_Minor_Energy_Storage, _
 		_ ;$Struct_Assassin_Insignias_Nightstalkers, _
 		$Struct_Assassin_Runes_Minor_Critical_Strikes, _
-		$Struct_Ritualist_Insignias_Shamans, _
 		$Struct_Ritualist_Runes_Minor_Communing, _
 		_ ;$Struct_Ritualist_Runes_Minor_Spawning_Power, _
 		_ ;$Struct_Ritualist_Runes_Minor_Restoration_Magic, _

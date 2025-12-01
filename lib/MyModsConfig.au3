@@ -23,7 +23,7 @@ Global $MyMods_WandWrappingMemory = False
 ; Focus
 Global $MyMods_FocusCoreAptitude = False
 Global $MyMods_FocusCoreSwift = False
-Global $MyMods_FocusCoreFortitude = True
+Global $MyMods_FocusCoreFortitude = False
 
 ; Bow
 Global $MyMods_VampiricBowString = False

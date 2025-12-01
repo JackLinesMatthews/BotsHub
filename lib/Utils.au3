@@ -180,9 +180,9 @@ Func PickUpItems($defendFunction = null, $ShouldPickItem = DefaultShouldPickItem
 		EndIf
 	Next
 
-	If $BAG_NUMBER == 5 And CountSlots(1, 3) == 0 Then
-		MoveItemsToEquipmentBag()
-	EndIf
+	;If $BAG_NUMBER == 5 And CountSlots(1, 3) == 0 Then
+	;	MoveItemsToEquipmentBag()
+	;EndIf
 EndFunc
 
 #Region Loot items

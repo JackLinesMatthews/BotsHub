@@ -14,8 +14,8 @@
 
 #include-once
 
-#include <SQLite.au3>
-#include <SQLite.dll.au3>
+#include 'SQLite.au3'
+#include 'SQLite.dll.au3'
 #include 'GWA2_Headers.au3'
 #include 'GWA2_ID.au3'
 #include 'GWA2.au3'
@@ -992,15 +992,15 @@ Func ShoppingListWeapons($item)
 		EndIf
 		; Wands
 		If $type == $ID_Type_Wand Then
-			;If $attribute == $ID_Domination_Magic Then Return True
-			;If $attribute == $ID_Restoration_Magic Then Return True
-			If $attribute == $ID_Spawning_Power Then Return True
+			If $attribute == $ID_Domination_Magic Then Return True
+			If $attribute == $ID_Restoration_Magic Then Return True
+			;If $attribute == $ID_Spawning_Power Then Return True
 		EndIf
 		; Off Hands
 		If $type == $ID_Type_Offhand Then
 		;	If $attribute == $ID_Domination_Magic Then Return True
 		;	If $attribute == $ID_Restoration_Magic Then Return True
-			If $attribute == $ID_Spawning_Power Then Return True
+			;If $attribute == $ID_Spawning_Power Then Return True
 		EndIf
 		; Spears
 		;If $type == $ID_Type_Spear Then Return True
@@ -1032,7 +1032,7 @@ Func DefaultShouldSellMaterial($item)
 	If Not IsBasicMaterial($item) Then Return False
 
 	; Lazy instantiation
-	Local Static $materialsKeptArray = [$ID_Feather]
+	Local Static $materialsKeptArray = [$ID_Feather,$ID_Pile_of_Glittering_Dust]
 	;Local Static $materialsKeptArray = []
 	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
 

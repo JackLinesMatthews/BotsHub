@@ -75,8 +75,8 @@ Func SetupCorsairsFarm()
 	Info('Setting up farm')
 	SwitchMode($ID_HARD_MODE)
 	LeaveGroup()
-	AddHero($ID_Dunkoro)
 	AddHero($ID_Melonni)
+	AddHero($ID_Dunkoro)
 	LoadSkillTemplate($RACorsairsFarmerSkillbar)
 	;LoadSkillTemplate($RACorsairsFarmerSkillbar, 1)
 	;LoadSkillTemplate($RACorsairsFarmerSkillbar, 2)
@@ -163,7 +163,7 @@ Func CorsairsFarmLoop()
 	For $i = 0 To 7
 		DefendAgainstCorsairs()
 		If $i < 6 Then Attack(GetNearestEnemyToAgent(GetMyAgent()))
-		RndSleep(1000)
+		RndSleep(1500)
 	Next
 
 	If GetIsDead() Then
@@ -272,7 +272,7 @@ EndFunc
 
 ;~ Wait for Bohseda and Dunkoro to shut up and for Bohseda to be interactible
 Func WaitForBohseda()
-	While (Not GetIsDead() And (TimerDiff($Bohseda_Timer) < 53000 Or Not IsRecharged($Corsairs_WhirlingDefense) Or GetEnergy() < 30))
+	While (Not GetIsDead() And (TimerDiff($Bohseda_Timer) < 50000 Or Not IsRecharged($Corsairs_WhirlingDefense) Or GetEnergy() < 30))
 		DefendAgainstCorsairs(True)
 		RndSleep(500)
 	WEnd

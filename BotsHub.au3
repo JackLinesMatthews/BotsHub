@@ -126,6 +126,7 @@ Opt('GUICloseOnESC', 0)
 Opt('MustDeclareVars', 1)
 
 Global $GUI_GWBotHub, $GUI_Tabs_Parent, $GUI_Tab_Main, $GUI_Tab_RunOptions, $GUI_Tab_LootOptions, $GUI_Tab_FarmInfos, $GUI_Tab_LootComponents
+Global $GUI_SellMaterials, $GUI_SellMaterialsSaveBtn, $GUI_Button_SellMaterialsSettings
 Global $GUI_Console, $GUI_Combo_CharacterChoice, $GUI_Combo_FarmChoice, $GUI_StartButton, $GUI_FarmProgress
 Global $GUI_Input_DynamicExecution, $GUI_Button_DynamicExecution, $GUI_Label_BagNumber, $GUI_Input_BagNumber, $GUI_Label_TravelDistrict, $GUI_Combo_DistrictChoice, $GUI_Icon_SaveConfig, $GUI_Combo_ConfigChoice
 
@@ -170,6 +171,42 @@ Global $GUI_Label_ToDoList
 ; Description.....:	Create the main GUI
 ;------------------------------------------------------
 Func createGUI()
+
+	; Sell Materials GUI
+	$GUI_SellMaterials = GUICreate("Settings Window", 500, 500, -1, -1, -1, -1, $GUI_GWBotHub)
+	$GUI_SellMaterialsSaveBtn = GUICtrlCreateButton("Save and Close", 80, 450, 140, 40)
+	GUICtrlSetOnEvent($GUI_SellMaterialsSaveBtn, 'GuiButtonHandler')
+
+	; ---------- MATERIAL LISTS ----------
+	Global $CommonMaterials[] = [ _
+		"Bone", "Cloth", "Dust", "Feather", "Granite Slab", "Iron Ingot", _
+		"Plant Fiber", "Scale", "Tanned Hide", "Wood Plank", "Chitin Fragment", _
+		"Bolts of Cloth", "Fur", "Leather Square", "Glittering Dust", _
+		"Pile of Glittering Dust", "Steel Ingot" _
+	]
+
+	Global $RareMaterials[] = [ _
+		"Amber", "Jadeite", "Ectoplasm", "Obsidian Shard", _
+		"Deldrimor Steel Ingot", "Diamond", "Onyx Gemstone", _
+		"Ruby", "Sapphire", "Tempered Glass", "Spiritwood Plank", _
+		"Monstrous Claw", "Monstrous Eye", "Monstrous Fang" _
+	]
+	Global $CommonMaterialCheckboxes[UBound($CommonMaterials)]
+	Global $RareMaterialCheckboxes[UBound($RareMaterials)]
+	; ---------- SECTION: COMMON ----------
+	GUICtrlCreateLabel("Common Materials", 20, 15, 300, 20)
+	GUICtrlSetFont(-1, 10, 800)
+
+	_DrawMaterialGrid($CommonMaterials, 20, 40, $CommonMaterialCheckboxes)
+
+	; ---------- SECTION: RARE ----------
+	GUICtrlCreateLabel("Rare Materials", 20, 210, 300, 20)
+	GUICtrlSetFont(-1, 10, 800)
+
+	_DrawMaterialGrid($RareMaterials, 20, 235, $RareMaterialCheckboxes)
+
+	; Main GUI
+
 	$GUI_GWBotHub = GUICreate('GW Bot Hub', 650, 600, 851, 263)
 	GUISetBkColor($GUI_GREY_COLOR, $GUI_GWBotHub)
 
@@ -272,6 +309,8 @@ Func createGUI()
 	$GUI_Checkbox_SalvageItems = GUICtrlCreateCheckbox('Salvage items', 31, 244, 90, 20)
 	$GUI_Checkbox_SalvageTrophies = GUICtrlCreateCheckbox('Salvage Trophies', 130, 244, 100, 20)
 	$GUI_Checkbox_SellMaterials = GUICtrlCreateCheckbox('Sell Materials', 31, 274, 156, 20)
+	$GUI_Button_SellMaterialsSettings = GUICtrlCreateButton("Settings", 190, 270, 80, 25)
+	GUICtrlSetOnEvent($GUI_Button_SellMaterialsSettings, 'GuiButtonHandler')
 	$GUI_Checkbox_SellItems = GUICtrlCreateCheckbox('Sell Items', 31, 304, 156, 20)
 	$GUI_Checkbox_BuyEctoplasm = GUICtrlCreateCheckbox('Buy ectoplasm', 31, 334, 156, 20)
 	$GUI_Checkbox_StoreTheRest = GUICtrlCreateCheckbox('Store the rest', 31, 364, 100, 20)
@@ -288,7 +327,7 @@ Func createGUI()
 	$GUI_Group_ConsumableOptions = GUICtrlCreateGroup('More options', 305, 40, 271, 361)
 	$GUI_Checkbox_UseConsumables = GUICtrlCreateCheckbox('Any consumable required by farm', 315, 65, 256, 20)
 	$GUI_Label_BagNumber = GUICtrlCreateLabel('Number of bags:', 315, 95, 80, 20)
-	$GUI_Input_BagNumber = GUICtrlCreateInput('5', 400, 95, 20, 20, $ES_NUMBER)
+	$GUI_Input_BagNumber = GUICtrlCreateInput('4', 400, 95, 20, 20, $ES_NUMBER)
 	GUICtrlSetOnEvent($GUI_Input_BagNumber, 'GuiButtonHandler')
 	$GUI_Label_TravelDistrict = GUICtrlCreateLabel('Travel district:', 315, 125, 70, 20)
 	$GUI_Combo_DistrictChoice = GUICtrlCreateCombo('Random', 400, 122, 100, 20)
@@ -601,7 +640,20 @@ Func createGUI()
 	GUIRegisterMsg($WM_NOTIFY, 'WM_NOTIFY_Handler')
 EndFunc
 
+; ============================================================
+;   FUNCTION: Draw 3-column checkbox grid
+; ============================================================
+Func _DrawMaterialGrid($arr, $startX, $startY, ByRef $checkboxArray)
+    Local $colWidth = 180
+    Local $rowHeight = 22
 
+    For $i = 0 To UBound($arr) - 1
+        Local $col = Mod($i, 3)
+        Local $row = Floor($i / 3)
+        
+        $checkboxArray[$i] = GUICtrlCreateCheckbox($arr[$i], $startX + ($col * $colWidth), $startY + ($row * $rowHeight), $colWidth - 10, 20)
+    Next
+EndFunc
 ;~ Change the color of a tab
 Func _GUICtrlTab_SetBkColor($gui, $parentTab, $color)
 	Local $tabPosition = ControlGetPos($gui, '', $parentTab)
@@ -748,6 +800,18 @@ Func GuiButtonHandler()
 			DynamicExecution(GUICtrlRead($GUI_Input_DynamicExecution))
 		Case $GUI_StartButton
 			StartButtonHandler()
+		Case $GUI_Button_SellMaterialsSettings
+			GUISetState(@SW_SHOW, $GUI_SellMaterials)
+		Case $GUI_SellMaterialsSaveBtn
+			GUICtrlSetState($GUI_SellMaterialsSaveBtn, $GUI_DISABLE)
+			Local $filePath = @ScriptDir & '\conf\characters\' & GUICtrlRead($GUI_Combo_ConfigChoice) & '.json'
+			If @error <> 0 Then
+				Warn('Failed to write JSON configuration.')
+			Else
+				SaveConfiguration($filePath)
+			EndIf
+			GUICtrlSetState($GUI_SellMaterialsSaveBtn, $GUI_ENABLE)
+			GUISetState(@SW_HIDE, $GUI_SellMaterials)
 		Case $GUI_EVENT_CLOSE
 			Exit
 		Case Else
@@ -1468,6 +1532,19 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Shield_Purple) == 1)
 	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Shield_Green)  == 1)
 	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Shield_Gold)   == 1)
+
+	; Common materials
+	For $i = 0 To UBound($CommonMaterials) - 1
+		Local $key = "materials.sell.common." & StringReplace($CommonMaterials[$i], " ", "_")
+		_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($CommonMaterialCheckboxes[$i]) == 1)
+	Next
+
+	; Rare materials
+	For $i = 0 To UBound($RareMaterials) - 1
+		Local $key = "materials.sell.rare." & StringReplace($RareMaterials[$i], " ", "_")
+		_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($RareMaterialCheckboxes[$i]) == 1)
+	Next
+
 	Return _JSON_Generate($jsonObject)
 EndFunc
 
