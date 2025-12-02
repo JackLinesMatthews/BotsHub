@@ -173,40 +173,26 @@ Global $GUI_Label_ToDoList
 Func createGUI()
 
 	; Sell Materials GUI
-	$GUI_SellMaterials = GUICreate("Settings Window", 500, 500, -1, -1, -1, -1, $GUI_GWBotHub)
-	$GUI_SellMaterialsSaveBtn = GUICtrlCreateButton("Save and Close", 80, 450, 140, 40)
+	$GUI_SellMaterials = GUICreate("Sell Materials", 520, 500, -1, -1, -1, -1, $GUI_GWBotHub)
+	$GUI_SellMaterialsSaveBtn = GUICtrlCreateButton("Save and Close", 10, 450, 500, 40)
 	GUICtrlSetOnEvent($GUI_SellMaterialsSaveBtn, 'GuiButtonHandler')
 
 	; ---------- MATERIAL LISTS ----------
-	Global $CommonMaterials[] = [ _
-		"Bone", "Cloth", "Dust", "Feather", "Granite Slab", "Iron Ingot", _
-		"Plant Fiber", "Scale", "Tanned Hide", "Wood Plank", "Chitin Fragment", _
-		"Bolts of Cloth", "Fur", "Leather Square", "Glittering Dust", _
-		"Pile of Glittering Dust", "Steel Ingot" _
-	]
-
-	Global $RareMaterials[] = [ _
-		"Amber", "Jadeite", "Ectoplasm", "Obsidian Shard", _
-		"Deldrimor Steel Ingot", "Diamond", "Onyx Gemstone", _
-		"Ruby", "Sapphire", "Tempered Glass", "Spiritwood Plank", _
-		"Monstrous Claw", "Monstrous Eye", "Monstrous Fang" _
-	]
-	Global $CommonMaterialCheckboxes[UBound($CommonMaterials)]
-	Global $RareMaterialCheckboxes[UBound($RareMaterials)]
+	Global $CommonMaterialCheckboxes[]
+	Global $RareMaterialCheckboxes[]
 	; ---------- SECTION: COMMON ----------
 	GUICtrlCreateLabel("Common Materials", 20, 15, 300, 20)
 	GUICtrlSetFont(-1, 10, 800)
 
-	_DrawMaterialGrid($CommonMaterials, 20, 40, $CommonMaterialCheckboxes)
+	_DrawMaterialGrid($CommonMaterialsMap, 20, 40, $CommonMaterialCheckboxes, True)
 
 	; ---------- SECTION: RARE ----------
-	GUICtrlCreateLabel("Rare Materials", 20, 210, 300, 20)
+	GUICtrlCreateLabel("Rare Materials", 20, 160, 300, 20)
 	GUICtrlSetFont(-1, 10, 800)
 
-	_DrawMaterialGrid($RareMaterials, 20, 235, $RareMaterialCheckboxes)
+	_DrawMaterialGrid($RareMaterialsMap, 20, 185, $RareMaterialCheckboxes)
 
 	; Main GUI
-
 	$GUI_GWBotHub = GUICreate('GW Bot Hub', 650, 600, 851, 263)
 	GUISetBkColor($GUI_GREY_COLOR, $GUI_GWBotHub)
 
@@ -643,15 +629,25 @@ EndFunc
 ; ============================================================
 ;   FUNCTION: Draw 3-column checkbox grid
 ; ============================================================
-Func _DrawMaterialGrid($arr, $startX, $startY, ByRef $checkboxArray)
+Func _DrawMaterialGrid($arr, $startX, $startY, ByRef $checkboxArray, $checked=False)
     Local $colWidth = 180
     Local $rowHeight = 22
 
     For $i = 0 To UBound($arr) - 1
+		Local $name = $arr[$i][0]
+        Local $modelID = $arr[$i][1]
+
         Local $col = Mod($i, 3)
         Local $row = Floor($i / 3)
         
-        $checkboxArray[$i] = GUICtrlCreateCheckbox($arr[$i], $startX + ($col * $colWidth), $startY + ($row * $rowHeight), $colWidth - 10, 20)
+       Local $ctrl = GUICtrlCreateCheckbox($name, _
+            $startX + ($col * $colWidth), _
+            $startY + ($row * $rowHeight), _
+            $colWidth - 10, 20)
+
+        $checkboxArray[$modelID] = $ctrl
+
+        If $checked Then GUICtrlSetState($ctrl, $GUI_CHECKED)
     Next
 EndFunc
 ;~ Change the color of a tab
@@ -1534,14 +1530,14 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Shield_Gold)   == 1)
 
 	; Common materials
-	For $i = 0 To UBound($CommonMaterials) - 1
-		Local $key = "materials.sell.common." & StringReplace($CommonMaterials[$i], " ", "_")
+	For $i = 0 To UBound($CommonMaterialNames) - 1
+		Local $key = "materials.sell.common." & StringReplace($CommonMaterialNames[$i], " ", "_")
 		_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($CommonMaterialCheckboxes[$i]) == 1)
 	Next
 
 	; Rare materials
-	For $i = 0 To UBound($RareMaterials) - 1
-		Local $key = "materials.sell.rare." & StringReplace($RareMaterials[$i], " ", "_")
+	For $i = 0 To UBound($RareMaterialNames) - 1
+		Local $key = "materials.sell.rare." & StringReplace($RareMaterialNames[$i], " ", "_")
 		_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($RareMaterialCheckboxes[$i]) == 1)
 	Next
 
@@ -1746,6 +1742,19 @@ Func ReadConfigFromJson($jsonString)
 	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Purple, _JSON_Get($jsonObject, 'SalvageOptions.Shield.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Green,  _JSON_Get($jsonObject, 'SalvageOptions.Shield.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Gold,   _JSON_Get($jsonObject, 'SalvageOptions.Shield.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	
+	; Common materials
+	For $i = 0 To UBound($CommonMaterialNames) - 1
+		Local $key = "materials.sell.common." & StringReplace($CommonMaterialNames[$i], " ", "_")
+		GUICtrlSetState($CommonMaterialCheckboxes[$i],  _JSON_Get($jsonObject, $key)  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	Next
+
+	; Rare materials
+	For $i = 0 To UBound($RareMaterialNames) - 1
+		Local $key = "materials.sell.rare." & StringReplace($RareMaterialNames[$i], " ", "_")
+		GUICtrlSetState($RareMaterialCheckboxes[$i],  _JSON_Get($jsonObject, $key)  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	Next
+
 EndFunc
 
 

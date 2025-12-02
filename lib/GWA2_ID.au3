@@ -572,6 +572,18 @@ Global Const $Map_Gold_Scrolls				= MapFromArray($Gold_Scrolls_Array)
 
 
 #Region Materials
+Global $CommonMaterialNames[] = [ _
+		"Bolt of Cloth", "Bone", "Chitin Fragment", "Feather", "Granite Slab",  "Iron Ingot", _
+		"Pile of Glittering Dust", "Plant Fiber", "Scale", "Tanned Hide Square", "Wood Plank" _
+	]
+
+Global $RareMaterialNames[] = [ _
+	"Amber Chunk", "Bolt of Damask", "Bolt of Linen", "Bolt of Silk", _
+	"Deldrimor Steel Ingot", "Diamond", "Elonian Leather Square", "Fur Square", "Glob of Ectoplasm",  _
+	"Jadeite Shard", "Leather Square", "Lump of Charcoal", "Monstrous Claw", _
+	"Monstrous Eye", "Monstrous Fang",  "Obsidian Shard", "Onyx Gemstone", "Roll of Parchment", "Roll of Vellum", _
+	"Ruby", "Sapphire", "Spiritwood Plank", "Steel Ingot", "Tempered Glass Vial", "Vial of Ink" _
+]
 Global Const $ID_Fur_Square						= 941
 Global Const $ID_Bolt_of_Linen					= 926
 Global Const $ID_Bolt_of_Damask					= 927
@@ -630,6 +642,47 @@ Global Const $Materials_Double_Array[][]		= [	[$ID_Bone, 1], [$ID_Iron_Ingot, 2]
 													[$ID_Rolls_of_Parchment, 34], [$ID_Rolls_of_Vellum, 35], [$ID_Spiritwood_Planks, 36], [$ID_Amber_Chunk, 37], [$ID_Jadeite_Shard, 38]]
 Global Const $Map_Material_Location				= MapFromDoubleArray($Materials_Double_Array)
 
+Global $CommonMaterialsMap[][2] = [ _
+    ["Bolt of Cloth",              $ID_Bolt_of_Cloth], _
+    ["Bone",                       $ID_Bone], _
+    ["Chitin Fragment",            $ID_Chitin_Fragment], _
+    ["Feather",                    $ID_Feather], _
+    ["Granite Slab",               $ID_Granite_Slab], _
+    ["Iron Ingot",                 $ID_Iron_Ingot], _
+    ["Pile of Glittering Dust",    $ID_Pile_of_Glittering_Dust], _
+    ["Plant Fiber",                $ID_Plant_Fibers], _
+    ["Scale",                      $ID_Scale], _
+    ["Tanned Hide Square",         $ID_Tanned_Hide_Square], _
+    ["Wood Plank",                 $ID_Wood_Plank] _
+]
+
+Global $RareMaterialsMap[][2] = [ _
+    ["Amber Chunk",                $ID_Amber_Chunk], _
+    ["Bolt of Damask",             $ID_Bolt_of_Damask], _
+    ["Bolt of Linen",              $ID_Bolt_of_Linen], _
+    ["Bolt of Silk",               $ID_Bolt_of_Silk], _
+    ["Deldrimor Steel Ingot",      $ID_Deldrimor_Steel_Ingot], _
+    ["Diamond",                    $ID_Diamond], _
+    ["Elonian Leather Square",     $ID_Elonian_Leather_Square], _
+    ["Fur Square",                 $ID_Fur_Square], _
+    ["Glob of Ectoplasm",          $ID_Glob_of_Ectoplasm], _
+    ["Jadeite Shard",              $ID_Jadeite_Shard], _
+    ["Leather Square",             $ID_Leather_Square], _
+    ["Lump of Charcoal",           $ID_Lump_of_Charcoal], _
+    ["Monstrous Claw",             $ID_Monstrous_Claw], _
+    ["Monstrous Eye",              $ID_Monstrous_Eye], _
+    ["Monstrous Fang",             $ID_Monstrous_Fang], _
+    ["Obsidian Shard",             $ID_Obsidian_Shard], _
+    ["Onyx Gemstone",              $ID_Onyx_Gemstone], _
+    ["Roll of Parchment",          $ID_Rolls_of_Parchment], _
+    ["Roll of Vellum",             $ID_Rolls_of_Vellum], _
+    ["Ruby",                       $ID_Ruby], _
+    ["Sapphire",                   $ID_Sapphire], _
+    ["Spiritwood Plank",           $ID_Spiritwood_Planks], _
+    ["Steel Ingot",                $ID_Steel_Ingot], _
+    ["Tempered Glass Vial",        $ID_Tempered_Glass_Vial], _
+    ["Vial of Ink",                $ID_Vial_of_Ink] _
+]
 
 #EndRegion Materials
 
