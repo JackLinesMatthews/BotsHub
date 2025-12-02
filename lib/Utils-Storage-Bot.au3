@@ -1027,17 +1027,22 @@ Func ShoppingListWeapons($item)
 	If $itemID = $ID_Amethyst_Aegis_1 or $itemID = $ID_Amethyst_Aegis_2 Then Return True
 EndFunc
 
-;~ Return true if the item should be sold to the material merchant
 Func DefaultShouldSellMaterial($item)
-	If Not IsBasicMaterial($item) Then Return False
+    ; Only consider basic materials
+    If Not IsBasicMaterial($item) Then Return False
 
-	; Lazy instantiation
-	Local Static $materialsKeptArray = [$ID_Feather,$ID_Pile_of_Glittering_Dust]
-	;Local Static $materialsKeptArray = []
-	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
+    ; Get the ModelID of the item
+    Local $modelID = DllStructGetData($item, "ModelID")
 
-	Local $modelID = DllStructGetData($item, 'ModelID')
-	Return $mapMaterialsKept[$modelId] == null
+    ; Lookup the checkbox in the dictionary
+    If $CommonMaterialCheckboxes.Exists($modelID) Then
+        Local $ctrlID = $CommonMaterialCheckboxes.Item($modelID)
+        ; Only sell if the checkbox is checked
+        Return GUICtrlRead($ctrlID) == $GUI_CHECKED
+    EndIf
+
+    ; If no checkbox exists for this item, default to keep
+    Return False
 EndFunc
 
 
@@ -1045,12 +1050,18 @@ EndFunc
 Func DefaultShouldSellRareMaterial($item)
 	If Not IsRareMaterial($item) Then Return False
 
-	; Lazy instantiation
-	Local Static $materialsKeptArray = [$ID_Glob_of_Ectoplasm, $ID_Obsidian_Shard]
-	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
+	; Get the ModelID of the item
+    Local $modelID = DllStructGetData($item, "ModelID")
 
-	Local $modelID = DllStructGetData($item, 'ModelID')
-	Return $mapMaterialsKept[$modelId] == null
+	; Lookup the checkbox in the dictionary
+    If $RareMaterialCheckboxes.Exists($modelID) Then
+        Local $ctrlID = $RareMaterialCheckboxes.Item($modelID)
+        ; Only sell if the checkbox is checked
+        Return GUICtrlRead($ctrlID) == $GUI_CHECKED
+    EndIf
+
+	; If no checkbox exists for this item, default to keep
+    Return False
 EndFunc
 
 

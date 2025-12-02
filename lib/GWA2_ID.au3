@@ -572,18 +572,6 @@ Global Const $Map_Gold_Scrolls				= MapFromArray($Gold_Scrolls_Array)
 
 
 #Region Materials
-Global $CommonMaterialNames[] = [ _
-		"Bolt of Cloth", "Bone", "Chitin Fragment", "Feather", "Granite Slab",  "Iron Ingot", _
-		"Pile of Glittering Dust", "Plant Fiber", "Scale", "Tanned Hide Square", "Wood Plank" _
-	]
-
-Global $RareMaterialNames[] = [ _
-	"Amber Chunk", "Bolt of Damask", "Bolt of Linen", "Bolt of Silk", _
-	"Deldrimor Steel Ingot", "Diamond", "Elonian Leather Square", "Fur Square", "Glob of Ectoplasm",  _
-	"Jadeite Shard", "Leather Square", "Lump of Charcoal", "Monstrous Claw", _
-	"Monstrous Eye", "Monstrous Fang",  "Obsidian Shard", "Onyx Gemstone", "Roll of Parchment", "Roll of Vellum", _
-	"Ruby", "Sapphire", "Spiritwood Plank", "Steel Ingot", "Tempered Glass Vial", "Vial of Ink" _
-]
 Global Const $ID_Fur_Square						= 941
 Global Const $ID_Bolt_of_Linen					= 926
 Global Const $ID_Bolt_of_Damask					= 927

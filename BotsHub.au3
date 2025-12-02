@@ -178,8 +178,8 @@ Func createGUI()
 	GUICtrlSetOnEvent($GUI_SellMaterialsSaveBtn, 'GuiButtonHandler')
 
 	; ---------- MATERIAL LISTS ----------
-	Global $CommonMaterialCheckboxes[]
-	Global $RareMaterialCheckboxes[]
+	Global $CommonMaterialCheckboxes = ObjCreate("Scripting.Dictionary")
+	Global $RareMaterialCheckboxes = ObjCreate("Scripting.Dictionary")
 	; ---------- SECTION: COMMON ----------
 	GUICtrlCreateLabel("Common Materials", 20, 15, 300, 20)
 	GUICtrlSetFont(-1, 10, 800)
@@ -645,11 +645,15 @@ Func _DrawMaterialGrid($arr, $startX, $startY, ByRef $checkboxArray, $checked=Fa
             $startY + ($row * $rowHeight), _
             $colWidth - 10, 20)
 
-        $checkboxArray[$modelID] = $ctrl
+        $checkboxArray.Add($modelID, $ctrl)
 
         If $checked Then GUICtrlSetState($ctrl, $GUI_CHECKED)
     Next
+	For $i = 0 To UBound($CommonMaterialCheckboxes) - 1
+		ConsoleWrite("Index: " & $i & " CtrlID: " & $CommonMaterialCheckboxes[$i] & @CRLF)
+	Next
 EndFunc
+
 ;~ Change the color of a tab
 Func _GUICtrlTab_SetBkColor($gui, $parentTab, $color)
 	Local $tabPosition = ControlGetPos($gui, '', $parentTab)
@@ -1530,15 +1534,31 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Shield_Gold)   == 1)
 
 	; Common materials
-	For $i = 0 To UBound($CommonMaterialNames) - 1
-		Local $key = "materials.sell.common." & StringReplace($CommonMaterialNames[$i], " ", "_")
-		_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($CommonMaterialCheckboxes[$i]) == 1)
+	For $i = 0 To UBound($CommonMaterialsMap) - 1
+		Local $name = $CommonMaterialsMap[$i][0]
+		Local $modelID = $CommonMaterialsMap[$i][1]
+
+		Local $key = "materials.sell.common." & StringReplace($name, " ", "_")
+
+		; Lookup the checkbox from the dictionary and read its state
+		If $CommonMaterialCheckboxes.Exists($modelID) Then
+			Local $ctrlID = $CommonMaterialCheckboxes.Item($modelID)
+			_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($ctrlID) == $GUI_CHECKED)
+		EndIf
 	Next
 
 	; Rare materials
-	For $i = 0 To UBound($RareMaterialNames) - 1
-		Local $key = "materials.sell.rare." & StringReplace($RareMaterialNames[$i], " ", "_")
-		_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($RareMaterialCheckboxes[$i]) == 1)
+	For $i = 0 To UBound($RareMaterialsMap) - 1
+		Local $name = $RareMaterialsMap[$i][0]
+		Local $modelID = $RareMaterialsMap[$i][1]
+
+		Local $key = "materials.sell.rare." & StringReplace($name, " ", "_")
+
+		; Lookup the checkbox from the dictionary and read its state
+		If $RareMaterialCheckboxes.Exists($modelID) Then
+			Local $ctrlID = $RareMaterialCheckboxes.Item($modelID)
+			_JSON_addChangeDelete($jsonObject, $key, GUICtrlRead($ctrlID) == $GUI_CHECKED)
+		EndIf
 	Next
 
 	Return _JSON_Generate($jsonObject)
@@ -1743,16 +1763,34 @@ Func ReadConfigFromJson($jsonString)
 	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Green,  _JSON_Get($jsonObject, 'SalvageOptions.Shield.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Gold,   _JSON_Get($jsonObject, 'SalvageOptions.Shield.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
 	
+	; =========================
 	; Common materials
-	For $i = 0 To UBound($CommonMaterialNames) - 1
-		Local $key = "materials.sell.common." & StringReplace($CommonMaterialNames[$i], " ", "_")
-		GUICtrlSetState($CommonMaterialCheckboxes[$i],  _JSON_Get($jsonObject, $key)  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	; =========================
+	For $i = 0 To UBound($CommonMaterialsMap) - 1
+		Local $name = $CommonMaterialsMap[$i][0]
+		Local $modelID = $CommonMaterialsMap[$i][1]
+
+		Local $key = "materials.sell.common." & StringReplace($name, " ", "_")
+
+		If $CommonMaterialCheckboxes.Exists($modelID) Then
+			Local $ctrlID = $CommonMaterialCheckboxes.Item($modelID)
+			GUICtrlSetState($ctrlID, _JSON_Get($jsonObject, $key) ? $GUI_CHECKED : $GUI_UNCHECKED)
+		EndIf
 	Next
 
+	; =========================
 	; Rare materials
-	For $i = 0 To UBound($RareMaterialNames) - 1
-		Local $key = "materials.sell.rare." & StringReplace($RareMaterialNames[$i], " ", "_")
-		GUICtrlSetState($RareMaterialCheckboxes[$i],  _JSON_Get($jsonObject, $key)  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	; =========================
+	For $i = 0 To UBound($RareMaterialsMap) - 1
+		Local $name = $RareMaterialsMap[$i][0]
+		Local $modelID = $RareMaterialsMap[$i][1]
+
+		Local $key = "materials.sell.rare." & StringReplace($name, " ", "_")
+
+		If $RareMaterialCheckboxes.Exists($modelID) Then
+			Local $ctrlID = $RareMaterialCheckboxes.Item($modelID)
+			GUICtrlSetState($ctrlID, _JSON_Get($jsonObject, $key) ? $GUI_CHECKED : $GUI_UNCHECKED)
+		EndIf
 	Next
 
 EndFunc

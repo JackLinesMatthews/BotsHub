@@ -224,17 +224,17 @@
 	"materials": {
 		"sell": {
 			"common": {
-				"Bolt_of_Cloth": false,
-				"Bone": false,
-				"Chitin_Fragment": false,
-				"Feather": false,
-				"Granite_Slab": false,
-				"Iron_Ingot": false,
-				"Pile_of_Glittering_Dust": false,
-				"Plant_Fiber": false,
-				"Scale": false,
-				"Tanned_Hide_Square": false,
-				"Wood_Plank": false
+				"Bolt_of_Cloth": true,
+				"Bone": true,
+				"Chitin_Fragment": true,
+				"Feather": true,
+				"Granite_Slab": true,
+				"Iron_Ingot": true,
+				"Pile_of_Glittering_Dust": true,
+				"Plant_Fiber": true,
+				"Scale": true,
+				"Tanned_Hide_Square": true,
+				"Wood_Plank": true
 			},
 			"rare": {
 				"Amber_Chunk": false,

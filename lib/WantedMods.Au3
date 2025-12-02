@@ -144,6 +144,12 @@ Func IsModIWant($item)
 			Return True
 		EndIf
 	EndIf
+	; I Have The Power
+	If $MyMods_IHaveThePower = True Then
+		If StringInStr($ModStruct, '0500D822') > 0 Then
+			Return True
+		EndIf
+	EndIf
 	; Sheltered By Faith
 	If $MyMods_ShelteredByFaith = True Then
 		If StringInStr($ModStruct, '02008820') > 0 Then
