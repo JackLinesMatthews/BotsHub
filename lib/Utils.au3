@@ -3013,55 +3013,6 @@ Func KillFoesHrSlavers($flagHeroesOnFight = False)
 	PickUpItems()
 EndFunc
 
-;~ Kill foes by casting skills from 1 to 8
-Func KillFoesHrSlavers($flagHeroesOnFight = False)
-	Local $me = GetMyAgent()
-	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent(GetMyAgent())
-	GetAlmostInRangeOfAgent($target)
-	ChangeTarget($target)
-	; At first we target the closest mob to have the surprise effect
-	While $groupIsAlive And $target <> Null
-		If GetCurrentTarget() == Null Then
-			$target = GetHighestPriorityFoe(GetMyAgent(), $RANGE_SPIRIT)
-			ChangeTarget($target)
-			Sleep(GetPing() + 20)
-			CallTarget($target)
-			; Start auto-attack on new target
-			Attack($target)
-			Sleep(GetPing() + 20)
-		EndIf
-		If $target <> Null Then
-			If TimerDiff($FrozenSoilTimer) > 30000 and GetIsDead($me) == False Then
-				UseHeroSkill(7, 8) ; Use Frozen Soil
-				$FrozenSoilTimer = TimerInit()
-			EndIf
-			If IsRecharged(1) and GetEnergy() >= 10 Then
-				UseSkillEx(1)
-				RndSleep(20)
-			EndIf
-			If IsRecharged(2) and GetEnergy() >= 10 Then
-				UseSkillEx(2)
-				RndSleep(20)
-			EndIf
-			If IsRecharged(3) and GetEnergy() >= 5 Then
-				UseSkillEx(3)
-				RndSleep(20)
-			EndIf
-			If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
-				Debug("Adrenaline: " & GetSkillbarSkillAdrenaline(4))
-				UseSkillEx(4)
-				RndSleep(20)
-			EndIf
-			; Just wait for auto-attack to continue
-			RndSleep(1000)
-		EndIf
-	WEnd
-	If $flagHeroes Then CancelAllHeroes()
-	If IsPlayerAlive() Then PickUpItems(Null, DefaultShouldPickItem, $fightRange)
-	Return IsPlayerOrPartyAlive()? $SUCCESS : $FAIL
-EndFunc
-
-
 ;~ Create a map containing foes and their priority level
 Func CreateMobsPriorityMap()
 	; Voltaic farm foes model IDs

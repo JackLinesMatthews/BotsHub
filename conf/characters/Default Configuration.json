@@ -1,6 +1,6 @@
 ﻿{
 	"main": {
-		"character": "Jacko Sin",
+		"character": "Jacko Terra",
 		"farm": "Choose a farm"
 	},
 	"run": {
@@ -11,15 +11,21 @@
 		"identify_items": false,
 		"collect_data": false,
 		"salvage_items": false,
+		"salvage_trophies": false,
 		"sell_materials": false,
 		"sell_items": false,
 		"buy_ectos": false,
 		"store_leftovers": false,
 		"store_gold": false,
 		"district": "Random",
-		"bags_count": 5,
+		"bag_number": 4,
 		"farm_materials": false,
 		"disable_rendering": false
+	},
+	"midrun": {
+		"enable": false,
+		"buykits": false,
+		"uses": 100
 	},
 	"consumables": {
 		"consume": true
@@ -58,81 +64,205 @@
 	"PickupOptions": {
 		"Enabled": false,
 		"Axe": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
 		},
 		"Sword": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
 		},
 		"Daggers": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
 		},
 		"Hammer": {
 			"White": false,
 			"Blue": false,
 			"Purple": false,
 			"Green": false,
-			"Gold": true
+			"Gold": false
 		},
 		"Scythe": {
 			"White": false,
 			"Blue": false,
 			"Purple": false,
 			"Green": false,
-			"Gold": true
+			"Gold": false
 		},
 		"Spear": {
 			"White": false,
 			"Blue": false,
 			"Purple": false,
 			"Green": false,
-			"Gold": true
+			"Gold": false
 		},
 		"Bow": {
 			"White": false,
 			"Blue": false,
 			"Purple": false,
 			"Green": false,
-			"Gold": true
+			"Gold": false
 		},
 		"Wand": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
 		},
 		"Staff": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
 		},
 		"Focus": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
 		},
 		"Shield": {
-			"White": true,
-			"Blue": true,
-			"Purple": true,
-			"Green": true,
-			"Gold": true
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		}
+	},
+	"SalvageOptions": {
+		"Enabled": false,
+		"Axe": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Sword": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Daggers": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Hammer": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Scythe": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Spear": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Bow": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Wand": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Staff": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Focus": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		},
+		"Shield": {
+			"White": false,
+			"Blue": false,
+			"Purple": false,
+			"Green": false,
+			"Gold": false
+		}
+	},
+	"materials": {
+		"sell": {
+			"common": {
+				"Bolt_of_Cloth": true,
+				"Bone": true,
+				"Chitin_Fragment": true,
+				"Feather": true,
+				"Granite_Slab": true,
+				"Iron_Ingot": true,
+				"Pile_of_Glittering_Dust": true,
+				"Plant_Fiber": true,
+				"Scale": true,
+				"Tanned_Hide_Square": true,
+				"Wood_Plank": true
+			},
+			"rare": {
+				"Amber_Chunk": false,
+				"Bolt_of_Damask": false,
+				"Bolt_of_Linen": false,
+				"Bolt_of_Silk": false,
+				"Deldrimor_Steel_Ingot": false,
+				"Diamond": false,
+				"Elonian_Leather_Square": false,
+				"Fur_Square": false,
+				"Glob_of_Ectoplasm": false,
+				"Jadeite_Shard": false,
+				"Leather_Square": false,
+				"Lump_of_Charcoal": false,
+				"Monstrous_Claw": false,
+				"Monstrous_Eye": false,
+				"Monstrous_Fang": false,
+				"Obsidian_Shard": false,
+				"Onyx_Gemstone": false,
+				"Roll_of_Parchment": false,
+				"Roll_of_Vellum": false,
+				"Ruby": false,
+				"Sapphire": false,
+				"Spiritwood_Plank": false,
+				"Steel_Ingot": false,
+				"Tempered_Glass_Vial": false,
+				"Vial_of_Ink": false
+			}
 		}
 	}
 }
