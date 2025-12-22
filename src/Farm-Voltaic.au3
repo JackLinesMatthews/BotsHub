@@ -34,9 +34,15 @@ Global Const $VoltaicFarmInformations = 'For best results, have :' & @CRLF _
 	& 'In NM, bot takes 13min (with cons), 15min (without cons) on average' & @CRLF _
 	& 'Not tested in HM.'
 Global Const $VOLTAIC_FARM_DURATION = 16 * 60 * 1000
-Global Const $VSAggroRange = $RANGE_SPELLCAST + 200
+Global Const $VSAggroRange = $RANGE_LONGBOW + 100
+Global Const $VSAggroRangeRun = $RANGE_SPELLCAST + 100
 
 Global $VOLTAIC_FARM_SETUP = False
+
+Global $VS_FARM_OPTIONS[]
+$VS_FARM_OPTIONS['openChests'] = False
+$VS_FARM_OPTIONS['chestOpenRange'] = $RANGE_SPIRIT
+$VS_FARM_OPTIONS['flagHeroesOnFight'] = False
 
 ;~ Main method to farm Voltaic
 Func VoltaicFarm($STATUS)
@@ -83,35 +89,50 @@ Func VoltaicFarmLoop()
 	If GetMapID() <> $ID_Verdant_Cascades Then Return $FAIL
 	ResetFailuresCounter()
 
-	MoveAggroAndKillInRange(-19887, 6074, '1', $VSAggroRange)
+	;AdlibRegister('HeroicRefrainMaintenance', 3000)
+	AdlibRegister('TrackGroupStatus', 10000)
+
+	Local $timer = TimerInit()
+
+	MoveAggroAndKill(-19887, 6074, '1', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 	Info('Making way to Slavers')
-	MoveAggroAndKillInRange(-10273, 3251, '2', $VSAggroRange)
-	MoveAggroAndKillInRange(-6878, -329, '3', $VSAggroRange)
-	MoveAggroAndKillInRange(-3041, -3446, '4', $VSAggroRange)
-	MoveAggroAndKillInRange(3571, -9501, '5', $VSAggroRange)
-	MoveAggroAndKillInRange(10764, -6448, '6', $VSAggroRange)
-	MoveAggroAndKillInRange(13063, -4396, '7', $VSAggroRange)
-	If IsRunFailed() Then Return $FAIL
+	MoveAggroAndKill(-10273, 3251, '2', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-6878, -329, '3', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(-3041, -3446, '4', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(3571, -9501, '5', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(10764, -6448, '6', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(13063, -4396, '7', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	If IsRunFailed(1) Then
+		AdlibUnregister('TrackGroupStatus')
+		Return 1
+	EndIf
 
 	Info('At the Troll Bridge - TROLL TOLL')
-	MoveAggroAndKillInRange(18054, -3275, '8', $VSAggroRange)
-	MoveAggroAndKillInRange(20966, -6476, '9', $VSAggroRange)
-	MoveAggroAndKillInRange(25298, -9456, '10', $VSAggroRange)
-	If IsRunFailed() Then Return $FAIL
+	MoveAggroAndKill(18054, -3275, '8', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(20966, -6476, '9', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(20966, -6476, 'Move To Shrine', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	MoveAggroAndKill(25298, -9456, '10', $VSAggroRangeRun, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+	If IsRunFailed(1) Then
+		AdlibUnregister('TrackGroupStatus')
+		Return 1
+	EndIf
 
+	AdlibUnregister('HeroicRefrainMaintenance')
 	Move(25729, -9360)
 	Info('Entering Slavers')
 	While Not WaitMapLoading($ID_Slavers_Exile)
 		Sleep(50)
 	WEnd
-	MoveTo(-16797, 9251)
+	MoveTo(-17251, 9284)
 	MoveTo(-17835, 12524)
 	Move(-18300, 12527)
+
 	; The map has the same ID as slavers
 	While Not WaitMapLoading()
 		Sleep(50)
 	WEnd
 	Info('Now in Justicar')
+	AdlibRegister('HeroicRefrainMaintenance', 3000)
 	Sleep(500)
 	GoToNPC(GetNearestNPCToCoords(-12135, -18210))
 	RandomSleep(250)
@@ -128,16 +149,17 @@ Func VoltaicFarmLoop()
 		WEnd
 		UseMoraleConsumableIfNeeded()
 		UseConsumable($ID_Legionnaire_Summoning_Crystal, False)
-		MoveAggroAndKillInRange(-13500, -15750, 'In front of the door', $VSAggroRange)
-		MoveAggroAndKillInRange(-12500, -15000, 'Before the bridge', $VSAggroRange)
-		MoveAggroAndKillInRange(-10400, -14800, 'After the bridge', $VSAggroRange)
-		MoveAggroAndKillInRange(-11500, -13300, 'First group', $VSAggroRange)
-		MoveAggroAndKillInRange(-13400, -11500, 'Second group', $VSAggroRange)
-		MoveAggroAndKillInRange(-13700, -9550, 'Third group', $VSAggroRange)
-		MoveAggroAndKillInRange(-14100, -8600, 'Fourth group', $VSAggroRange)
-		MoveAggroAndKillInRange(-15000, -7500, 'Fourth group, again', $VSAggroRange)
-		MoveAggroAndKillInRange(-16500, -8000, 'Fifth group', $VSAggroRange)
-		MoveAggroAndKillInRange(-18800, -7850, 'To the shrine', $VSAggroRange)
+		MoveAggroAndKill(-13500, -15750, 'In front of the door', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-12500, -15000, 'Before the bridge', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-10400, -14800, 'After the bridge', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-11500, -13300, 'First group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13400, -11500, 'Second group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-13700, -9550, 'Third group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-14100, -8600, 'Fourth group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-15000, -7500, 'Fourth group, again', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-16500, -8000, 'Fifth group', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-18500, -8000, 'To the shrine', $VSAggroRange, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveTo(-18758, -7923)
 	WEnd
 	While Not IsRunFailed() And Not IsAgentInRange(GetMyAgent(), -17500, -14250, 1250)
 		; Waiting to be alive before retrying
@@ -146,11 +168,15 @@ Func VoltaicFarmLoop()
 		WEnd
 		UseMoraleConsumableIfNeeded()
 		UseConsumable($ID_Legionnaire_Summoning_Crystal, False)
-		MoveAggroAndKillInRange(-18500, -11500, 'Pre-Boss group', $VSAggroRange)
-		MoveAggroAndKillInRange(-17700, -12500, 'Boss group', $VSAggroRange)
-		MoveAggroAndKillInRange(-17500, -14250, 'Final group', $VSAggroRange)
+		MoveAggroAndKill(-18500, -11500, 'Pre-Boss group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-17700, -12500, 'Boss group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
+		MoveAggroAndKill(-17500, -14250, 'Final group', 1550, $VS_FARM_OPTIONS, ParagonHrFight, ParagonHrMove)
 	WEnd
-	If IsRunFailed() Then Return $FAIL
+	If IsRunFailed() Then
+		AdlibUnregister('TrackGroupStatus')
+		AdlibUnregister('HeroicRefrainMaintenance')
+		Return 1
+	EndIf
 	; Chest
 	Move(-17500, -14250)
 	Info('Opening chest')
@@ -160,5 +186,7 @@ Func VoltaicFarmLoop()
 	Sleep(2500)
 	PickUpItems()
 	Info('Finished Run')
-	Return $SUCCESS
+	AdlibUnregister('TrackGroupStatus')
+	AdlibUnregister('HeroicRefrainMaintenance')
+	Return 0
 EndFunc

@@ -184,6 +184,12 @@ Global Const $ID_Dalada_Uplands				= 647
 Global Const $ID_Doomlore_Shrine			= 648
 Global Const $ID_Longeyes_Ledge				= 650
 Global Const $ID_Boreal_Station				= 675
+Global Const $ID_Ice_Cliff_Chasms			= 499
+; Prophecies
+Global Const $ID_Elona_Reach				= 118
+Global Const $ID_Augury_Rock				= 38
+Global Const $ID_Prophets_Path				= 113
+
 Global Const $ID_Auspicious_Beginnings		= 849
 
 Global Const $LocationIDs				= [$ID_Outpost, $ID_Explorable, $ID_Loading, $ID_Ashford_Abbey, $ID_Lakeside_County, $ID_Great_Temple_of_Balthazar, $ID_Embark_Beach, $ID_Fissure_of_Woe, _
@@ -503,6 +509,8 @@ Global Const $ID_We_Shall_Return				= 1592
 Global Const $ID_Fall_Back						= 1595
 Global Const $ID_Signet_of_Return				= 1778
 Global Const $ID_Heroic_Refrain					= 3431
+Global Const $ID_Aggressive_Refrain				= 1774
+Global Const $ID_Theyre_On_Fire					= 1597
 ; Dervish
 Global Const $ID_Mirage_Cloak					= 1500
 Global Const $ID_Mystic_Vigor					= 1503
@@ -1696,7 +1704,6 @@ Global Const $ID_Serpent_Axe						= 118
 ; Missing IDs
 ;Global Const $ID_Naga_Shortbow						=
 ;Global Const $ID_Naga_Longbow						=
-;Global Const $ID_Amethyst_Aegis					=
 ;Global Const $ID_Straw_Effigy						=
 ;Global Const $ID_Colossal_Pick						=
 ;Global Const $ID_Desolation_Maul					=
@@ -1777,6 +1784,8 @@ Global Const $ID_Outcast_Shield_2					= 958
 Global Const $ID_Sea_Purse_Shield					= 1589
 Global Const $ID_Stone_Summit_Shield				= 341
 Global Const $ID_Summit_Warlord_Shield				= 342
+Global Const $ID_Amethyst_Aegis_1					= 2422
+Global Const $ID_Amethyst_Aegis_2					= 2423
 
 ; Staff
 Global Const $ID_Bo_Staff							= 735
@@ -2094,7 +2103,7 @@ Global $RareWeapons_Array = [ _
 	$ID_Demonic_Aegis, $ID_Draconic_Aegis, $ID_Eternal_Shield, $ID_Emblazoned_Defender, $ID_Exalted_Aegis, _
 	$ID_Amber_Shield, $ID_Amber_Shield_2, $ID_Bladed_Shield, $ID_Bladed_Shield_2, $ID_Echovald_Shield, $ID_Echovald_Shield_2, $ID_Gothic_Defender, $ID_Gothic_Defender_2, $ID_Guardian_of_the_Hunt, $ID_Guardian_of_the_Hunt_2, _
 	$ID_Kappa_Shield, $ID_Kappa_Shield_2, $ID_Ornate_Shield, $ID_Plagueborn_Shield, $ID_Plagueborn_Shield_2, $ID_Outcast_Shield, $ID_Outcast_Shield_2, $ID_Sea_Purse_Shield, _
-	$ID_Magma_Shield, $ID_Stone_Summit_Shield, $ID_Summit_Warlord_Shield, _
+	$ID_Magma_Shield, $ID_Stone_Summit_Shield, $ID_Summit_Warlord_Shield, $ID_Amethyst_Aegis_1, $ID_Amethyst_Aegis_2, _
 	_ ; Staves
 	$ID_Bo_Staff, $ID_Platinum_Staff, $ID_Dragon_Staff, $ID_Raven_Staff, $ID_Jeweled_Staff, _
 	_ ; Swords

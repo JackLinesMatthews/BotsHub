@@ -67,6 +67,7 @@
 #include 'src/Farm-MinisterialCommendations.au3'
 #include 'src/Farm-NexusChallenge.au3'
 #include 'src/Farm-Norn.au3'
+#include 'src/Farm-MinotaurHornFarm.au3'
 #include 'src/Farm-Pongmei.au3'
 #include 'src/Farm-Raptors.au3'
 #include 'src/Farm-SoO.au3'
@@ -77,6 +78,13 @@
 #include 'src/Farm-Vaettirs.au3'
 #include 'src/Farm-Vanguard.au3'
 #include 'src/Farm-Voltaic.au3'
+#include 'src/Farm-Boreal.au3'
+
+#include 'src/Farm-Norn.au3'
+#include 'src/Farm-NexusChallenge.au3'
+#include 'src/Farm-SunspearArmor.au3'
+#include 'src/Farm-Vanguard.au3'
+#include 'src/Farm-Lightbringer2.au3'
 #include 'src/Farm-WarSupplyKeiran.au3'
 
 #include 'lib/JSON.au3'
@@ -115,13 +123,13 @@ Global Const $PAUSE = 2
 Global $STATUS = 'STOPPED'
 Global $RUN_MODE = 'AUTOLOAD'
 Global $PROCESS_ID = ''
-Global $LOG_LEVEL = $LVL_INFO
+Global $LOG_LEVEL = 1
 Global $CHARACTER_NAME = ''
 Global $DISTRICT_NAME = 'Random'
 Global $BAGS_COUNT = 5
 Global $INVENTORY_SPACE_NEEDED = 5
 
-Global $AVAILABLE_FARMS = 'Boreal|Corsairs|Dragon Moss|Eden Iris|Feathers|Follow|FoW|Froggy|Gemstone|Gemstone Stygian|Jade Brotherhood|Kournans|Kurzick|Lightbringer|Lightbringer 2|Luxon|Mantids|Ministerial Commendations|Nexus Challenge|Norn|OmniFarm|Pongmei|Raptors|SoO|SpiritSlaves|Sunspear Armor|Tasca|Vaettirs|Vanguard|Voltaic|War Supply Keiran|Storage|Tests|TestSuite|Dynamic'
+Global $AVAILABLE_FARMS = 'Corsairs|Dragon Moss|Eden Iris|Feathers|Follow|FoW|Froggy|Gemstone|Jade Brotherhood|Kournans|Kurzick|Lightbringer|Lightbringer 2|Luxon|Mantids|Ministerial Commendations|Nexus Challenge|Norn|OmniFarm|Pongmei|Raptors|SoO|SpiritSlaves|Sunspear Armor|Tasca|Vaettirs|Vanguard|Voltaic|Storage|Tests|Dynamic'
 Global $AVAILABLE_DISTRICTS = '|Random|America|China|English|French|German|International|Italian|Japan|Korea|Polish|Russian|Spanish'
 #EndRegion Variables
 
@@ -156,8 +164,8 @@ Global $GUI_Group_Titles, _
 		$GUI_Label_VanguardTitle_Text, $GUI_Label_VanguardTitle_Value, $GUI_Label_KurzickTitle_Text, $GUI_Label_KurzickTitle_Value, $GUI_Label_LuxonTitle_Text, $GUI_Label_LuxonTitle_Value, _
 		$GUI_Label_LightbringerTitle_Text, $GUI_Label_LightbringerTitle_Value, $GUI_Label_SunspearTitle_Text, $GUI_Label_SunspearTitle_Value
 Global $GUI_Group_GlobalOptions, _
-		$GUI_Checkbox_LoopRuns, $GUI_Checkbox_HM, $GUI_Checkbox_StoreUnidentifiedGoldItems, $GUI_Checkbox_SortItems, $GUI_Checkbox_CollectData, $GUI_Checkbox_IdentifyAllItems, _
-		$GUI_Checkbox_SalvageItems, $GUI_Checkbox_SalvageTrophies, $GUI_Checkbox_SellItems, $GUI_Checkbox_SellMaterials, $GUI_Checkbox_StoreTheRest, $GUI_Checkbox_StoreGold, $GUI_Checkbox_BuyEctoplasm
+		$GUI_Checkbox_LoopRuns, $GUI_Checkbox_HM, $GUI_Checkbox_StoreUnidentifiedGoldItems, $GUI_Checkbox_SortItems, $GUI_Checkbox_CollectData, $GUI_Checkbox_IdentifyGoldItems, _
+		$GUI_Checkbox_SalvageItems, $GUI_Checkbox_SellItems, $GUI_Checkbox_SellMaterials, $GUI_Checkbox_StoreTheRest, $GUI_Checkbox_StoreGold, $GUI_Checkbox_BuyEctoplasm
 Global $GUI_Group_ConsumableOptions, $GUI_Checkbox_UseConsumables, $GUI_Checkbox_FarmMaterials, $GUI_Checkbox_DisableRendering
 Global $GUI_Group_BaseLootOptions, _
 		$GUI_Checkbox_LootEverything, $GUI_Checkbox_LootNothing, $GUI_Checkbox_LootRareMaterials, $GUI_Checkbox_LootBasicMaterials, $GUI_Checkbox_LootKeys, $GUI_Checkbox_LootArmorSalvageables, _
@@ -166,6 +174,8 @@ Global $GUI_Group_RarityLootOptions, _
 		$GUI_Checkbox_LootGoldItems, $GUI_Checkbox_LootPurpleItems, $GUI_Checkbox_LootBlueItems, $GUI_Checkbox_LootWhiteItems, $GUI_Checkbox_LootGreenItems
 Global $GUI_Group_FarmSpecificLootOptions, _
 		$GUI_Checkbox_LootGlacialStones, $GUI_Checkbox_LootMapPieces, $GUI_Checkbox_LootTrophies
+Global $GUI_Group_WeaponOptions, _
+		$GUI_Checkbox_UsePickupOptions, $GUI_Checkbox_UseSalvageOptions
 Global $GUI_Group_ConsumablesLootOption, _
 		$GUI_Checkbox_LootCandyCaneShards, $GUI_Checkbox_LootLunarTokens, $GUI_Checkbox_LootToTBags, $GUI_Checkbox_LootFestiveItems, $GUI_Checkbox_LootAlcohols, $GUI_Checkbox_LootSweets
 Global $GUI_Label_CharacterBuild, $GUI_Label_HeroBuild, $GUI_Edit_CharacterBuild, $GUI_Edit_HeroBuild, $GUI_Label_FarmInformations
@@ -178,20 +188,20 @@ Global $GUI_Label_ToDoList
 ; Description.....:	Create the main GUI
 ;------------------------------------------------------
 Func createGUI()
-	$GUI_GWBotHub = GUICreate('GW Bot Hub', 600, 450, -1, -1) ; -1, -1 automatically positions GUI in the middle of the screen, alternatively can do calculations with inbuilt @DesktopWidth and @DesktopHeight
+	$GUI_GWBotHub = GUICreate('GW Bot Hub', 600, 450, 851, 263)
 	GUISetBkColor($GUI_GREY_COLOR, $GUI_GWBotHub)
 
-	$GUI_Combo_CharacterChoice = GUICtrlCreateCombo('No character selected', 10, 420, 136, 20)
-	$GUI_Combo_FarmChoice = GUICtrlCreateCombo('Choose a farm', 155, 420, 136, 20)
+	$GUI_Combo_CharacterChoice = GUICtrlCreateCombo('No character selected', 10, 570, 136, 20)
+	$GUI_Combo_FarmChoice = GUICtrlCreateCombo('Choose a farm', 155, 570, 136, 20)
 	GUICtrlSetData($GUI_Combo_FarmChoice, $AVAILABLE_FARMS, 'Choose a farm')
 	GUICtrlSetOnEvent($GUI_Combo_FarmChoice, 'GuiButtonHandler')
-	$GUI_StartButton = GUICtrlCreateButton('Start', 300, 420, 136, 21)
+	$GUI_StartButton = GUICtrlCreateButton('Start', 300, 570, 136, 21)
 	GUICtrlSetBkColor($GUI_StartButton, $GUI_BLUE_COLOR)
 	GUICtrlSetOnEvent($GUI_StartButton, 'GuiButtonHandler')
 	GUISetOnEvent($GUI_EVENT_CLOSE, 'GuiButtonHandler')
-	$GUI_FarmProgress = GUICtrlCreateProgress(445, 420, 141, 21)
+	$GUI_FarmProgress = GUICtrlCreateProgress(445, 570, 141, 21)
 
-	$GUI_Tabs_Parent = GUICtrlCreateTab(10, 10, 581, 401)
+	$GUI_Tabs_Parent = GUICtrlCreateTab(10, 10, 631, 551)
 	$GUI_Tab_Main = GUICtrlCreateTabItem('Main')
 	GUICtrlSetOnEvent($GUI_Tabs_Parent, 'GuiButtonHandler')
 	_GUICtrlTab_SetBkColor($GUI_GWBotHub, $GUI_Tabs_Parent, $GUI_GREY_COLOR)
@@ -315,6 +325,13 @@ Func createGUI()
 	$GUI_Checkbox_StoreGold = GUICtrlCreateCheckbox('Store Gold', 168, 364, 100, 20)
 	GUICtrlCreateGroup('', -99, -99, 1, 1)
 
+	$GUI_Group_MidStorageOptions = GUICtrlCreateGroup('Inventory Management (mid run)', 21, 405, 271, 100)
+	$GUI_Checkbox_MidStorageOptions_Enable = GUICtrlCreateCheckbox('Enable', 31, 430, 156, 20)
+	$GUI_Checkbox_MidStorageOptions_BuyKits = GUICtrlCreateCheckbox('Buy Kits', 31, 455, 60, 20)
+	$GUI_Label_MidStorageOptions_Uses = GUICtrlCreateLabel('Uses:', 100, 458, 30, 20)
+	$GUI_Input_MidStorageOptions_Uses = GUICtrlCreateInput('100', 131, 455, 30, 20, $ES_NUMBER)
+	GUICtrlCreateGroup('', -99, -99, 1, 1)
+
 	$GUI_Group_ConsumableOptions = GUICtrlCreateGroup('More options', 305, 40, 271, 361)
 	$GUI_Checkbox_UseConsumables = GUICtrlCreateCheckbox('Any consumable required by farm', 315, 65, 256, 20)
 	$GUI_Label_BagsCount = GUICtrlCreateLabel('Number of bags:', 315, 95, 80, 20)
@@ -397,10 +414,214 @@ Func createGUI()
 	GUICtrlSetOnEvent($GUI_ApplyComponentsButton, 'GuiButtonHandler')
 	GUICtrlCreateTabItem('')
 
-	$GUI_Combo_ConfigChoice = GUICtrlCreateCombo('Default Configuration', 425, 12, 136, 20)
+	; =========================
+	; Pickup Options Tab
+	; =========================
+	GUICtrlCreateTabItem("Pickup")
+
+	$GUI_Checkbox_UsePickupOptions = GUICtrlCreateCheckbox('Enable Pickup Options', 20, 35, 150, 20)
+
+	; Section: Martial Weapons - Melee
+	GUICtrlCreateGroup("Martial Weapons - Melee", 10, 60, 400, 90)
+	GUICtrlCreateLabel("Axe", 20, 80, 60, 20)
+	Global $GUI_Checkbox_Pickup_Axe_White  = GUICtrlCreateCheckbox("White", 100, 80)
+	Global $GUI_Checkbox_Pickup_Axe_Blue   = GUICtrlCreateCheckbox("Blue", 160, 80)
+	Global $GUI_Checkbox_Pickup_Axe_Purple = GUICtrlCreateCheckbox("Purple", 220, 80)
+	Global $GUI_Checkbox_Pickup_Axe_Green  = GUICtrlCreateCheckbox("Green", 280, 80)
+	Global $GUI_Checkbox_Pickup_Axe_Gold   = GUICtrlCreateCheckbox("Gold", 340, 80)
+
+	GUICtrlCreateLabel("Sword", 20, 100, 60, 20)
+	Global $GUI_Checkbox_Pickup_Sword_White  = GUICtrlCreateCheckbox("White", 100, 100)
+	Global $GUI_Checkbox_Pickup_Sword_Blue   = GUICtrlCreateCheckbox("Blue", 160, 100)
+	Global $GUI_Checkbox_Pickup_Sword_Purple = GUICtrlCreateCheckbox("Purple", 220, 100)
+	Global $GUI_Checkbox_Pickup_Sword_Green  = GUICtrlCreateCheckbox("Green", 280, 100)
+	Global $GUI_Checkbox_Pickup_Sword_Gold   = GUICtrlCreateCheckbox("Gold", 340, 100)
+
+	GUICtrlCreateLabel("Daggers", 20, 120, 60, 20)
+	Global $GUI_Checkbox_Pickup_Daggers_White  = GUICtrlCreateCheckbox("White", 100, 120)
+	Global $GUI_Checkbox_Pickup_Daggers_Blue   = GUICtrlCreateCheckbox("Blue", 160, 120)
+	Global $GUI_Checkbox_Pickup_Daggers_Purple = GUICtrlCreateCheckbox("Purple", 220, 120)
+	Global $GUI_Checkbox_Pickup_Daggers_Green  = GUICtrlCreateCheckbox("Green", 280, 120)
+	Global $GUI_Checkbox_Pickup_Daggers_Gold   = GUICtrlCreateCheckbox("Gold", 340, 120)
+	GUICtrlCreateGroup("", -99, -99, 1, 1) ; End group
+
+	; Section: Martial Weapons - Two-handed
+	GUICtrlCreateGroup("Martial Weapons - Two-handed", 10, 160, 400, 70)
+	GUICtrlCreateLabel("Hammer", 20, 180, 60, 20)
+	Global $GUI_Checkbox_Pickup_Hammer_White  = GUICtrlCreateCheckbox("White", 100, 180)
+	Global $GUI_Checkbox_Pickup_Hammer_Blue   = GUICtrlCreateCheckbox("Blue", 160, 180)
+	Global $GUI_Checkbox_Pickup_Hammer_Purple = GUICtrlCreateCheckbox("Purple", 220, 180)
+	Global $GUI_Checkbox_Pickup_Hammer_Green  = GUICtrlCreateCheckbox("Green", 280, 180)
+	Global $GUI_Checkbox_Pickup_Hammer_Gold   = GUICtrlCreateCheckbox("Gold", 340, 180)
+
+	GUICtrlCreateLabel("Scythe", 20, 200, 60, 20)
+	Global $GUI_Checkbox_Pickup_Scythe_White  = GUICtrlCreateCheckbox("White", 100, 200)
+	Global $GUI_Checkbox_Pickup_Scythe_Blue   = GUICtrlCreateCheckbox("Blue", 160, 200)
+	Global $GUI_Checkbox_Pickup_Scythe_Purple = GUICtrlCreateCheckbox("Purple", 220, 200)
+	Global $GUI_Checkbox_Pickup_Scythe_Green  = GUICtrlCreateCheckbox("Green", 280, 200)
+	Global $GUI_Checkbox_Pickup_Scythe_Gold   = GUICtrlCreateCheckbox("Gold", 340, 200)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Martial Weapons - Ranged
+	GUICtrlCreateGroup("Martial Weapons - Ranged", 10, 240, 400, 70)
+	GUICtrlCreateLabel("Spear", 20, 260, 60, 20)
+	Global $GUI_Checkbox_Pickup_Spear_White  = GUICtrlCreateCheckbox("White", 100, 260)
+	Global $GUI_Checkbox_Pickup_Spear_Blue   = GUICtrlCreateCheckbox("Blue", 160, 260)
+	Global $GUI_Checkbox_Pickup_Spear_Purple = GUICtrlCreateCheckbox("Purple", 220, 260)
+	Global $GUI_Checkbox_Pickup_Spear_Green  = GUICtrlCreateCheckbox("Green", 280, 260)
+	Global $GUI_Checkbox_Pickup_Spear_Gold   = GUICtrlCreateCheckbox("Gold", 340, 260)
+
+	GUICtrlCreateLabel("Bow", 20, 280, 60, 20)
+	Global $GUI_Checkbox_Pickup_Bow_White  = GUICtrlCreateCheckbox("White", 100, 280)
+	Global $GUI_Checkbox_Pickup_Bow_Blue   = GUICtrlCreateCheckbox("Blue", 160, 280)
+	Global $GUI_Checkbox_Pickup_Bow_Purple = GUICtrlCreateCheckbox("Purple", 220, 280)
+	Global $GUI_Checkbox_Pickup_Bow_Green  = GUICtrlCreateCheckbox("Green", 280, 280)
+	Global $GUI_Checkbox_Pickup_Bow_Gold   = GUICtrlCreateCheckbox("Gold", 340, 280)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Spellcasting Weapons - Ranged
+	GUICtrlCreateGroup("Spellcasting Weapons - Ranged", 10, 320, 400, 70)
+	GUICtrlCreateLabel("Wand", 20, 340, 60, 20)
+	Global $GUI_Checkbox_Pickup_Wand_White  = GUICtrlCreateCheckbox("White", 100, 340)
+	Global $GUI_Checkbox_Pickup_Wand_Blue   = GUICtrlCreateCheckbox("Blue", 160, 340)
+	Global $GUI_Checkbox_Pickup_Wand_Purple = GUICtrlCreateCheckbox("Purple", 220, 340)
+	Global $GUI_Checkbox_Pickup_Wand_Green  = GUICtrlCreateCheckbox("Green", 280, 340)
+	Global $GUI_Checkbox_Pickup_Wand_Gold   = GUICtrlCreateCheckbox("Gold", 340, 340)
+
+	GUICtrlCreateLabel("Staff", 20, 360, 60, 20)
+	Global $GUI_Checkbox_Pickup_Staff_White  = GUICtrlCreateCheckbox("White", 100, 360)
+	Global $GUI_Checkbox_Pickup_Staff_Blue   = GUICtrlCreateCheckbox("Blue", 160, 360)
+	Global $GUI_Checkbox_Pickup_Staff_Purple = GUICtrlCreateCheckbox("Purple", 220, 360)
+	Global $GUI_Checkbox_Pickup_Staff_Green  = GUICtrlCreateCheckbox("Green", 280, 360)
+	Global $GUI_Checkbox_Pickup_Staff_Gold   = GUICtrlCreateCheckbox("Gold", 340, 360)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Off-hand Items
+	GUICtrlCreateGroup("Off-hand Items", 10, 400, 400, 70)
+	GUICtrlCreateLabel("Focus Item", 20, 420, 70, 20)
+	Global $GUI_Checkbox_Pickup_Focus_White  = GUICtrlCreateCheckbox("White", 100, 420)
+	Global $GUI_Checkbox_Pickup_Focus_Blue   = GUICtrlCreateCheckbox("Blue", 160, 420)
+	Global $GUI_Checkbox_Pickup_Focus_Purple = GUICtrlCreateCheckbox("Purple", 220, 420)
+	Global $GUI_Checkbox_Pickup_Focus_Green  = GUICtrlCreateCheckbox("Green", 280, 420)
+	Global $GUI_Checkbox_Pickup_Focus_Gold   = GUICtrlCreateCheckbox("Gold", 340, 420)
+
+	GUICtrlCreateLabel("Shield", 20, 440, 60, 20)
+	Global $GUI_Checkbox_Pickup_Shield_White  = GUICtrlCreateCheckbox("White", 100, 440)
+	Global $GUI_Checkbox_Pickup_Shield_Blue   = GUICtrlCreateCheckbox("Blue", 160, 440)
+	Global $GUI_Checkbox_Pickup_Shield_Purple = GUICtrlCreateCheckbox("Purple", 220, 440)
+	Global $GUI_Checkbox_Pickup_Shield_Green  = GUICtrlCreateCheckbox("Green", 280, 440)
+	Global $GUI_Checkbox_Pickup_Shield_Gold   = GUICtrlCreateCheckbox("Gold", 340, 440)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Reset tab item (back to main tab flow)
+	GUICtrlCreateTabItem("")
+
+	; =========================
+	; Salvage Options Tab
+	; =========================
+	GUICtrlCreateTabItem("Salvage")
+
+	$GUI_Checkbox_UseSalvageOptions = GUICtrlCreateCheckbox('Enable Salvage Options', 20, 35, 150, 20)
+
+	; Section: Martial Weapons - Melee
+	GUICtrlCreateGroup("Martial Weapons - Melee", 10, 60, 400, 90)
+	GUICtrlCreateLabel("Axe", 20, 80, 60, 20)
+	Global $GUI_Checkbox_Salvage_Axe_White  = GUICtrlCreateCheckbox("White", 100, 80)
+	Global $GUI_Checkbox_Salvage_Axe_Blue   = GUICtrlCreateCheckbox("Blue", 160, 80)
+	Global $GUI_Checkbox_Salvage_Axe_Purple = GUICtrlCreateCheckbox("Purple", 220, 80)
+	Global $GUI_Checkbox_Salvage_Axe_Green  = GUICtrlCreateCheckbox("Green", 280, 80)
+	Global $GUI_Checkbox_Salvage_Axe_Gold   = GUICtrlCreateCheckbox("Gold", 340, 80)
+
+	GUICtrlCreateLabel("Sword", 20, 100, 60, 20)
+	Global $GUI_Checkbox_Salvage_Sword_White  = GUICtrlCreateCheckbox("White", 100, 100)
+	Global $GUI_Checkbox_Salvage_Sword_Blue   = GUICtrlCreateCheckbox("Blue", 160, 100)
+	Global $GUI_Checkbox_Salvage_Sword_Purple = GUICtrlCreateCheckbox("Purple", 220, 100)
+	Global $GUI_Checkbox_Salvage_Sword_Green  = GUICtrlCreateCheckbox("Green", 280, 100)
+	Global $GUI_Checkbox_Salvage_Sword_Gold   = GUICtrlCreateCheckbox("Gold", 340, 100)
+
+	GUICtrlCreateLabel("Daggers", 20, 120, 60, 20)
+	Global $GUI_Checkbox_Salvage_Daggers_White  = GUICtrlCreateCheckbox("White", 100, 120)
+	Global $GUI_Checkbox_Salvage_Daggers_Blue   = GUICtrlCreateCheckbox("Blue", 160, 120)
+	Global $GUI_Checkbox_Salvage_Daggers_Purple = GUICtrlCreateCheckbox("Purple", 220, 120)
+	Global $GUI_Checkbox_Salvage_Daggers_Green  = GUICtrlCreateCheckbox("Green", 280, 120)
+	Global $GUI_Checkbox_Salvage_Daggers_Gold   = GUICtrlCreateCheckbox("Gold", 340, 120)
+	GUICtrlCreateGroup("", -99, -99, 1, 1) ; End group
+
+	; Section: Martial Weapons - Two-handed
+	GUICtrlCreateGroup("Martial Weapons - Two-handed", 10, 160, 400, 70)
+	GUICtrlCreateLabel("Hammer", 20, 180, 60, 20)
+	Global $GUI_Checkbox_Salvage_Hammer_White  = GUICtrlCreateCheckbox("White", 100, 180)
+	Global $GUI_Checkbox_Salvage_Hammer_Blue   = GUICtrlCreateCheckbox("Blue", 160, 180)
+	Global $GUI_Checkbox_Salvage_Hammer_Purple = GUICtrlCreateCheckbox("Purple", 220, 180)
+	Global $GUI_Checkbox_Salvage_Hammer_Green  = GUICtrlCreateCheckbox("Green", 280, 180)
+	Global $GUI_Checkbox_Salvage_Hammer_Gold   = GUICtrlCreateCheckbox("Gold", 340, 180)
+
+	GUICtrlCreateLabel("Scythe", 20, 200, 60, 20)
+	Global $GUI_Checkbox_Salvage_Scythe_White  = GUICtrlCreateCheckbox("White", 100, 200)
+	Global $GUI_Checkbox_Salvage_Scythe_Blue   = GUICtrlCreateCheckbox("Blue", 160, 200)
+	Global $GUI_Checkbox_Salvage_Scythe_Purple = GUICtrlCreateCheckbox("Purple", 220, 200)
+	Global $GUI_Checkbox_Salvage_Scythe_Green  = GUICtrlCreateCheckbox("Green", 280, 200)
+	Global $GUI_Checkbox_Salvage_Scythe_Gold   = GUICtrlCreateCheckbox("Gold", 340, 200)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Martial Weapons - Ranged
+	GUICtrlCreateGroup("Martial Weapons - Ranged", 10, 240, 400, 70)
+	GUICtrlCreateLabel("Spear", 20, 260, 60, 20)
+	Global $GUI_Checkbox_Salvage_Spear_White  = GUICtrlCreateCheckbox("White", 100, 260)
+	Global $GUI_Checkbox_Salvage_Spear_Blue   = GUICtrlCreateCheckbox("Blue", 160, 260)
+	Global $GUI_Checkbox_Salvage_Spear_Purple = GUICtrlCreateCheckbox("Purple", 220, 260)
+	Global $GUI_Checkbox_Salvage_Spear_Green  = GUICtrlCreateCheckbox("Green", 280, 260)
+	Global $GUI_Checkbox_Salvage_Spear_Gold   = GUICtrlCreateCheckbox("Gold", 340, 260)
+
+	GUICtrlCreateLabel("Bow", 20, 280, 60, 20)
+	Global $GUI_Checkbox_Salvage_Bow_White  = GUICtrlCreateCheckbox("White", 100, 280)
+	Global $GUI_Checkbox_Salvage_Bow_Blue   = GUICtrlCreateCheckbox("Blue", 160, 280)
+	Global $GUI_Checkbox_Salvage_Bow_Purple = GUICtrlCreateCheckbox("Purple", 220, 280)
+	Global $GUI_Checkbox_Salvage_Bow_Green  = GUICtrlCreateCheckbox("Green", 280, 280)
+	Global $GUI_Checkbox_Salvage_Bow_Gold   = GUICtrlCreateCheckbox("Gold", 340, 280)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Spellcasting Weapons - Ranged
+	GUICtrlCreateGroup("Spellcasting Weapons - Ranged", 10, 320, 400, 70)
+	GUICtrlCreateLabel("Wand", 20, 340, 60, 20)
+	Global $GUI_Checkbox_Salvage_Wand_White  = GUICtrlCreateCheckbox("White", 100, 340)
+	Global $GUI_Checkbox_Salvage_Wand_Blue   = GUICtrlCreateCheckbox("Blue", 160, 340)
+	Global $GUI_Checkbox_Salvage_Wand_Purple = GUICtrlCreateCheckbox("Purple", 220, 340)
+	Global $GUI_Checkbox_Salvage_Wand_Green  = GUICtrlCreateCheckbox("Green", 280, 340)
+	Global $GUI_Checkbox_Salvage_Wand_Gold   = GUICtrlCreateCheckbox("Gold", 340, 340)
+
+	GUICtrlCreateLabel("Staff", 20, 360, 60, 20)
+	Global $GUI_Checkbox_Salvage_Staff_White  = GUICtrlCreateCheckbox("White", 100, 360)
+	Global $GUI_Checkbox_Salvage_Staff_Blue   = GUICtrlCreateCheckbox("Blue", 160, 360)
+	Global $GUI_Checkbox_Salvage_Staff_Purple = GUICtrlCreateCheckbox("Purple", 220, 360)
+	Global $GUI_Checkbox_Salvage_Staff_Green  = GUICtrlCreateCheckbox("Green", 280, 360)
+	Global $GUI_Checkbox_Salvage_Staff_Gold   = GUICtrlCreateCheckbox("Gold", 340, 360)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Section: Off-hand Items
+	GUICtrlCreateGroup("Off-hand Items", 10, 400, 400, 70)
+	GUICtrlCreateLabel("Focus Item", 20, 420, 70, 20)
+	Global $GUI_Checkbox_Salvage_Focus_White  = GUICtrlCreateCheckbox("White", 100, 420)
+	Global $GUI_Checkbox_Salvage_Focus_Blue   = GUICtrlCreateCheckbox("Blue", 160, 420)
+	Global $GUI_Checkbox_Salvage_Focus_Purple = GUICtrlCreateCheckbox("Purple", 220, 420)
+	Global $GUI_Checkbox_Salvage_Focus_Green  = GUICtrlCreateCheckbox("Green", 280, 420)
+	Global $GUI_Checkbox_Salvage_Focus_Gold   = GUICtrlCreateCheckbox("Gold", 340, 420)
+
+	GUICtrlCreateLabel("Shield", 20, 440, 60, 20)
+	Global $GUI_Checkbox_Salvage_Shield_White  = GUICtrlCreateCheckbox("White", 100, 440)
+	Global $GUI_Checkbox_Salvage_Shield_Blue   = GUICtrlCreateCheckbox("Blue", 160, 440)
+	Global $GUI_Checkbox_Salvage_Shield_Purple = GUICtrlCreateCheckbox("Purple", 220, 440)
+	Global $GUI_Checkbox_Salvage_Shield_Green  = GUICtrlCreateCheckbox("Green", 280, 440)
+	Global $GUI_Checkbox_Salvage_Shield_Gold   = GUICtrlCreateCheckbox("Gold", 340, 440)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	; Reset tab item (back to main tab flow)
+	GUICtrlCreateTabItem("")
+
+	$GUI_Combo_ConfigChoice = GUICtrlCreateCombo('Default Configuration', 475, 12, 136, 20)
 	GUICtrlSetOnEvent($GUI_Combo_ConfigChoice, 'GuiButtonHandler')
 
-	$GUI_Icon_SaveConfig = GUICtrlCreatePic(@ScriptDir & '/doc/save.jpg', 565, 12, 20, 20)
+	$GUI_Icon_SaveConfig = GUICtrlCreatePic(@ScriptDir & '/doc/save.jpg', 615, 12, 20, 20)
 	GUICtrlSetOnEvent($GUI_Icon_SaveConfig, 'GuiButtonHandler')
 
 	GUICtrlSetState($GUI_Checkbox_HM, $GUI_CHECKED)
@@ -670,30 +891,40 @@ Func Error($TEXT)
 EndFunc
 
 
-;~ Print to console with timestamp
-;~ LOGLEVEL= 0-Debug, 1-Info, 2-Notice, 3-Warning, 4-Error
+;~ Print to console with timestamp and log to file
+;~ LOGLEVEL = 0-Debug, 1-Info, 2-Notice, 3-Warning, 4-Error
 Func Out($TEXT, $LOGLEVEL = 1)
-	If $LOGLEVEL >= $LOG_LEVEL Then
-		Local $logColor
-		Switch $LOGLEVEL
-			Case $LVL_DEBUG
-				$logColor = $GUI_CONSOLE_GREEN_COLOR
-			Case $LVL_INFO
-				$logColor = $GUI_CONSOLE_GREY_COLOR
-			Case $LVL_NOTICE
-				$logColor = $GUI_CONSOLE_BLUE_COLOR
-			Case $LVL_WARNING
-				$logColor = $GUI_CONSOLE_YELLOW_COLOR
-			Case $LVL_ERROR
-				$logColor = $GUI_CONSOLE_RED_COLOR
-		EndSwitch
-		_GUICtrlRichEdit_SetCharColor($GUI_Console, $logColor)
-		_GUICtrlRichEdit_AppendText($GUI_Console, @HOUR & ':' & @MIN & ':' & @SEC & ' - ' & $TEXT & @CRLF)
-	EndIf
-EndFunc
-#EndRegion Console
-#EndRegion GUI
+    If $LOGLEVEL >= $LOG_LEVEL Then
+        Local $logColor, $timestamp, $logLine
+        $timestamp = @HOUR & ':' & @MIN & ':' & @SEC
+        $logLine = $timestamp & ' - ' & $TEXT & @CRLF
 
+        ; Choose console color
+        Switch $LOGLEVEL
+            Case $LVL_DEBUG
+                $logColor = $GUI_CONSOLE_GREEN_COLOR
+            Case $LVL_INFO
+                $logColor = $GUI_CONSOLE_GREY_COLOR
+            Case $LVL_NOTICE
+                $logColor = $GUI_CONSOLE_BLUE_COLOR
+            Case $LVL_WARNING
+                $logColor = $GUI_CONSOLE_YELLOW_COLOR
+            Case $LVL_ERROR
+                $logColor = $GUI_CONSOLE_RED_COLOR
+        EndSwitch
+
+        ; Output to GUI console
+        _GUICtrlRichEdit_SetCharColor($GUI_Console, $logColor)
+        _GUICtrlRichEdit_AppendText($GUI_Console, $logLine)
+
+        ; Also log to file
+		Local $hFile = FileOpen(@ScriptDir & "\logs\" & $characterName & "_logs.log", $FO_APPEND)
+		If $hFile <> -1 Then
+			FileWrite($hFile, $logLine)
+			FileClose($hFile)
+		EndIf
+    EndIf
+EndFunc
 
 #Region Main loops
 main()
@@ -803,7 +1034,8 @@ Func RunFarmLoop($Farm)
 			$STATUS = 'INITIALIZED'
 			GUICtrlSetData($GUI_StartButton, 'Start')
 			GUICtrlSetBkColor($GUI_StartButton, $GUI_BLUE_COLOR)
-		Case 'Boreal'
+
+		Case 'Norn'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = BorealChestFarm($STATUS)
 		Case 'Corsairs'
@@ -849,7 +1081,7 @@ Func RunFarmLoop($Farm)
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = LightbringerFarm2($STATUS)
 		Case 'Luxon'
-			$INVENTORY_SPACE_NEEDED = 10
+			$INVENTORY_SPACE_NEEDED = 20
 			$result = LuxonFactionFarm($STATUS)
 		Case 'Mantids'
 			$INVENTORY_SPACE_NEEDED = 5
@@ -857,12 +1089,6 @@ Func RunFarmLoop($Farm)
 		Case 'Ministerial Commendations'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = MinisterialCommendationsFarm($STATUS)
-		Case 'Nexus Challenge'
-			$INVENTORY_SPACE_NEEDED = 5
-			$result = NexusChallengeFarm($STATUS)
-		Case 'Norn'
-			$INVENTORY_SPACE_NEEDED = 5
-			$result = NornTitleFarm($STATUS)
 		Case 'OmniFarm'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = OmniFarm($STATUS)
@@ -928,7 +1154,7 @@ EndFunc
 #Region Setup
 ;~ Reset the setups of the bots when porting to a city for instance
 Func ResetBotsSetups()
-	$BOREAL_FARM_SETUP						= False
+	$RAPTORS_FARM_SETUP						= False
 	$DM_FARM_SETUP							= False
 	$FEATHERS_FARM_SETUP					= False
 	$FOW_FARM_SETUP							= False
@@ -1125,6 +1351,11 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'run.bags_count', Number(GUICtrlRead($GUI_Input_BagsCount)))
 	_JSON_addChangeDelete($jsonObject, 'run.farm_materials', GUICtrlRead($GUI_Checkbox_FarmMaterials) == 1)
 	_JSON_addChangeDelete($jsonObject, 'run.disable_rendering', GUICtrlRead($GUI_Checkbox_DisableRendering) == 1)
+
+	_JSON_addChangeDelete($jsonObject, 'midrun.enable', GUICtrlRead($GUI_Checkbox_MidStorageOptions_Enable) == 1)
+	_JSON_addChangeDelete($jsonObject, 'midrun.buykits', GUICtrlRead($GUI_Checkbox_MidStorageOptions_BuyKits) == 1)
+	_JSON_addChangeDelete($jsonObject, 'midrun.uses', Number(GUICtrlRead($GUI_Input_MidStorageOptions_Uses)))
+
 	_JSON_addChangeDelete($jsonObject, 'consumables.consume', GUICtrlRead($GUI_Checkbox_UseConsumables) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.everything', GUICtrlRead($GUI_Checkbox_LootEverything) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.nothing', GUICtrlRead($GUI_Checkbox_LootNothing) == 1)
@@ -1149,6 +1380,162 @@ Func WriteConfigToJson()
 	_JSON_addChangeDelete($jsonObject, 'loot.consumables.trick_or_treat_bags', GUICtrlRead($GUI_Checkbox_LootToTBags) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.consumables.candy_cane_shards', GUICtrlRead($GUI_Checkbox_LootCandyCaneShards) == 1)
 	_JSON_addChangeDelete($jsonObject, 'loot.consumables.lunar_tokens', GUICtrlRead($GUI_Checkbox_LootLunarTokens) == 1)
+	
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Enabled',  GUICtrlRead($GUI_Checkbox_UsePickupOptions)  == 1)
+	; Axe
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.White',  GUICtrlRead($GUI_Checkbox_Pickup_Axe_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Axe_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Axe_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Axe_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Axe.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Axe_Gold)   == 1)
+
+	; Sword
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Sword.White',  GUICtrlRead($GUI_Checkbox_Pickup_Sword_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Sword.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Sword_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Sword.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Sword_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Sword.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Sword_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Sword.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Sword_Gold)   == 1)
+
+	; Daggers
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Daggers.White',  GUICtrlRead($GUI_Checkbox_Pickup_Daggers_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Daggers.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Daggers.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Daggers.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Daggers.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Gold)   == 1)
+
+	; Hammer
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Hammer.White',  GUICtrlRead($GUI_Checkbox_Pickup_Hammer_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Hammer.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Hammer.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Hammer.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Hammer.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Gold)   == 1)
+
+	; Scythe
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Scythe.White',  GUICtrlRead($GUI_Checkbox_Pickup_Scythe_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Scythe.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Scythe.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Scythe.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Scythe.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Gold)   == 1)
+
+	; Spear
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Spear.White',  GUICtrlRead($GUI_Checkbox_Pickup_Spear_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Spear.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Spear_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Spear.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Spear_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Spear.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Spear_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Spear.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Spear_Gold)   == 1)
+
+	; Bow
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Bow.White',  GUICtrlRead($GUI_Checkbox_Pickup_Bow_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Bow.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Bow_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Bow.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Bow_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Bow.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Bow_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Bow.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Bow_Gold)   == 1)
+
+	; Wand
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Wand.White',  GUICtrlRead($GUI_Checkbox_Pickup_Wand_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Wand.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Wand_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Wand.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Wand_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Wand.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Wand_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Wand.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Wand_Gold)   == 1)
+
+	; Staff
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Staff.White',  GUICtrlRead($GUI_Checkbox_Pickup_Staff_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Staff.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Staff_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Staff.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Staff_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Staff.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Staff_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Staff.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Staff_Gold)   == 1)
+
+	; Focus
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Focus.White',  GUICtrlRead($GUI_Checkbox_Pickup_Focus_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Focus.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Focus_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Focus.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Focus_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Focus.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Focus_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Focus.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Focus_Gold)   == 1)
+
+	; Shield
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Shield.White',  GUICtrlRead($GUI_Checkbox_Pickup_Shield_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Shield.Blue',   GUICtrlRead($GUI_Checkbox_Pickup_Shield_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Shield.Purple', GUICtrlRead($GUI_Checkbox_Pickup_Shield_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Shield.Green',  GUICtrlRead($GUI_Checkbox_Pickup_Shield_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'PickupOptions.Shield.Gold',   GUICtrlRead($GUI_Checkbox_Pickup_Shield_Gold)   == 1)
+
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Enabled',  GUICtrlRead($GUI_Checkbox_UseSalvageOptions)  == 1)
+	; Axe
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Axe.White',  GUICtrlRead($GUI_Checkbox_Salvage_Axe_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Axe.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Axe_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Axe.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Axe_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Axe.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Axe_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Axe.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Axe_Gold)   == 1)
+
+	; Sword
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Sword.White',  GUICtrlRead($GUI_Checkbox_Salvage_Sword_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Sword.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Sword_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Sword.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Sword_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Sword.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Sword_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Sword.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Sword_Gold)   == 1)
+
+	; Daggers
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Daggers.White',  GUICtrlRead($GUI_Checkbox_Salvage_Daggers_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Daggers.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Daggers.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Daggers.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Daggers.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Gold)   == 1)
+
+	; Hammer
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Hammer.White',  GUICtrlRead($GUI_Checkbox_Salvage_Hammer_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Hammer.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Hammer.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Hammer.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Hammer.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Gold)   == 1)
+
+	; Scythe
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Scythe.White',  GUICtrlRead($GUI_Checkbox_Salvage_Scythe_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Scythe.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Scythe.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Scythe.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Scythe.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Gold)   == 1)
+
+	; Spear
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Spear.White',  GUICtrlRead($GUI_Checkbox_Salvage_Spear_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Spear.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Spear_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Spear.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Spear_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Spear.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Spear_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Spear.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Spear_Gold)   == 1)
+
+	; Bow
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Bow.White',  GUICtrlRead($GUI_Checkbox_Salvage_Bow_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Bow.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Bow_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Bow.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Bow_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Bow.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Bow_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Bow.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Bow_Gold)   == 1)
+
+	; Wand
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Wand.White',  GUICtrlRead($GUI_Checkbox_Salvage_Wand_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Wand.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Wand_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Wand.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Wand_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Wand.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Wand_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Wand.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Wand_Gold)   == 1)
+
+	; Staff
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Staff.White',  GUICtrlRead($GUI_Checkbox_Salvage_Staff_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Staff.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Staff_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Staff.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Staff_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Staff.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Staff_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Staff.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Staff_Gold)   == 1)
+
+	; Focus
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Focus.White',  GUICtrlRead($GUI_Checkbox_Salvage_Focus_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Focus.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Focus_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Focus.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Focus_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Focus.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Focus_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Focus.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Focus_Gold)   == 1)
+
+	; Shield
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.White',  GUICtrlRead($GUI_Checkbox_Salvage_Shield_White)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Blue',   GUICtrlRead($GUI_Checkbox_Salvage_Shield_Blue)   == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Purple', GUICtrlRead($GUI_Checkbox_Salvage_Shield_Purple) == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Green',  GUICtrlRead($GUI_Checkbox_Salvage_Shield_Green)  == 1)
+	_JSON_addChangeDelete($jsonObject, 'SalvageOptions.Shield.Gold',   GUICtrlRead($GUI_Checkbox_Salvage_Shield_Gold)   == 1)
 	Return _JSON_Generate($jsonObject)
 EndFunc
 
@@ -1172,6 +1559,12 @@ Func ReadConfigFromJson($jsonString)
 	GUICtrlSetState($GUI_Checkbox_BuyEctoplasm, _JSON_Get($jsonObject, 'run.buy_ectos') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_StoreTheRest, _JSON_Get($jsonObject, 'run.store_leftovers') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_StoreGold, _JSON_Get($jsonObject, 'run.store_gold') ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	; Mid-run storage options
+	GUICtrlSetState($GUI_Checkbox_MidStorageOptions_Enable, _JSON_Get($jsonObject, 'midrun.enable') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_MidStorageOptions_BuyKits, _JSON_Get($jsonObject, 'midrun.buykits') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetData($GUI_Input_MidStorageOptions_Uses, Number(_JSON_Get($jsonObject, 'midrun.uses')))
+
 	Local $district = _JSON_Get($jsonObject, 'run.district')
 	GUICtrlSetData($GUI_Combo_DistrictChoice, $AVAILABLE_DISTRICTS, $district)
 	$DISTRICT_NAME = $district
@@ -1206,6 +1599,144 @@ Func ReadConfigFromJson($jsonString)
 	GUICtrlSetState($GUI_Checkbox_LootToTBags, _JSON_Get($jsonObject, 'loot.consumables.trick_or_treat_bags') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_LootCandyCaneShards, _JSON_Get($jsonObject, 'loot.consumables.candy_cane_shards') ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($GUI_Checkbox_LootLunarTokens, _JSON_Get($jsonObject, 'loot.consumables.lunar_tokens') ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	; === Pickup Options ===
+	GUICtrlSetState($GUI_Checkbox_UsePickupOptions,   _JSON_Get($jsonObject, 'PickupOptions.Enabled')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_White,   _JSON_Get($jsonObject, 'PickupOptions.Axe.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_Blue,    _JSON_Get($jsonObject, 'PickupOptions.Axe.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_Purple,  _JSON_Get($jsonObject, 'PickupOptions.Axe.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_Green,   _JSON_Get($jsonObject, 'PickupOptions.Axe.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Axe_Gold,    _JSON_Get($jsonObject, 'PickupOptions.Axe.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Sword_White, _JSON_Get($jsonObject, 'PickupOptions.Sword.White') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Sword_Blue,  _JSON_Get($jsonObject, 'PickupOptions.Sword.Blue')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Sword_Purple,_JSON_Get($jsonObject, 'PickupOptions.Sword.Purple')? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Sword_Green, _JSON_Get($jsonObject, 'PickupOptions.Sword.Green') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Sword_Gold,  _JSON_Get($jsonObject, 'PickupOptions.Sword.Gold')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Daggers_White, _JSON_Get($jsonObject, 'PickupOptions.Daggers.White') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Daggers_Blue,  _JSON_Get($jsonObject, 'PickupOptions.Daggers.Blue')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Daggers_Purple,_JSON_Get($jsonObject, 'PickupOptions.Daggers.Purple')? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Daggers_Green, _JSON_Get($jsonObject, 'PickupOptions.Daggers.Green') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Daggers_Gold,  _JSON_Get($jsonObject, 'PickupOptions.Daggers.Gold')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Hammer_White,  _JSON_Get($jsonObject, 'PickupOptions.Hammer.White')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Hammer_Blue,   _JSON_Get($jsonObject, 'PickupOptions.Hammer.Blue')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Hammer_Purple, _JSON_Get($jsonObject, 'PickupOptions.Hammer.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Hammer_Green,  _JSON_Get($jsonObject, 'PickupOptions.Hammer.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Hammer_Gold,   _JSON_Get($jsonObject, 'PickupOptions.Hammer.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Scythe_White,  _JSON_Get($jsonObject, 'PickupOptions.Scythe.White')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Scythe_Blue,   _JSON_Get($jsonObject, 'PickupOptions.Scythe.Blue')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Scythe_Purple, _JSON_Get($jsonObject, 'PickupOptions.Scythe.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Scythe_Green,  _JSON_Get($jsonObject, 'PickupOptions.Scythe.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Scythe_Gold,   _JSON_Get($jsonObject, 'PickupOptions.Scythe.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Spear_White,   _JSON_Get($jsonObject, 'PickupOptions.Spear.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Spear_Blue,    _JSON_Get($jsonObject, 'PickupOptions.Spear.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Spear_Purple,  _JSON_Get($jsonObject, 'PickupOptions.Spear.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Spear_Green,   _JSON_Get($jsonObject, 'PickupOptions.Spear.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Spear_Gold,    _JSON_Get($jsonObject, 'PickupOptions.Spear.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Bow_White,     _JSON_Get($jsonObject, 'PickupOptions.Bow.White')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Bow_Blue,      _JSON_Get($jsonObject, 'PickupOptions.Bow.Blue')      ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Bow_Purple,    _JSON_Get($jsonObject, 'PickupOptions.Bow.Purple')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Bow_Green,     _JSON_Get($jsonObject, 'PickupOptions.Bow.Green')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Bow_Gold,      _JSON_Get($jsonObject, 'PickupOptions.Bow.Gold')      ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Wand_White,    _JSON_Get($jsonObject, 'PickupOptions.Wand.White')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Wand_Blue,     _JSON_Get($jsonObject, 'PickupOptions.Wand.Blue')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Wand_Purple,   _JSON_Get($jsonObject, 'PickupOptions.Wand.Purple')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Wand_Green,    _JSON_Get($jsonObject, 'PickupOptions.Wand.Green')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Wand_Gold,     _JSON_Get($jsonObject, 'PickupOptions.Wand.Gold')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Staff_White,   _JSON_Get($jsonObject, 'PickupOptions.Staff.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Staff_Blue,    _JSON_Get($jsonObject, 'PickupOptions.Staff.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Staff_Purple,  _JSON_Get($jsonObject, 'PickupOptions.Staff.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Staff_Green,   _JSON_Get($jsonObject, 'PickupOptions.Staff.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Staff_Gold,    _JSON_Get($jsonObject, 'PickupOptions.Staff.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Focus_White,   _JSON_Get($jsonObject, 'PickupOptions.Focus.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Focus_Blue,    _JSON_Get($jsonObject, 'PickupOptions.Focus.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Focus_Purple,  _JSON_Get($jsonObject, 'PickupOptions.Focus.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Focus_Green,   _JSON_Get($jsonObject, 'PickupOptions.Focus.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Focus_Gold,    _JSON_Get($jsonObject, 'PickupOptions.Focus.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Pickup_Shield_White,  _JSON_Get($jsonObject, 'PickupOptions.Shield.White')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Shield_Blue,   _JSON_Get($jsonObject, 'PickupOptions.Shield.Blue')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Shield_Purple, _JSON_Get($jsonObject, 'PickupOptions.Shield.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Shield_Green,  _JSON_Get($jsonObject, 'PickupOptions.Shield.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Pickup_Shield_Gold,   _JSON_Get($jsonObject, 'PickupOptions.Shield.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	; === Salvage Options ===
+	GUICtrlSetState($GUI_Checkbox_UseSalvageOptions,   _JSON_Get($jsonObject, 'SalvageOptions.Enabled')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Axe_White,   _JSON_Get($jsonObject, 'SalvageOptions.Axe.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Axe_Blue,    _JSON_Get($jsonObject, 'SalvageOptions.Axe.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Axe_Purple,  _JSON_Get($jsonObject, 'SalvageOptions.Axe.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Axe_Green,   _JSON_Get($jsonObject, 'SalvageOptions.Axe.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Axe_Gold,    _JSON_Get($jsonObject, 'SalvageOptions.Axe.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Sword_White, _JSON_Get($jsonObject, 'SalvageOptions.Sword.White') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Sword_Blue,  _JSON_Get($jsonObject, 'SalvageOptions.Sword.Blue')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Sword_Purple,_JSON_Get($jsonObject, 'SalvageOptions.Sword.Purple')? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Sword_Green, _JSON_Get($jsonObject, 'SalvageOptions.Sword.Green') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Sword_Gold,  _JSON_Get($jsonObject, 'SalvageOptions.Sword.Gold')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Daggers_White, _JSON_Get($jsonObject, 'SalvageOptions.Daggers.White') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Daggers_Blue,  _JSON_Get($jsonObject, 'SalvageOptions.Daggers.Blue')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Daggers_Purple,_JSON_Get($jsonObject, 'SalvageOptions.Daggers.Purple')? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Daggers_Green, _JSON_Get($jsonObject, 'SalvageOptions.Daggers.Green') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Daggers_Gold,  _JSON_Get($jsonObject, 'SalvageOptions.Daggers.Gold')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Hammer_White,  _JSON_Get($jsonObject, 'SalvageOptions.Hammer.White')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Hammer_Blue,   _JSON_Get($jsonObject, 'SalvageOptions.Hammer.Blue')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Hammer_Purple, _JSON_Get($jsonObject, 'SalvageOptions.Hammer.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Hammer_Green,  _JSON_Get($jsonObject, 'SalvageOptions.Hammer.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Hammer_Gold,   _JSON_Get($jsonObject, 'SalvageOptions.Hammer.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Scythe_White,  _JSON_Get($jsonObject, 'SalvageOptions.Scythe.White')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Scythe_Blue,   _JSON_Get($jsonObject, 'SalvageOptions.Scythe.Blue')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Scythe_Purple, _JSON_Get($jsonObject, 'SalvageOptions.Scythe.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Scythe_Green,  _JSON_Get($jsonObject, 'SalvageOptions.Scythe.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Scythe_Gold,   _JSON_Get($jsonObject, 'SalvageOptions.Scythe.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Spear_White,   _JSON_Get($jsonObject, 'SalvageOptions.Spear.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Spear_Blue,    _JSON_Get($jsonObject, 'SalvageOptions.Spear.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Spear_Purple,  _JSON_Get($jsonObject, 'SalvageOptions.Spear.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Spear_Green,   _JSON_Get($jsonObject, 'SalvageOptions.Spear.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Spear_Gold,    _JSON_Get($jsonObject, 'SalvageOptions.Spear.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Bow_White,     _JSON_Get($jsonObject, 'SalvageOptions.Bow.White')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Bow_Blue,      _JSON_Get($jsonObject, 'SalvageOptions.Bow.Blue')      ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Bow_Purple,    _JSON_Get($jsonObject, 'SalvageOptions.Bow.Purple')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Bow_Green,     _JSON_Get($jsonObject, 'SalvageOptions.Bow.Green')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Bow_Gold,      _JSON_Get($jsonObject, 'SalvageOptions.Bow.Gold')      ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Wand_White,    _JSON_Get($jsonObject, 'SalvageOptions.Wand.White')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Wand_Blue,     _JSON_Get($jsonObject, 'SalvageOptions.Wand.Blue')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Wand_Purple,   _JSON_Get($jsonObject, 'SalvageOptions.Wand.Purple')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Wand_Green,    _JSON_Get($jsonObject, 'SalvageOptions.Wand.Green')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Wand_Gold,     _JSON_Get($jsonObject, 'SalvageOptions.Wand.Gold')     ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Staff_White,   _JSON_Get($jsonObject, 'SalvageOptions.Staff.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Staff_Blue,    _JSON_Get($jsonObject, 'SalvageOptions.Staff.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Staff_Purple,  _JSON_Get($jsonObject, 'SalvageOptions.Staff.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Staff_Green,   _JSON_Get($jsonObject, 'SalvageOptions.Staff.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Staff_Gold,    _JSON_Get($jsonObject, 'SalvageOptions.Staff.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Focus_White,   _JSON_Get($jsonObject, 'SalvageOptions.Focus.White')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Focus_Blue,    _JSON_Get($jsonObject, 'SalvageOptions.Focus.Blue')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Focus_Purple,  _JSON_Get($jsonObject, 'SalvageOptions.Focus.Purple')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Focus_Green,   _JSON_Get($jsonObject, 'SalvageOptions.Focus.Green')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Focus_Gold,    _JSON_Get($jsonObject, 'SalvageOptions.Focus.Gold')    ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_White,  _JSON_Get($jsonObject, 'SalvageOptions.Shield.White')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Blue,   _JSON_Get($jsonObject, 'SalvageOptions.Shield.Blue')   ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Purple, _JSON_Get($jsonObject, 'SalvageOptions.Shield.Purple') ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Green,  _JSON_Get($jsonObject, 'SalvageOptions.Shield.Green')  ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($GUI_Checkbox_Salvage_Shield_Gold,   _JSON_Get($jsonObject, 'SalvageOptions.Shield.Gold')   ? $GUI_CHECKED : $GUI_UNCHECKED)
 EndFunc
 
 

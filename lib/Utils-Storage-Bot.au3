@@ -25,6 +25,7 @@
 #include 'Utils.au3'
 #include 'Utils-Items_Modstructs.au3'
 #include 'Utils-Debugger.au3'
+#include 'WantedMods.au3'
 
 Opt('MustDeclareVars', 1)
 
@@ -81,6 +82,7 @@ Func ActiveInventoryManagement()
 	; 8-Buy ectos with surplus
 	; 9-Store items
 	; 10-Balance character's gold level
+	; 11-Buy Kits
 	If GUICtrlRead($GUI_Checkbox_StoreUnidentifiedGoldItems) == $GUI_CHECKED Then
 		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
 		StoreItemsInXunlaiStorage(IsUnidentifiedGoldItem)
@@ -130,7 +132,8 @@ Func ActiveInventoryManagement()
 		BalanceCharacterGold(10000)
 	EndIf
 	If GUICtrlRead($GUI_Checkbox_BuyEctoplasm) == $GUI_CHECKED And GetGoldCharacter() > 10000 Then BuyRareMaterialFromMerchantUntilPoor($ID_Glob_of_Ectoplasm, 10000, $ID_Obsidian_Shard)
-	If GUICtrlRead($GUI_Checkbox_StoreTheRest) == $GUI_CHECKED Then StoreItemsInXunlaiStorage()
+	If GUICtrlRead($GUI_Checkbox_StoreTheRest) == $GUI_CHECKED Then StoreEverythingInXunlaiStorage()
+	If GUICtrlRead($GUI_Checkbox_MidStorageOptions_BuyKits) == $GUI_CHECKED Then BuyKitsForMidRun()
 EndFunc
 
 
@@ -815,6 +818,22 @@ Func StoreItemsInXunlaiStorage($shouldStoreItem = DefaultShouldStoreItem)
 	Next
 EndFunc
 
+Func BuyKitsForMidRun()
+	; Buy kits for mid run salvage.
+	Local $salvage_uses = CountSalvageKits()
+	Local $salvage_kits_required = SalvageKitsRequired($salvage_uses, Number(GUICtrlRead($GUI_Input_MidStorageOptions_Uses)))
+	If $salvage_kits_required > 0 Then
+		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
+		BuySalvageKitInEOTN($salvage_kits_required)
+	EndIf
+	Local $identification_uses = CountIdentificationKits()
+	Local $identification_kits_required = IdentificationKitsRequired($identification_uses, Number(GUICtrlRead($GUI_Input_MidStorageOptions_Uses)))
+	If $identification_kits_required > 0 Then
+		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
+		BuySuperiorIdentificationKitInEOTN($identification_kits_required)
+	EndIf
+EndFunc
+
 
 ;~ Store an item in the Xunlai Storage
 Func StoreItemInXunlaiStorage($item)
@@ -864,6 +883,7 @@ EndFunc
 Func DefaultShouldStoreItem($item)
 	Local $itemID = DllStructGetData(($item), 'ModelID')
 	Local $rarity = GetRarity($item)
+	local $quantity = DllStructGetData($item, 'Quantity')
 	If IsConsumable($itemID) Then
 		Return True
 	ElseIf IsBasicMaterial($item) Then
@@ -888,6 +908,9 @@ Func DefaultShouldStoreItem($item)
 		Return ShouldKeepWeapon($item)
 	ElseIf isArmorSalvageItem($item) Then
 		Return ContainsValuableUpgrades($item)
+	; Storing trophies only if we have a full stack of 250
+	ElseIf (IsTrophy($itemID) and $quantity == 250) Then
+		Return True
 	EndIf
 	Return False
 EndFunc
@@ -906,6 +929,12 @@ Func DefaultShouldSellItem($item)
 	If IsWeapon($item) Then
 		Return Not ShouldKeepWeapon($item)
 	EndIf
+	If IsMaterial($item) Then
+		; Some materials should just be sold to the general merchant.
+		If $itemID == $ID_Wood_Plank Then Return True
+		If $itemID == $ID_Bolt_of_Cloth Then Return True
+		If $itemID == $ID_Tanned_Hide_Square Then Return True
+	EndIf
 	Return False
 EndFunc
 
@@ -913,20 +942,26 @@ EndFunc
 ;~ Return True if the item should be salvaged
 Func DefaultShouldSalvageItem($item)
 	Local $itemID = DllStructGetData($item, 'ModelID')
+	Debug("Evaluating item for salvage: " & $itemID)
 	Local $rarity = GetRarity($item)
 
 	If $rarity == $RARITY_Green Then Return False
-	If IsTrophy($itemID) Then
-		If $Map_Feather_Trophies[$itemID] <> Null Then Return True
-		If $Map_Dust_Trophies[$itemID] <> Null Then Return True
-		If $Map_Bones_Trophies[$itemID] <> Null Then Return True
-		If $Map_Fiber_Trophies[$itemID] <> Null Then Return True
-		Return False
+	If IsTrophy($itemID) and GUICtrlRead($GUI_Checkbox_SalvageTrophies) == $GUI_CHECKED Then
+		Return True
 	EndIf
 	If IsArmorSalvageItem($item) Then Return GetIsIdentified($item) And Not ContainsValuableUpgrades($item)
 	If IsWeapon($item) Then
 		If Not DllStructGetData($item, 'IsMaterialSalvageable') Then Return False
-		Return Not ShouldKeepWeapon($item)
+		; If Salvage options are enabled, check them first to see if we should keep the item.
+		If GUICtrlRead($GUI_Checkbox_UseSalvageOptions) == $GUI_CHECKED Then
+			Local $shouldKeepWeapon = ShouldKeepWeapon($item)
+			Debug('ShouldKeepWeapon: ' & $shouldKeepWeapon)
+			Local $checkSalvageOptions = CheckSalvageOptions($item)
+			Debug('CheckSalvageOptions: ' & $checkSalvageOptions)
+			If ($shouldKeepWeapon == False and $checkSalvageOptions == True) Then Return True
+		Else
+			Return Not ShouldKeepWeapon($item)
+		EndIf
 	EndIf
 	Return False
 EndFunc
@@ -946,6 +981,8 @@ Func ShouldKeepWeapon($item)
 	If DllStructGetData($item, 'Equipped') Then Return True
 	; Keeping customized items
 	If DllStructGetData($item, 'Customized') <> 0 Then Return True
+	; Keeping items from WantedMods.au3
+	If IsModIWant($item) Then Return True
 	; Throwing white items
 	If $rarity == $RARITY_White Then Return False
 	; Keeping green items
@@ -953,7 +990,7 @@ Func ShouldKeepWeapon($item)
 	; Keeping unidentified items
 	If Not GetIsIdentified($item) Then Return True
 	; Keeping super-rare items, good in all cases, items (BDS, voltaic, etc)
-	If $Map_UltraRareWeapons[$itemID] <> Null Then Return True
+	If $Map_UltraRareWeapons[$itemID] <> null Then Return True
 	; Keeping items that contain good upgrades
 	If ContainsValuableUpgrades($item) Then Return True
 	; Throwing items without good damage/energy/armor
@@ -982,13 +1019,63 @@ Func ShouldKeepWeapon($item)
 	Return False
 EndFunc
 
+Func ShoppingListWeapons($item)
+	Local $req = GetItemReq($item)
+	Local $attribute = GetItemAttribute($item)
+	Local $type = DllStructGetData($item, 'Type')
+	Local $rarity = GetRarity($item)
+	Local $itemID = DllStructGetData($item, 'ModelID')
+	If IsInscribable($item) AND $req == 9 AND $rarity == $RARITY_Gold Then
+		; Staffs
+		If $type == $ID_Type_Staff Then
+			If $attribute == $ID_Spawning_Power Then Return True
+			If $attribute == $ID_Channeling_Magic Then Return True
+			If $attribute == $ID_Restoration_Magic Then Return True
+			If $itemID == 2099 Then Return True ; Dolyak Prod Staff
+		EndIf
+		; Wands
+		If $type == $ID_Type_Wand Then
+			;If $attribute == $ID_Domination_Magic Then Return True
+			;If $attribute == $ID_Restoration_Magic Then Return True
+			If $attribute == $ID_Spawning_Power Then Return True
+		EndIf
+		; Off Hands
+		If $type == $ID_Type_Offhand Then
+		;	If $attribute == $ID_Domination_Magic Then Return True
+		;	If $attribute == $ID_Restoration_Magic Then Return True
+			If $attribute == $ID_Spawning_Power Then Return True
+		EndIf
+		; Spears
+		;If $type == $ID_Type_Spear Then Return True
+		; Scythes
+		;If $type == $ID_Type_Scythe Then Return True
+		; Shields
+		If $type == $ID_Type_Shield Then
+			If $itemID == 1892 Then Return True ; Adamantine Shield
+		EndIf
+	EndIf
+	;If IsInscribable($item) AND $rarity == $RARITY_Gold Then
+	;	If $type == $ID_Type_Scythe Then Return True
+	;EndIf
+	; Low Req Daggers
+	If $type == $ID_Type_Dagger Then
+		Local $damage = GetItemMaxDmg($item)
+		If $req <= 5 And $damage >= 12 Then Return True
+	EndIf
+	; Restoration Staff
+	If $type == $ID_Type_Staff Then
+		If $attribute == $ID_Restoration_Magic Then Return True
+	EndIf
+	; Amethyst Aegis
+	If $itemID = $ID_Amethyst_Aegis_1 or $itemID = $ID_Amethyst_Aegis_2 Then Return True
+EndFunc
 
 ;~ Return true if the item should be sold to the material merchant
 Func DefaultShouldSellMaterial($item)
 	If Not IsBasicMaterial($item) Then Return False
 
 	; Lazy instantiation
-	Local Static $materialsKeptArray = [$ID_Pile_of_Glittering_Dust, $ID_Feather]
+	Local Static $materialsKeptArray = [$ID_Feather]
 	;Local Static $materialsKeptArray = []
 	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
 

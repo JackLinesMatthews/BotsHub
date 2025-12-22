@@ -26,7 +26,7 @@
 
 Opt('MustDeclareVars', 1)
 
-Global Const $RANGE_ADJACENT=156, $RANGE_NEARBY=240, $RANGE_AREA=312, $RANGE_EARSHOT=1000, $RANGE_SPELLCAST = 1085, $RANGE_SPIRIT = 2500, $RANGE_COMPASS = 5000
+Global Const $RANGE_ADJACENT=156, $RANGE_NEARBY=240, $RANGE_AREA=312, $RANGE_EARSHOT=1000, $RANGE_SPELLCAST = 1085, $RANGE_SPIRIT = 2500, $RANGE_COMPASS = 5000, $RANGE_LONGBOW = 1250
 Global Const $RANGE_ADJACENT_2=156^2, $RANGE_NEARBY_2=240^2, $RANGE_AREA_2=312^2, $RANGE_EARSHOT_2=1000^2, $RANGE_SPELLCAST_2=1085^2, $RANGE_SPIRIT_2=2500^2, $RANGE_COMPASS_2=5000^2
 ; Mobs aggro correspond to earshot range
 Global Const $AGGRO_RANGE=$RANGE_EARSHOT * 1.5
@@ -221,6 +221,28 @@ Func PickUpItems($defendFunction = Null, $shouldPickItem = DefaultShouldPickItem
 	EndIf
 EndFunc
 
+#Region Loot items
+;~ Loot items around character
+Func LogItems($range)
+	If (GUICtrlRead($GUI_Checkbox_LootNothing) == $GUI_CHECKED) Then Return
+
+	Local $item
+	Local $agentID
+	Local $deadlock
+	Local $agents = GetAgentArray(0x400)
+	For $i = $agents[0] To 1 Step -1
+		Local $agent = $agents[$i]
+		If GetIsDead() Then Return
+		If Not GetCanPickUp($agent) Then ContinueLoop
+		If GetDistance(GetMyAgent(), $agent) > $range Then ContinueLoop
+
+		$agentID = DllStructGetData($agent, 'ID')
+		$item = GetItemByAgentID($agentID)
+		Local $model_id = DllStructGetData(($item), 'ModelID')
+		Local $rarity = GetRarity($item)
+	Next
+EndFunc
+
 
 ;~ Return True if the item should be picked up
 ;~ Most general implementation, pick most of the important stuff and is heavily configurable from GUI
@@ -261,9 +283,11 @@ Func DefaultShouldPickItem($item)
 		Return True
 	ElseIf ($itemID == $ID_Lockpick) Then
 		Return True
+	ElseIf IsWeapon($item) And GUICtrlRead($GUI_Checkbox_UsePickupOptions) == $GUI_CHECKED Then
+		Return CheckPickupOptions($item)
 	ElseIf $rarity <> $RARITY_White And IsWeapon($item) And IsLowReqMaxDamage($item) Then
 		Return True
-	ElseIf $rarity <> $RARITY_White And isArmorSalvageItem($item) Then
+	ElseIf $rarity <> $RARITY_White And isArmorSalvageItem($item) AND GUICtrlRead($GUI_Checkbox_LootArmorSalvageables) == $GUI_CHECKED Then
 		Return True
 	ElseIf ($rarity == $RARITY_Gold) Then
 		Return GUICtrlRead($GUI_Checkbox_LootGoldItems) == $GUI_CHECKED
@@ -304,6 +328,386 @@ Func PickOnlyImportantItem($item)
 EndFunc
 #EndRegion Loot items
 
+Func CheckPickupOptions($item)
+	If GUICtrlRead($GUI_Checkbox_UsePickupOptions) == $GUI_CHECKED Then
+		Local $rarity = GetRarity($item)
+		Local $type = DllStructGetData($Item, "Type")
+		; Axe
+		If $type == $ID_Type_Axe Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Axe_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Axe_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Axe_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Axe_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Axe_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Sword
+		ElseIf $type == $ID_Type_Sword Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect	
+		; Daggers
+		ElseIf $type == $ID_Type_Dagger Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Hammer
+		ElseIf $type == $ID_Type_Hammer Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Scythe
+		ElseIf $type == $ID_Type_Scythe Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Spear
+		ElseIf $type == $ID_Type_Spear Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Bow
+		ElseIf $type == $ID_Type_Bow Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Wand
+		ElseIf $type == $ID_Type_Wand Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Staff
+		ElseIf $type == $ID_Type_Staff Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Focus Item
+		ElseIf $type == $ID_Type_Offhand Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		; Shield
+		ElseIf $type == $ID_Type_Shield Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Shield_White) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Pickup_Shield_Blue) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Pickup_Shield_Purple) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Pickup_Shield_Gold) == $GUI_CHECKED)
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Shield_Green) == $GUI_CHECKED)
+					Return True
+			EndSelect
+		EndIf
+	EndIf
+	Return False
+EndFunc
+
+Func CheckSalvageOptions($item)
+	If GUICtrlRead($GUI_Checkbox_UseSalvageOptions) == $GUI_CHECKED Then
+		Local $rarity = GetRarity($item)
+		Local $type = DllStructGetData($Item, "Type")
+		; Axe
+		If $type == $ID_Type_Axe Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Axe, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Axe, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Axe, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Axe, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Axe_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Axe, Rarity: Green')
+					Return True
+			EndSelect
+		; Sword
+		ElseIf $type == $ID_Type_Sword Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Sword, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Sword, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Sword, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Sword, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Sword, Rarity: Green')
+					Return True
+			EndSelect	
+		; Daggers
+		ElseIf $type == $ID_Type_Dagger Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Daggers, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Daggers, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Daggers, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Daggers, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Daggers, Rarity: Green')
+					Return True
+			EndSelect
+		; Hammer
+		ElseIf $type == $ID_Type_Hammer Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Hammer, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Hammer, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Hammer, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Hammer, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Hammer, Rarity: Green')
+					Return True
+			EndSelect
+		; Scythe
+		ElseIf $type == $ID_Type_Scythe Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Scythe, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Scythe, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Scythe, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Scythe, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Scythe, Rarity: Green')
+					Return True
+			EndSelect
+		; Spear
+		ElseIf $type == $ID_Type_Spear Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Spear, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Spear, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Spear, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Spear, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Spear, Rarity: Green')
+					Return True
+			EndSelect
+		; Bow
+		ElseIf $type == $ID_Type_Bow Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Bow, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Bow, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Bow, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Bow, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Bow, Rarity: Green')
+					Return True
+			EndSelect
+		; Wand
+		ElseIf $type == $ID_Type_Wand Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Wand, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Wand, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Wand, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Wand, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Wand, Rarity: Green')
+					Return True
+			EndSelect
+		; Staff
+		ElseIf $type == $ID_Type_Staff Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Staff, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Staff, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Staff, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Staff, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Staff, Rarity: Green')
+					Return True
+			EndSelect
+		; Focus Item
+		ElseIf $type == $ID_Type_Offhand Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Focus Item, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Focus Item, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Focus Item, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Focus Item, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Focus Item, Rarity: Green')
+					Return True
+			EndSelect
+		; Shield
+		ElseIf $type == $ID_Type_Shield Then
+			Select
+				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_White) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Shield, Rarity: White')
+					Return True
+				Case ($rarity == $RARITY_Blue) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Blue) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Shield, Rarity: Blue')
+					Return True
+				Case ($rarity == $RARITY_Purple) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Purple) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Shield, Rarity: Purple')
+					Return True
+				Case ($rarity == $RARITY_Gold) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Gold) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Shield, Rarity: Gold')
+					Return True
+				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_Green) == $GUI_CHECKED)
+					Debug('Salvage Check True - Weapon Type: Shield, Rarity: Green')
+					Return True
+			EndSelect
+		EndIf
+	EndIf
+	Return False
+EndFunc
 
 #Region Loot Chests
 ;~ Find chests in the given range (earshot by default)
@@ -1137,17 +1541,44 @@ EndFunc
 Func SalvageItem($item, $salvageKit)
 	Local $rarity = GetRarity($item)
 	StartSalvageWithKit($item, $salvageKit)
-	Sleep(GetPing() + 400)
+	Sleep(GetPing() + 700)
 	If $rarity == $RARITY_gold Or $rarity == $RARITY_purple Then
 		ValidateSalvage()
-		Sleep(GetPing() + 400)
+		Sleep(GetPing() + 700)
 	EndIf
 	Return True
 EndFunc
 
+Func CountSalvageKits()
+	Local $SalvageCount = 0
+	For $bagIndex = 1 To _Min(4, $BAG_NUMBER)
+		Local $bagSize = DllStructGetData(GetBag($bagIndex), 'slots')
+		For $slot = 1 To $bagSize
+			Local $item = GetItemBySlot($bagIndex, $slot)
+			If DllStructGetData($item, "ModelID") = 2992 Then
+				Local $uses = DllStructGetData($item, 'Value') / 2
+				$SalvageCount = $SalvageCount + $uses
+			EndIf
+		Next
+	Next
+	Debug('Salvage Uses: ' & $SalvageCount)
+	Return $SalvageCount
+EndFunc
+
+; Function to calculate required salvage kits
+Func SalvageKitsRequired($current, $MIN_REQUIRED = 100, $USES_PER_KIT = 25)
+    If $current >= $MIN_REQUIRED Then
+        Return 0
+    EndIf
+    Local $remaining = $MIN_REQUIRED - $current
+    Local $kits = Ceiling($remaining / $USES_PER_KIT)
+	Debug('Salvage kits required: ' & $kits)
+    Return $kits
+EndFunc
 
 ;~ Buy salvage kits in EOTN
 Func BuySalvageKitInEOTN($amount = 1)
+	Debug('Buying ' & $amount & ' basic salvage kits in EOTN')
 	While $amount > 10
 		BuyInEOTN($ID_Salvage_Kit, 2, 100, 10, False)
 		$amount -= 10
@@ -1173,6 +1604,34 @@ Func BuySuperiorSalvageKitInEOTN($amount = 1)
 		$amount -= 10
 	WEnd
 	If $amount > 0 Then BuyInEOTN($ID_Superior_Salvage_Kit, 4, 2000, $amount, False)
+EndFunc
+
+Func CountIdentificationKits()
+	Local $IdentificationCount = 0
+	For $bagIndex = 1 To _Min(4, $BAG_NUMBER)
+		Local $bagSize = DllStructGetData(GetBag($bagIndex), 'slots')
+		For $slot = 1 To $bagSize
+			Local $item = GetItemBySlot($bagIndex, $slot)
+			If DllStructGetData($item, "ModelID") = 5899 Then
+				Local $uses = DllStructGetData($item, 'Value') / 2.5
+				Debug('Found identification kit in slot ' & $bagIndex & ':' & $slot & ' with ' & $uses & ' uses')
+				$IdentificationCount = $IdentificationCount + $uses
+			EndIf
+		Next
+	Next
+	Debug('Identification Uses: ' & $IdentificationCount)
+	Return $IdentificationCount
+EndFunc
+
+; Function to calculate required identification kits
+Func IdentificationKitsRequired($current, $MIN_REQUIRED = 100, $USES_PER_KIT = 100)
+    If $current >= $MIN_REQUIRED Then
+        Return 0
+    EndIf
+    Local $remaining = $MIN_REQUIRED - $current
+    Local $kits = Ceiling($remaining / $USES_PER_KIT)
+	Debug('Identification kits required: ' & $kits)
+    Return $kits
 EndFunc
 
 
@@ -2089,8 +2548,8 @@ EndFunc
 
 
 ;~ Did run fail ?
-Func IsRunFailed()
-	If ($partyFailuresCount > 5) Then
+Func IsRunFailed($number_of_fails=5)
+	If ($partyFailuresCount >= $number_of_fails) Then
 		Notice('Party wiped ' & $partyFailuresCount & ' times, run is considered failed.')
 		Return True
 	EndIf
@@ -2400,7 +2859,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $options = $Default_MoveAggroAndKill_Op
 	Local $myY = DllStructGetData($me, 'Y')
 	Local $blocked = 0
 
-	Move($x, $y)
+	$MoveBar($x, $y)
 
 	Local $oldMyX
 	Local $oldMyY
@@ -2441,6 +2900,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $options = $Default_MoveAggroAndKill_Op
 				FindAndOpenChests($chestOpenRange)
 			EndIf
 		EndIf
+		Debug("End of MoveAggroAndKill Loop")
 	WEnd
 	Return IsPlayerOrPartyAlive()? $SUCCESS : $FAIL
 EndFunc
@@ -2500,6 +2960,101 @@ Func KillFoesInArea($options = $Default_MoveAggroAndKill_Options)
 		If $lootInFights And IsPlayerAlive() Then PickUpItems(Null, DefaultShouldPickItem, $fightRange)
 		$me = GetMyAgent()
 		$foesCount = CountFoesInRangeOfAgent($me, $fightRange)
+	WEnd
+	If $flagHeroes Then CancelAllHeroes()
+	If IsPlayerAlive() Then PickUpItems(Null, DefaultShouldPickItem, $fightRange)
+	Return IsPlayerOrPartyAlive()? $SUCCESS : $FAIL
+EndFunc
+
+;~ Kill foes by casting skills from 1 to 8
+Func KillFoesHrSlavers($flagHeroesOnFight = False)
+	Local $me = GetMyAgent()
+	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent(GetMyAgent())
+	GetAlmostInRangeOfAgent($target)
+	ChangeTarget($target)
+	; At first we target the closest mob to have the surprise effect
+	While $groupIsAlive And $target <> Null
+		If GetCurrentTarget() == Null Then
+			$target = GetHighestPriorityFoe(GetMyAgent(), $RANGE_SPIRIT)
+			ChangeTarget($target)
+			Sleep(GetPing() + 20)
+			CallTarget($target)
+			; Start auto-attack on new target
+			Attack($target)
+			Sleep(GetPing() + 20)
+		EndIf
+		If $target <> Null Then
+			If TimerDiff($FrozenSoilTimer) > 30000 and GetIsDead($me) == False Then
+				UseHeroSkill(7, 8) ; Use Frozen Soil
+				$FrozenSoilTimer = TimerInit()
+			EndIf
+			If IsRecharged(1) and GetEnergy() >= 10 Then
+				UseSkillEx(1)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(2) and GetEnergy() >= 10 Then
+				UseSkillEx(2)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(3) and GetEnergy() >= 5 Then
+				UseSkillEx(3)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+				Debug("Adrenaline: " & GetSkillbarSkillAdrenaline(4))
+				UseSkillEx(4)
+				RndSleep(20)
+			EndIf
+			; Just wait for auto-attack to continue
+			RndSleep(1000)
+		EndIf
+	WEnd
+	RndSleep(1000)
+	PickUpItems()
+EndFunc
+
+;~ Kill foes by casting skills from 1 to 8
+Func KillFoesHrSlavers($flagHeroesOnFight = False)
+	Local $me = GetMyAgent()
+	Local $skillNumber = 1, $foesCount = 999, $target = GetNearestEnemyToAgent(GetMyAgent())
+	GetAlmostInRangeOfAgent($target)
+	ChangeTarget($target)
+	; At first we target the closest mob to have the surprise effect
+	While $groupIsAlive And $target <> Null
+		If GetCurrentTarget() == Null Then
+			$target = GetHighestPriorityFoe(GetMyAgent(), $RANGE_SPIRIT)
+			ChangeTarget($target)
+			Sleep(GetPing() + 20)
+			CallTarget($target)
+			; Start auto-attack on new target
+			Attack($target)
+			Sleep(GetPing() + 20)
+		EndIf
+		If $target <> Null Then
+			If TimerDiff($FrozenSoilTimer) > 30000 and GetIsDead($me) == False Then
+				UseHeroSkill(7, 8) ; Use Frozen Soil
+				$FrozenSoilTimer = TimerInit()
+			EndIf
+			If IsRecharged(1) and GetEnergy() >= 10 Then
+				UseSkillEx(1)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(2) and GetEnergy() >= 10 Then
+				UseSkillEx(2)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(3) and GetEnergy() >= 5 Then
+				UseSkillEx(3)
+				RndSleep(20)
+			EndIf
+			If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+				Debug("Adrenaline: " & GetSkillbarSkillAdrenaline(4))
+				UseSkillEx(4)
+				RndSleep(20)
+			EndIf
+			; Just wait for auto-attack to continue
+			RndSleep(1000)
+		EndIf
 	WEnd
 	If $flagHeroes Then CancelAllHeroes()
 	If IsPlayerAlive() Then PickUpItems(Null, DefaultShouldPickItem, $fightRange)
@@ -2604,6 +3159,9 @@ Func CreateMobsPriorityMap()
 	;Local $WarSupply_Zealot_5		= 8341
 
 	; Priority map : 0 highest kill priority, bigger numbers mean lesser priority
+	Local $PN_SS_Zealot			= 6506
+
+	; Priority map : 0 biggest kill priority, and then it's decreasing
 	Local $map[]
 	$map[$PN_SS_Defender]		= 0
 	$map[$PN_SS_Priest]			= 0
@@ -2661,6 +3219,15 @@ Func CreateMobsPriorityMap()
 	$map[$WarSupply_Fanatic_3]		= 5
 	$map[$WarSupply_Fanatic_4]		= 5
 
+	$map[$PN_SS_Defender] = 0
+	$map[$PN_SS_Priest] = 0
+	$map[$PN_Modniir_Priest] = 0
+	$map[$PN_SS_Zealot] = 0
+	$map[$PN_SS_Summoner] = 1
+	$map[$PN_SS_Warder] = 2
+	$map[$PN_SS_Dominator] = 2
+	$map[$PN_SS_Blasphemer] = 2
+	$map[$PN_SS_Dreamer] = 2
 	Return $map
 EndFunc
 
