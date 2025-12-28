@@ -31,30 +31,30 @@ Opt('MustDeclareVars', 1)
 ; ==== Constants ====
 Global Const $RACorsairsFarmerSkillbar = 'OgcSc5PT3lCHIQHQj1xlpZ4O'
 Global Const $CorsairsFarmInformations = 'For best results, have :' & @CRLF _
-	& '- 16 in Expertise' & @CRLF _
-	& '- 12 in Shadow Arts' & @CRLF _
-	& '- A shield with the inscription Through Thick and Thin (+10 armor against Piercing damage)' & @CRLF _
-	& '- A spear +5 energy +5 armor or +20% enchantment duration' & @CRLF _
-	& '- Sentry or Blessed insignias on all the armor pieces' & @CRLF _
-	& '- A superior vigor rune' & @CRLF _
-	& '- Dunkoro'
+		 & '- 16 in Expertise' & @CRLF _
+		 & '- 12 in Shadow Arts' & @CRLF _
+		 & '- A shield with the inscription Through Thick and Thin (+10 armor against Piercing damage)' & @CRLF _
+		 & '- A spear +5 energy +5 armor or +20% enchantment duration' & @CRLF _
+		 & '- Sentry or Blessed insignias on all the armor pieces' & @CRLF _
+		 & '- A superior vigor rune' & @CRLF _
+		 & '- Dunkoro'
 Global Const $CORSAIRS_FARM_DURATION = 3 * 60 * 1000
 
 ; Skill numbers declared to make the code WAY more readable (UseSkillEx($Raptors_MarkOfPain) is better than UseSkillEx(1))
-Global Const $Corsairs_DwarvenStability		= 1
-Global Const $Corsairs_WhirlingDefense		= 2
-Global Const $Corsairs_HeartOfShadow		= 3
-Global Const $Corsairs_ShroudOfDistress		= 4
-Global Const $Corsairs_TogetherAsOne		= 5
-Global Const $Corsairs_MentalBlock			= 6
-Global Const $Corsairs_FeignedNeutrality	= 7
-Global Const $Corsairs_DeathsCharge			= 8
+Global Const $Corsairs_DwarvenStability = 1
+Global Const $Corsairs_WhirlingDefense = 2
+Global Const $Corsairs_HeartOfShadow = 3
+Global Const $Corsairs_ShroudOfDistress = 4
+Global Const $Corsairs_TogetherAsOne = 5
+Global Const $Corsairs_MentalBlock = 6
+Global Const $Corsairs_FeignedNeutrality = 7
+Global Const $Corsairs_DeathsCharge = 8
 
 ; Hero Build
-Global Const $Corsairs_MakeHaste		= 1
-Global Const $Corsairs_CauterySignet	= 2
-Global Const $Corsairs_Winnowing		= 1
-Global Const $Corsairs_MysticHealing	= 2
+Global Const $Corsairs_MakeHaste = 1
+Global Const $Corsairs_CauterySignet = 2
+Global Const $Corsairs_Winnowing = 1
+Global Const $Corsairs_MysticHealing = 2
 
 Global $CORSAIRS_FARM_SETUP = False
 Global $Bohseda_Timer
@@ -67,7 +67,7 @@ Func CorsairsFarm($STATUS)
 	Local $result = CorsairsFarmLoop()
 	BackToModdokCreviceOutpost()
 	Return $result
-EndFunc
+EndFunc   ;==>CorsairsFarm
 
 
 ;~ Corsairs farm setup
@@ -86,7 +86,7 @@ Func SetupCorsairsFarm()
 	LoadSkillTemplate($RACorsairsFarmerSkillbar)
 	$CORSAIRS_FARM_SETUP = True
 	Info('Preparations complete')
-EndFunc
+EndFunc   ;==>SetupCorsairsFarm
 
 
 Func SetupTeamCorsairsFarm()
@@ -105,7 +105,7 @@ Func SetupTeamCorsairsFarm()
 	;LoadSkillTemplate($RACorsairsFarmerSkillbar, 2)
 	DisableHeroSkillSlot(1, $Corsairs_MakeHaste)
 	DisableHeroSkillSlot(2, $Corsairs_Winnowing)
-EndFunc
+EndFunc   ;==>SetupTeamCorsairsFarm
 
 
 Func EnterCorsairsModdokCreviceMission()
@@ -121,7 +121,7 @@ Func EnterCorsairsModdokCreviceMission()
 		Dialog(0x84)
 		Sleep(5000) ; wait 5 seconds to ensure that player exited outpost and entered mission
 	WEnd
-EndFunc
+EndFunc   ;==>EnterCorsairsModdokCreviceMission
 
 
 ;~ Resign and returns to Modook Crevice (city)
@@ -131,7 +131,7 @@ Func BackToModdokCreviceOutpost()
 	RandomSleep(3500)
 	ReturnToOutpost()
 	WaitMapLoading($ID_Moddok_Crevice, 10000, 2000)
-EndFunc
+EndFunc   ;==>BackToModdokCreviceOutpost
 
 
 ;~ Farm loop
@@ -168,7 +168,7 @@ Func CorsairsFarmLoop()
 	DefendAgainstCorsairs()
 
 	UseHeroSkill(2, $Corsairs_Winnowing)
-	MoveTo(-9783,-7073, 0)
+	MoveTo(-9783, -7073, 0)
 	WaitForBohseda()
 	CommandHero(2, -13778, -10156)
 	UseSkillEx($Corsairs_DwarvenStability)
@@ -176,7 +176,7 @@ Func CorsairsFarmLoop()
 	CastAllDefensiveSkills()
 	If IsPlayerDead() Then Return $FAIL
 
-	MoveTo(-9730,-7350, 0)
+	MoveTo(-9730, -7350, 0)
 	GoNPC($Captain_Bohseda)
 	RandomSleep(1000)
 	Dialog(0x85)
@@ -220,7 +220,7 @@ Func CorsairsFarmLoop()
 	EndIf
 
 	Return $SUCCESS
-EndFunc
+EndFunc   ;==>CorsairsFarmLoop
 
 
 ;~ Function to use all defensive skills
@@ -233,7 +233,7 @@ Func CastAllDefensiveSkills()
 	RandomSleep(20)
 	UseSkillEx($Corsairs_FeignedNeutrality)
 	RandomSleep(20)
-EndFunc
+EndFunc   ;==>CastAllDefensiveSkills
 
 
 ;~ Function to survive once enemies are dead
@@ -242,7 +242,7 @@ Func OnlyCastTogetherAsOne()
 		UseSkillEx($Corsairs_TogetherAsOne)
 		RandomSleep(GetPing() + 20)
 	EndIf
-EndFunc
+EndFunc   ;==>OnlyCastTogetherAsOne
 
 
 ;~ Function to defend against the corsairs
@@ -263,7 +263,7 @@ Func DefendAgainstCorsairs($Hidden = False)
 		UseSkillEx($Corsairs_FeignedNeutrality)
 		RandomSleep(GetPing() + 20)
 	EndIf
-EndFunc
+EndFunc   ;==>DefendAgainstCorsairs
 
 
 ;~ Wait for closest enemy to come within range
@@ -276,7 +276,7 @@ Func WaitForEnemyInRange()
 		$me = GetMyAgent()
 		$target = GetNearestEnemyToAgent($me)
 	WEnd
-EndFunc
+EndFunc   ;==>WaitForEnemyInRange
 
 
 ;~ Wait for Bohseda and Dunkoro to shut up and for Bohseda to be interactible
@@ -285,4 +285,4 @@ Func WaitForBohseda()
 		DefendAgainstCorsairs(True)
 		RandomSleep(500)
 	WEnd
-EndFunc
+EndFunc   ;==>WaitForBohseda

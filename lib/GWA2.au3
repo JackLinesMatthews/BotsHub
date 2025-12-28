@@ -1889,6 +1889,7 @@ Func EnterChallenge()
 	Enqueue($enterMissionStructPtr, 4)
 EndFunc
 
+
 ;~ Enter a foreign challenge mission/pvp.
 Func EnterChallengeForeign()
 	Return SendPacket(0x8, $HEADER_PARTY_ENTER_FOREIGN_MISSION, 0)

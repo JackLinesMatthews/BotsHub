@@ -26,10 +26,10 @@
 
 Opt('MustDeclareVars', 1)
 
-Global Const $RANGE_ADJACENT=156, $RANGE_NEARBY=240, $RANGE_AREA=312, $RANGE_EARSHOT=1000, $RANGE_SPELLCAST = 1085, $RANGE_SPIRIT = 2500, $RANGE_COMPASS = 5000, $RANGE_LONGBOW = 1250
-Global Const $RANGE_ADJACENT_2=156^2, $RANGE_NEARBY_2=240^2, $RANGE_AREA_2=312^2, $RANGE_EARSHOT_2=1000^2, $RANGE_SPELLCAST_2=1085^2, $RANGE_SPIRIT_2=2500^2, $RANGE_COMPASS_2=5000^2
+Global Const $RANGE_ADJACENT = 156, $RANGE_NEARBY = 240, $RANGE_AREA = 312, $RANGE_EARSHOT = 1000, $RANGE_SPELLCAST = 1085, $RANGE_SPIRIT = 2500, $RANGE_COMPASS = 5000, $RANGE_LONGBOW = 1250
+Global Const $RANGE_ADJACENT_2 = 156 ^ 2, $RANGE_NEARBY_2 = 240 ^ 2, $RANGE_AREA_2 = 312 ^ 2, $RANGE_EARSHOT_2 = 1000 ^ 2, $RANGE_SPELLCAST_2 = 1085 ^ 2, $RANGE_SPIRIT_2 = 2500 ^ 2, $RANGE_COMPASS_2 = 5000 ^ 2
 ; Mobs aggro correspond to earshot range
-Global Const $AGGRO_RANGE=$RANGE_EARSHOT * 1.5
+Global Const $AGGRO_RANGE = $RANGE_EARSHOT * 1.5
 
 Global Const $SpiritTypes_Array[2] = [0x44000, 0x4C000]
 Global Const $Map_SpiritTypes = MapFromArray($SpiritTypes_Array)
@@ -68,7 +68,7 @@ Func RunTests($STATUS)
 
 	;Return $SUCCESS
 	Return $PAUSE
-EndFunc
+EndFunc   ;==>RunTests
 
 
 ;~ Allows the user to run functions by hand
@@ -93,7 +93,7 @@ Func DynamicExecution($args)
 		Case Else
 			MsgBox(0, 'Error', 'Too many arguments provided to that function.')
 	EndSwitch
-EndFunc
+EndFunc   ;==>DynamicExecution
 
 
 ;~ Find out the function name and the arguments in a call fun(arg1, arg2, [...])
@@ -113,9 +113,9 @@ Func ParseFunctionArguments($functionCall)
 	WEnd
 	_ArrayAdd($arguments, StringMid($functionCall, $commaPosition, StringLen($functionCall) - $commaPosition))
 	Info(StringMid($functionCall, $commaPosition, StringLen($functionCall) - $commaPosition))
-	$arguments[0] = Ubound($arguments) - 1
+	$arguments[0] = UBound($arguments) - 1
 	Return $arguments
-EndFunc
+EndFunc   ;==>ParseFunctionArguments
 
 
 #Region Map and travel
@@ -123,7 +123,7 @@ EndFunc
 Func GetOwnPosition()
 	Local $me = GetMyAgent()
 	Info('(' & DllStructGetData($me, 'X') & ',' & DllStructGetData($me, 'Y') & ')')
-EndFunc
+EndFunc   ;==>GetOwnPosition
 
 
 ;~ Travel to specified map and specified district
@@ -137,7 +137,7 @@ Func DistrictTravel($mapID, $district = 'Random')
 		WaitMapLoading($mapID, 20000)
 		RandomSleep(2000)
 	EndIf
-EndFunc
+EndFunc   ;==>DistrictTravel
 
 
 ;~ Travel to specified map to a random district
@@ -149,7 +149,7 @@ Func RandomDistrictTravel($mapID, $district = 12)
 	MoveMap($mapID, $Region[$Random], 0, $Language[$Random])
 	WaitMapLoading($mapID, 20000)
 	RandomSleep(2000)
-EndFunc
+EndFunc   ;==>RandomDistrictTravel
 
 
 Func TravelToOutpost($outpostId, $district = 'Random')
@@ -158,7 +158,7 @@ Func TravelToOutpost($outpostId, $district = 'Random')
 	If GetMapID() == $outpostId Then
 		Warn('Player is already in ' & $outpostName & ' (outpost)')
 		Return $SUCCESS
-	Endif
+	EndIf
 	Info('Travelling to ' & $outpostName & ' (outpost)')
 	DistrictTravel($outpostId, $district)
 	RandomSleep(2000)
@@ -167,7 +167,7 @@ Func TravelToOutpost($outpostId, $district = 'Random')
 		Disconnected()
 	EndIf
 	Return GetMapID() == $outpostId ? $SUCCESS : $FAIL
-EndFunc
+EndFunc   ;==>TravelToOutpost
 
 
 ;~ Return back to outpost from exploration/mission map using resign functionality. This can put player closer to exit portal in outpost
@@ -177,13 +177,13 @@ Func ReturnBackToOutpost($outpostId)
 	If GetMapID() == $outpostId Then
 		Warn('Player is already in ' & $outpostName & ' (outpost)')
 		Return $SUCCESS
-	Endif
+	EndIf
 	Resign()
 	RandomSleep(3500)
 	ReturnToOutpost()
 	WaitMapLoading($outpostId, 10000, 2500)
 	Return GetMapID() == $outpostId ? $SUCCESS : $FAIL
-EndFunc
+EndFunc   ;==>ReturnBackToOutpost
 #EndRegion Map and travel
 
 
@@ -216,10 +216,10 @@ Func PickUpItems($defendFunction = Null, $shouldPickItem = DefaultShouldPickItem
 		EndIf
 	Next
 
-	If $BAGS_COUNT == 5 And CountSlots(1, 3) == 0 Then
-		MoveItemsToEquipmentBag()
-	EndIf
-EndFunc
+	;If $BAG_NUMBER == 5 And CountSlots(1, 3) == 0 Then
+	;	MoveItemsToEquipmentBag()
+	;EndIf
+EndFunc   ;==>PickUpItems
 
 #Region Loot items
 ;~ Loot items around character
@@ -241,7 +241,7 @@ Func LogItems($range)
 		Local $model_id = DllStructGetData(($item), 'ModelID')
 		Local $rarity = GetRarity($item)
 	Next
-EndFunc
+EndFunc   ;==>LogItems
 
 
 ;~ Return True if the item should be picked up
@@ -287,7 +287,7 @@ Func DefaultShouldPickItem($item)
 		Return CheckPickupOptions($item)
 	ElseIf $rarity <> $RARITY_White And IsWeapon($item) And IsLowReqMaxDamage($item) Then
 		Return True
-	ElseIf $rarity <> $RARITY_White And isArmorSalvageItem($item) AND GUICtrlRead($GUI_Checkbox_LootArmorSalvageables) == $GUI_CHECKED Then
+	ElseIf $rarity <> $RARITY_White And IsArmorSalvageItem($item) And GUICtrlRead($GUI_Checkbox_LootArmorSalvageables) == $GUI_CHECKED Then
 		Return True
 	ElseIf ($rarity == $RARITY_Gold) Then
 		Return GUICtrlRead($GUI_Checkbox_LootGoldItems) == $GUI_CHECKED
@@ -301,7 +301,7 @@ Func DefaultShouldPickItem($item)
 		Return GUICtrlRead($GUI_Checkbox_LootWhiteItems) == $GUI_CHECKED
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>DefaultShouldPickItem
 
 
 ;~ Return True if the item should be picked up
@@ -325,13 +325,13 @@ Func PickOnlyImportantItem($item)
 		Return True
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>PickOnlyImportantItem
 #EndRegion Loot items
 
 Func CheckPickupOptions($item)
 	If GUICtrlRead($GUI_Checkbox_UsePickupOptions) == $GUI_CHECKED Then
 		Local $rarity = GetRarity($item)
-		Local $type = DllStructGetData($Item, "Type")
+		Local $type = DllStructGetData($item, "Type")
 		; Axe
 		If $type == $ID_Type_Axe Then
 			Select
@@ -346,7 +346,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Axe_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Sword
+			; Sword
 		ElseIf $type == $ID_Type_Sword Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_White) == $GUI_CHECKED)
@@ -359,8 +359,8 @@ Func CheckPickupOptions($item)
 					Return True
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Sword_Green) == $GUI_CHECKED)
 					Return True
-			EndSelect	
-		; Daggers
+			EndSelect
+			; Daggers
 		ElseIf $type == $ID_Type_Dagger Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_White) == $GUI_CHECKED)
@@ -374,7 +374,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Daggers_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Hammer
+			; Hammer
 		ElseIf $type == $ID_Type_Hammer Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_White) == $GUI_CHECKED)
@@ -388,7 +388,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Hammer_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Scythe
+			; Scythe
 		ElseIf $type == $ID_Type_Scythe Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_White) == $GUI_CHECKED)
@@ -402,7 +402,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Scythe_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Spear
+			; Spear
 		ElseIf $type == $ID_Type_Spear Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_White) == $GUI_CHECKED)
@@ -416,7 +416,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Spear_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Bow
+			; Bow
 		ElseIf $type == $ID_Type_Bow Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_White) == $GUI_CHECKED)
@@ -430,7 +430,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Bow_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Wand
+			; Wand
 		ElseIf $type == $ID_Type_Wand Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_White) == $GUI_CHECKED)
@@ -444,7 +444,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Wand_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Staff
+			; Staff
 		ElseIf $type == $ID_Type_Staff Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_White) == $GUI_CHECKED)
@@ -458,7 +458,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Staff_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Focus Item
+			; Focus Item
 		ElseIf $type == $ID_Type_Offhand Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_White) == $GUI_CHECKED)
@@ -472,7 +472,7 @@ Func CheckPickupOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Pickup_Focus_Green) == $GUI_CHECKED)
 					Return True
 			EndSelect
-		; Shield
+			; Shield
 		ElseIf $type == $ID_Type_Shield Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Pickup_Shield_White) == $GUI_CHECKED)
@@ -489,12 +489,12 @@ Func CheckPickupOptions($item)
 		EndIf
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>CheckPickupOptions
 
 Func CheckSalvageOptions($item)
 	If GUICtrlRead($GUI_Checkbox_UseSalvageOptions) == $GUI_CHECKED Then
 		Local $rarity = GetRarity($item)
-		Local $type = DllStructGetData($Item, "Type")
+		Local $type = DllStructGetData($item, "Type")
 		; Axe
 		If $type == $ID_Type_Axe Then
 			Select
@@ -514,7 +514,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Axe, Rarity: Green')
 					Return True
 			EndSelect
-		; Sword
+			; Sword
 		ElseIf $type == $ID_Type_Sword Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_White) == $GUI_CHECKED)
@@ -532,8 +532,8 @@ Func CheckSalvageOptions($item)
 				Case ($rarity == $RARITY_Green) And (GUICtrlRead($GUI_Checkbox_Salvage_Sword_Green) == $GUI_CHECKED)
 					Debug('Salvage Check True - Weapon Type: Sword, Rarity: Green')
 					Return True
-			EndSelect	
-		; Daggers
+			EndSelect
+			; Daggers
 		ElseIf $type == $ID_Type_Dagger Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Daggers_White) == $GUI_CHECKED)
@@ -552,7 +552,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Daggers, Rarity: Green')
 					Return True
 			EndSelect
-		; Hammer
+			; Hammer
 		ElseIf $type == $ID_Type_Hammer Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Hammer_White) == $GUI_CHECKED)
@@ -571,7 +571,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Hammer, Rarity: Green')
 					Return True
 			EndSelect
-		; Scythe
+			; Scythe
 		ElseIf $type == $ID_Type_Scythe Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Scythe_White) == $GUI_CHECKED)
@@ -590,7 +590,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Scythe, Rarity: Green')
 					Return True
 			EndSelect
-		; Spear
+			; Spear
 		ElseIf $type == $ID_Type_Spear Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Spear_White) == $GUI_CHECKED)
@@ -609,7 +609,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Spear, Rarity: Green')
 					Return True
 			EndSelect
-		; Bow
+			; Bow
 		ElseIf $type == $ID_Type_Bow Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Bow_White) == $GUI_CHECKED)
@@ -628,7 +628,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Bow, Rarity: Green')
 					Return True
 			EndSelect
-		; Wand
+			; Wand
 		ElseIf $type == $ID_Type_Wand Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Wand_White) == $GUI_CHECKED)
@@ -647,7 +647,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Wand, Rarity: Green')
 					Return True
 			EndSelect
-		; Staff
+			; Staff
 		ElseIf $type == $ID_Type_Staff Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Staff_White) == $GUI_CHECKED)
@@ -666,7 +666,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Staff, Rarity: Green')
 					Return True
 			EndSelect
-		; Focus Item
+			; Focus Item
 		ElseIf $type == $ID_Type_Offhand Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Focus_White) == $GUI_CHECKED)
@@ -685,7 +685,7 @@ Func CheckSalvageOptions($item)
 					Debug('Salvage Check True - Weapon Type: Focus Item, Rarity: Green')
 					Return True
 			EndSelect
-		; Shield
+			; Shield
 		ElseIf $type == $ID_Type_Shield Then
 			Select
 				Case ($rarity == $RARITY_White) And (GUICtrlRead($GUI_Checkbox_Salvage_Shield_White) == $GUI_CHECKED)
@@ -707,7 +707,7 @@ Func CheckSalvageOptions($item)
 		EndIf
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>CheckSalvageOptions
 
 #Region Loot Chests
 ;~ Find chests in the given range (earshot by default)
@@ -719,7 +719,7 @@ Func FindChest($range = $RANGE_EARSHOT)
 	EndIf
 
 	Local $gadgetID
-	Local $agents = GetAgentArray(0x200)	;0x200 = type: static
+	Local $agents = GetAgentArray(0x200) ;0x200 = type: static
 	Local $chest
 	Local $chestCount = 0
 	For $agent In $agents
@@ -732,7 +732,7 @@ Func FindChest($range = $RANGE_EARSHOT)
 		EndIf
 	Next
 	Return Null
-EndFunc
+EndFunc   ;==>FindChest
 
 
 ;~ Find and open chests in the given range (earshot by default)
@@ -743,7 +743,7 @@ Func FindAndOpenChests($range = $RANGE_EARSHOT, $defendFunction = Null, $blocked
 		Return
 	EndIf
 	Local $gadgetID
-	Local $agents = GetAgentArray(0x200)	;0x200 = type: static
+	Local $agents = GetAgentArray(0x200) ;0x200 = type: static
 	Local $openedChest = False
 	For $agent In $agents
 		$gadgetID = DllStructGetData($agent, 'GadgetID')
@@ -754,7 +754,7 @@ Func FindAndOpenChests($range = $RANGE_EARSHOT, $defendFunction = Null, $blocked
 			;MoveTo(DllStructGetData($agent, 'X'), DllStructGetData($agent, 'Y'))		;Fail half the time
 			;GoSignpost($agent)															;Seems to work but serious rubberbanding
 			;GoToSignpost($agent)															;Much better solution BUT character doesn't defend itself while going to chest + function kind of sucks
-			GoToSignpostWhileDefending($agent, $defendFunction, $blockedFunction)			;Final solution
+			GoToSignpostWhileDefending($agent, $defendFunction, $blockedFunction) ;Final solution
 			If IsPlayerDead() Then Return
 			RandomSleep(200)
 			OpenChest()
@@ -767,7 +767,7 @@ Func FindAndOpenChests($range = $RANGE_EARSHOT, $defendFunction = Null, $blocked
 		EndIf
 	Next
 	Return $openedChest
-EndFunc
+EndFunc   ;==>FindAndOpenChests
 
 
 ;~ Count amount of chests opened
@@ -778,13 +778,13 @@ Func CountOpenedChests()
 		$chestsOpened += $chestsMap[$key] == 2 ? 1 : 0
 	Next
 	Return $chestsOpened
-EndFunc
+EndFunc   ;==>CountOpenedChests
 
 ;~ Clearing map of chests
 Func ClearChestsMap()
 	; Redefining the variable clears it for maps
 	Global $chestsMap[]
-EndFunc
+EndFunc   ;==>ClearChestsMap
 
 
 ;~ Go to signpost and wait until you reach it.
@@ -810,7 +810,7 @@ Func GoToSignpostWhileDefending($signpost, $defendFunction = Null, $blockedFunct
 	WEnd
 	GoSignpost($signpost)
 	RandomSleep(GetPing() + 100)
-EndFunc
+EndFunc   ;==>GoToSignpostWhileDefending
 #EndRegion Loot Chests
 
 
@@ -828,13 +828,13 @@ Func FindEmptySlots($bagId)
 		EndIf
 	Next
 	Return $emptySlots
-EndFunc
+EndFunc   ;==>FindEmptySlots
 
 
 ;~ Find first empty slot in chest
 Func FindChestFirstEmptySlot()
 	Return FindFirstEmptySlot(8, 21)
-EndFunc
+EndFunc   ;==>FindChestFirstEmptySlot
 
 
 ;~ Find first empty slot in bags from firstBag to lastBag
@@ -848,7 +848,7 @@ Func FindFirstEmptySlot($firstBag, $lastBag)
 		EndIf
 	Next
 	Return $bagEmptySlot
-EndFunc
+EndFunc   ;==>FindFirstEmptySlot
 
 
 ;~ Find the first empty slot in the given bag
@@ -859,19 +859,19 @@ Func FindEmptySlot($bag)
 		If DllStructGetData($item, 'ID') = 0 Then Return $slot
 	Next
 	Return 0 ; slots are indexed from 1, 0 if no empty slot found
-EndFunc
+EndFunc   ;==>FindEmptySlot
 
 
 ;~ Find all empty slots in inventory
 Func FindInventoryEmptySlots()
 	Return FindAllEmptySlots(1, $BAGS_COUNT)
-EndFunc
+EndFunc   ;==>FindInventoryEmptySlots
 
 
 ;~ Find all empty slots in chest
 Func FindChestEmptySlots()
 	Return FindAllEmptySlots(8, 21)
-EndFunc
+EndFunc   ;==>FindChestEmptySlots
 
 
 ;~ Find all empty slots in the given bags
@@ -882,7 +882,7 @@ Func FindAllEmptySlots($firstBag, $lastBag)
 		If UBound($bagEmptySlots) > 0 Then _ArrayAdd($emptySlots, $bagEmptySlots)
 	Next
 	Return $emptySlots
-EndFunc
+EndFunc   ;==>FindAllEmptySlots
 
 
 ;~ Count available slots in the inventory
@@ -895,7 +895,7 @@ Func CountSlots($fromBag = 1, $toBag = $BAGS_COUNT)
 		$availableSlots += DllStructGetData($bag, 'Slots') - DllStructGetData($bag, 'ItemsCount')
 	Next
 	Return $availableSlots
-EndFunc
+EndFunc   ;==>CountSlots
 
 
 ;~ Counts open slots in the Xunlai storage chest
@@ -907,7 +907,7 @@ Func CountSlotsChest()
 		$availableSlots += 25 - DllStructGetData($chestTab, 'ItemsCount')
 	Next
 	Return $availableSlots
-EndFunc
+EndFunc   ;==>CountSlotsChest
 
 
 ;~ Move items to the equipment bag
@@ -924,7 +924,7 @@ Func MoveItemsToEquipmentBag()
 	For $bagId = 4 To 1 Step -1
 		For $slot = 1 To DllStructGetData(GetBag($bagId), 'slots')
 			Local $item = GetItemBySlot($bagId, $slot)
-			If DllStructGetData($item, 'ID') <> 0 And (isArmor($item) Or IsWeapon($item)) Then
+			If DllStructGetData($item, 'ID') <> 0 And (IsArmor($item) Or IsWeapon($item)) Then
 				If $countEmptySlots < 1 Then
 					Debug('No space in equipment bag to move the items to')
 					Return
@@ -936,14 +936,14 @@ Func MoveItemsToEquipmentBag()
 			EndIf
 		Next
 	Next
-EndFunc
+EndFunc   ;==>MoveItemsToEquipmentBag
 
 
 ;~ Sort the inventory in this order :
 Func SortInventory()
 	Info('Sorting inventory')
 	;						0-Lockpicks 1-Books	2-Consumables	3-Trophies	4-Tomes	5-Materials	6-Others	7-Armor Salvageables[Gold,	8-Purple,	9-Blue	10-White]	11-Weapons [White,	12-Blue,	13-Purple,	14-Gold,	15-Green]	16-Armor (Armor salvageables, weapons and armor start from the end)
-	Local $itemsCounts = [	0,			0,		0,				0,			0,		0,			0,			0,							0,			0,		0,			0,					0,			0,			0,			0,			0]
+	Local $itemsCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $bagsSizes[6]
 	Local $bagsSize = 0
 	Local $bag, $item, $itemID, $rarity
@@ -974,7 +974,7 @@ Func SortInventory()
 				ElseIf ($rarity == $RARITY_White) Then
 					$itemsCounts[11] += 1
 				EndIf
-			; ArmorSalvage
+				; ArmorSalvage
 			ElseIf IsArmorSalvageItem($item) Then
 				$rarity = GetRarity($item)
 				If ($rarity == $RARITY_Gold) Then
@@ -986,28 +986,28 @@ Func SortInventory()
 				ElseIf ($rarity == $RARITY_White) Then
 					$itemsCounts[10] += 1
 				EndIf
-			; Trophies
+				; Trophies
 			ElseIf IsTrophy($itemID) Then
 				$itemsCounts[3] += 1
-			; Consumables
+				; Consumables
 			ElseIf IsConsumable($itemID) Then
 				$itemsCounts[2] += 1
-			; Materials
+				; Materials
 			ElseIf IsMaterial($item) Then
 				$itemsCounts[5] += 1
-			; Lockpick
+				; Lockpick
 			ElseIf ($itemID == $ID_Lockpick) Then
 				$itemsCounts[0] += 1
-			; Tomes
+				; Tomes
 			ElseIf IsTome($itemID) Then
 				$itemsCounts[4] += 1
-			; Armor
+				; Armor
 			ElseIf IsArmor($item) Then
 				$itemsCounts[16] += 1
-			; Books
+				; Books
 			ElseIf IsBook($item) Then
 				$itemsCounts[1] += 1
-			; Others
+				; Others
 			Else
 				$itemsCounts[6] += 1
 			EndIf
@@ -1047,8 +1047,8 @@ Func SortInventory()
 			ElseIf ($rarity == $RARITY_White) Then
 				$category = 11
 			EndIf
-		; ArmorSalvage
-		ElseIf isArmorSalvageItem($item) Then
+			; ArmorSalvage
+		ElseIf IsArmorSalvageItem($item) Then
 			$rarity = GetRarity($item)
 			If ($rarity == $RARITY_Gold) Then
 				$category = 7
@@ -1059,28 +1059,28 @@ Func SortInventory()
 			ElseIf ($rarity == $RARITY_White) Then
 				$category = 10
 			EndIf
-		; Trophies
+			; Trophies
 		ElseIf IsTrophy($itemID) Then
 			$category = 3
-		; Consumables
+			; Consumables
 		ElseIf IsConsumable($itemID) Then
 			$category = 2
-		; Materials
+			; Materials
 		ElseIf IsMaterial($item) Then
 			$category = 5
-		; Lockpick
+			; Lockpick
 		ElseIf ($itemID == $ID_Lockpick) Then
 			$category = 0
-		; Tomes
+			; Tomes
 		ElseIf IsTome($itemID) Then
 			$category = 4
-		; Armor
+			; Armor
 		ElseIf IsArmor($item) Then
 			$category = 16
-		; Books
+			; Books
 		ElseIf IsBook($item) Then
 			$category = 1
-		; Others
+			; Others
 		Else
 			$category = 6
 		EndIf
@@ -1091,7 +1091,7 @@ Func SortInventory()
 		$itemsPositions[$category] += 1
 		RandomSleep(50)
 	Next
-EndFunc
+EndFunc   ;==>SortInventory
 
 
 ;~ Turns the bag index and the slot index into a general index
@@ -1101,7 +1101,7 @@ Func GetGeneralSlot($bagsSizes, $bag, $slot)
 		$generalSlot += $bagsSizes[$i]
 	Next
 	Return $generalSlot
-EndFunc
+EndFunc   ;==>GetGeneralSlot
 
 
 ;~ Turns a general index into the bag index and the slot index
@@ -1120,7 +1120,7 @@ Func GetBagAndSlotFromGeneralSlot($bagsSizes, $generalSlot)
 	$bagAndSlot[0] = $i
 	$bagAndSlot[1] = $generalSlot
 	Return $bagAndSlot
-EndFunc
+EndFunc   ;==>GetBagAndSlotFromGeneralSlot
 
 
 ;~ Helper function for sorting function - allows moving an item via a generic position instead of with both bag and position
@@ -1137,7 +1137,7 @@ Func GenericMoveItem($bagsSizes, $item, $genericSlot)
 	Next
 	Debug('to bag ' & $i & ' position ' & $genericSlot)
 	;MoveItem($item, $i, $genericSlot)
-EndFunc
+EndFunc   ;==>GenericMoveItem
 
 
 ;~ Balance character gold to the amount given - mode 0 = full balance, mode 1 = only withdraw, mode 2 = only deposit
@@ -1155,7 +1155,7 @@ Func BalanceCharacterGold($goldAmount, $mode = 0)
 		WithdrawGold($goldAmount - $GCharacter)
 	EndIf
 	Return True
-EndFunc
+EndFunc   ;==>BalanceCharacterGold
 #EndRegion Inventory or Chest
 
 
@@ -1163,13 +1163,13 @@ EndFunc
 ;~ Counts black dyes in inventory
 Func GetBlackDyeCount()
 	Return GetInventoryItemCount($ID_Black_Dye)
-EndFunc
+EndFunc   ;==>GetBlackDyeCount
 
 
 ;~ Counts birthday cupcakes in inventory
 Func GetBirthdayCupcakeCount()
 	Return GetInventoryItemCount($ID_Birthday_Cupcake)
-EndFunc
+EndFunc   ;==>GetBirthdayCupcakeCount
 
 
 ;~ Counts gold items in inventory
@@ -1185,7 +1185,7 @@ Func CountGoldItems()
 		Next
 	Next
 	Return $goldItemsCount
-EndFunc
+EndFunc   ;==>CountGoldItems
 
 
 ;~ Look for any of the given items in bags and return bag and slot of an item, [0, 0] if none are present (positions start at 1)
@@ -1198,8 +1198,8 @@ Func FindAnyInInventory(ByRef $itemIDs)
 		Local $bagSize = GetMaxSlots($bag)
 		For $slot = 1 To $bagSize
 			$item = GetItemBySlot($bag, $slot)
-			For $itemId in $itemIDs
-				If(DllStructGetData($item, 'ModelID') == $itemID) Then
+			For $itemID In $itemIDs
+				If (DllStructGetData($item, 'ModelID') == $itemID) Then
 					$itemBagAndSlot[0] = $bag
 					$itemBagAndSlot[1] = $slot
 				EndIf
@@ -1207,19 +1207,19 @@ Func FindAnyInInventory(ByRef $itemIDs)
 		Next
 	Next
 	Return $itemBagAndSlot
-EndFunc
+EndFunc   ;==>FindAnyInInventory
 
 
 ;~ Look for an item in inventory
 Func FindInInventory($itemID)
 	Return FindInStorages(1, $BAGS_COUNT, $itemID)
-EndFunc
+EndFunc   ;==>FindInInventory
 
 
 ;~ Look for an item in xunlai storage
 Func FindInXunlaiStorage($itemID)
 	Return FindInStorages(8, 21, $itemID)
-EndFunc
+EndFunc   ;==>FindInXunlaiStorage
 
 
 ;~ Look for an item in storages from firstBag to lastBag and return bag and slot of the item, [0, 0] else (bags and slots are indexed from 1 as in GWToolbox)
@@ -1231,14 +1231,14 @@ Func FindInStorages($firstBag, $lastBag, $itemID)
 		Local $bagSize = GetMaxSlots($bag)
 		For $slot = 1 To $bagSize
 			$item = GetItemBySlot($bag, $slot)
-			If(DllStructGetData($item, 'ModelID') == $itemID) Then
+			If (DllStructGetData($item, 'ModelID') == $itemID) Then
 				$itemBagAndSlot[0] = $bag
 				$itemBagAndSlot[1] = $slot
 			EndIf
 		Next
 	Next
 	Return $itemBagAndSlot
-EndFunc
+EndFunc   ;==>FindInStorages
 
 
 ;~ Look for an item in storages from firstBag to lastBag and return bag and slot of the item, [0, 0] else
@@ -1259,19 +1259,19 @@ Func FindAllInStorages($firstBag, $lastBag, $item)
 		Next
 	Next
 	Return $itemBagsAndSlots
-EndFunc
+EndFunc   ;==>FindAllInStorages
 
 
 ;~ Look for an item in inventory
 Func FindAllInInventory($item)
 	Return FindAllInStorages(1, $BAGS_COUNT, $item)
-EndFunc
+EndFunc   ;==>FindAllInInventory
 
 
 ;~ Look for an item in xunlai storage
 Func FindAllInXunlaiStorage($item)
 	Return FindAllInStorages(8, 21, $item)
-EndFunc
+EndFunc   ;==>FindAllInXunlaiStorage
 
 
 ;~ Counts anything in inventory
@@ -1293,7 +1293,7 @@ Func GetInventoryItemCount($itemID)
 		Next
 	Next
 	Return $amountItem
-EndFunc
+EndFunc   ;==>GetInventoryItemCount
 
 
 ;~ Count quantity of each item in inventory, specified in provided array of items
@@ -1316,7 +1316,7 @@ Func CountTheseItems($itemArray)
 		Next
 	Next
 	Return $counts
-EndFunc
+EndFunc   ;==>CountTheseItems
 #EndRegion Count and find items
 
 
@@ -1328,7 +1328,7 @@ Func TeamHasTooMuchMalus()
 		If GetMorale($i) < 0 Then Return True
 	Next
 	Return False
-EndFunc
+EndFunc   ;==>TeamHasTooMuchMalus
 
 
 ;~ Use morale booster on team
@@ -1345,7 +1345,7 @@ Func UseMoraleConsumableIfNeeded()
 		If Not $usedMoraleBooster Then Return False
 	WEnd
 	Return True
-EndFunc
+EndFunc   ;==>UseMoraleConsumableIfNeeded
 
 
 ;~ Use Armor of Salvation, Essence of Celerity and Grail of Might
@@ -1353,7 +1353,7 @@ Func UseConset()
 	UseConsumable($ID_Armor_of_Salvation)
 	UseConsumable($ID_Essence_of_Celerity)
 	UseConsumable($ID_Grail_of_Might)
-EndFunc
+EndFunc   ;==>UseConset
 
 
 ;~ Uses a consumable from inventory, if present
@@ -1369,7 +1369,7 @@ Func UseCitySpeedBoost($forceUse = False)
 		$ConsumableSlot = FindInInventory($ID_Chocolate_Bunny)
 		If $ConsumableSlot[0] <> 0 Then UseItemBySlot($ConsumableSlot[0], $ConsumableSlot[1])
 	EndIf
-EndFunc
+EndFunc   ;==>UseCitySpeedBoost
 
 
 ;~ Uses a consumable from inventory, if present
@@ -1377,7 +1377,7 @@ Func UseConsumable($ID_consumable, $forceUse = False)
 	If (Not $forceUse And GUICtrlRead($GUI_Checkbox_UseConsumables) == $GUI_UNCHECKED) Then Return
 	Local $ConsumableSlot = FindInInventory($ID_consumable)
 	If $ConsumableSlot[0] <> 0 Then UseItemBySlot($ConsumableSlot[0], $ConsumableSlot[1])
-EndFunc
+EndFunc   ;==>UseConsumable
 
 
 ;~ Uses the Item from $bag at position $slot (positions start at 1)
@@ -1388,7 +1388,7 @@ Func UseItemBySlot($bag, $slot)
 			SendPacket(8, $HEADER_Item_USE, DllStructGetData($item, 'ID'))
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>UseItemBySlot
 #EndRegion Use Items
 
 
@@ -1397,7 +1397,7 @@ EndFunc
 Func GetKitUsesLeft($kitID)
 	Local $kitStruct = GetModStruct($kitID)
 	Return Int('0x' & StringMid($kitStruct, 11, 2))
-EndFunc
+EndFunc   ;==>GetKitUsesLeft
 
 
 ;~ Returns true if there are unidentified items in inventory
@@ -1412,7 +1412,7 @@ Func HasUnidentifiedItems()
 		Next
 	Next
 	Return False
-EndFunc
+EndFunc   ;==>HasUnidentifiedItems
 
 
 ;~ Identify all items from inventory
@@ -1439,7 +1439,7 @@ Func IdentifyAllItems($buyKit = True)
 		Next
 	Next
 	Return True
-EndFunc
+EndFunc   ;==>IdentifyAllItems
 
 
 ;~ Salvage all items from inventory
@@ -1512,7 +1512,7 @@ Func SalvageAllItems($buyKit = True)
 			EndIf
 		Next
 	EndIf
-EndFunc
+EndFunc   ;==>SalvageAllItems
 
 
 ;~ Get a salvage kit from inventory, or buy one if not present
@@ -1524,7 +1524,7 @@ Func GetSalvageKit($buyKit = True)
 		$kit = FindBasicSalvageKit()
 	EndIf
 	Return $kit
-EndFunc
+EndFunc   ;==>GetSalvageKit
 
 
 ;~ Salvage an item based on its position in the inventory
@@ -1534,7 +1534,7 @@ Func SalvageItemAt($bag, $slot)
 	If DefaultShouldSalvageItem($item) Then
 		SalvageItem($item, $salvageKit)
 	EndIf
-EndFunc
+EndFunc   ;==>SalvageItemAt
 
 
 ;~ Salvage the given item - FIXME: fails for weapons/armorsalvageable when using expert kits and better because they open a window
@@ -1547,7 +1547,7 @@ Func SalvageItem($item, $salvageKit)
 		Sleep(GetPing() + 700)
 	EndIf
 	Return True
-EndFunc
+EndFunc   ;==>SalvageItem
 
 Func CountSalvageKits()
 	Local $SalvageCount = 0
@@ -1563,18 +1563,18 @@ Func CountSalvageKits()
 	Next
 	Debug('Salvage Uses: ' & $SalvageCount)
 	Return $SalvageCount
-EndFunc
+EndFunc   ;==>CountSalvageKits
 
 ; Function to calculate required salvage kits
 Func SalvageKitsRequired($current, $MIN_REQUIRED = 100, $USES_PER_KIT = 25)
-    If $current >= $MIN_REQUIRED Then
-        Return 0
-    EndIf
-    Local $remaining = $MIN_REQUIRED - $current
-    Local $kits = Ceiling($remaining / $USES_PER_KIT)
+	If $current >= $MIN_REQUIRED Then
+		Return 0
+	EndIf
+	Local $remaining = $MIN_REQUIRED - $current
+	Local $kits = Ceiling($remaining / $USES_PER_KIT)
 	Debug('Salvage kits required: ' & $kits)
-    Return $kits
-EndFunc
+	Return $kits
+EndFunc   ;==>SalvageKitsRequired
 
 ;~ Buy salvage kits in EOTN
 Func BuySalvageKitInEOTN($amount = 1)
@@ -1584,7 +1584,7 @@ Func BuySalvageKitInEOTN($amount = 1)
 		$amount -= 10
 	WEnd
 	If $amount > 0 Then BuyInEOTN($ID_Salvage_Kit, 2, 100, $amount, False)
-EndFunc
+EndFunc   ;==>BuySalvageKitInEOTN
 
 
 ;~ Buy expert salvage kits in EOTN
@@ -1594,7 +1594,7 @@ Func BuyExpertSalvageKitInEOTN($amount = 1)
 		$amount -= 10
 	WEnd
 	If $amount > 0 Then BuyInEOTN($ID_Expert_Salvage_Kit, 3, 400, $amount, False)
-EndFunc
+EndFunc   ;==>BuyExpertSalvageKitInEOTN
 
 
 ;~ Buy superior salvage kits in EOTN
@@ -1604,7 +1604,7 @@ Func BuySuperiorSalvageKitInEOTN($amount = 1)
 		$amount -= 10
 	WEnd
 	If $amount > 0 Then BuyInEOTN($ID_Superior_Salvage_Kit, 4, 2000, $amount, False)
-EndFunc
+EndFunc   ;==>BuySuperiorSalvageKitInEOTN
 
 Func CountIdentificationKits()
 	Local $IdentificationCount = 0
@@ -1621,18 +1621,18 @@ Func CountIdentificationKits()
 	Next
 	Debug('Identification Uses: ' & $IdentificationCount)
 	Return $IdentificationCount
-EndFunc
+EndFunc   ;==>CountIdentificationKits
 
 ; Function to calculate required identification kits
 Func IdentificationKitsRequired($current, $MIN_REQUIRED = 100, $USES_PER_KIT = 100)
-    If $current >= $MIN_REQUIRED Then
-        Return 0
-    EndIf
-    Local $remaining = $MIN_REQUIRED - $current
-    Local $kits = Ceiling($remaining / $USES_PER_KIT)
+	If $current >= $MIN_REQUIRED Then
+		Return 0
+	EndIf
+	Local $remaining = $MIN_REQUIRED - $current
+	Local $kits = Ceiling($remaining / $USES_PER_KIT)
 	Debug('Identification kits required: ' & $kits)
-    Return $kits
-EndFunc
+	Return $kits
+EndFunc   ;==>IdentificationKitsRequired
 
 
 ;~ Buy superior identification kits in EOTN
@@ -1642,7 +1642,7 @@ Func BuySuperiorIdentificationKitInEOTN($amount = 1)
 		$amount -= 10
 	WEnd
 	If $amount > 0 Then BuyInEOTN($ID_Superior_Identification_Kit, 6, 500, $amount, False)
-EndFunc
+EndFunc   ;==>BuySuperiorIdentificationKitInEOTN
 
 
 ;~ Buy merchant items in EOTN
@@ -1694,7 +1694,7 @@ Func BuyInEOTN($itemID, $itemPosition, $itemPrice, $amount = 1, $stackable = Fal
 			MoveItem(GetItemByModelID($itemID), $xunlaiTemporarySlot[2 * $i], $xunlaiTemporarySlot[2 * $i + 1])
 		Next
 	EndIf
-EndFunc
+EndFunc   ;==>BuyInEOTN
 #EndRegion Identification and Salvage
 
 
@@ -1703,174 +1703,174 @@ EndFunc
 Func GetItemMaxDmg($item)
 	If Not IsDllStruct($item) Then $item = GetItemByItemID($item)
 	Local $modString = GetModStruct($item)
-	Local $position = StringInStr($modString, 'A8A7')					; Weapon Damage
-	If $position = 0 Then $position = StringInStr($modString, 'C867')	; Energy (focus)
-	If $position = 0 Then $position = StringInStr($modString, 'B8A7')	; Armor (shield)
+	Local $position = StringInStr($modString, 'A8A7') ; Weapon Damage
+	If $position = 0 Then $position = StringInStr($modString, 'C867') ; Energy (focus)
+	If $position = 0 Then $position = StringInStr($modString, 'B8A7') ; Armor (shield)
 	If $position = 0 Then Return 0
 	Return Int('0x' & StringMid($modString, $position - 2, 2))
-EndFunc
+EndFunc   ;==>GetItemMaxDmg
 
 
 ;~ Return True if the item is a kit or a lockpick - used in Storage Bot to not sell those
 Func IsGeneralItem($itemID)
 	Return $Map_General_Items[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsGeneralItem
 
 
 ;~ Returns true if the item is an armor salvage
 Func IsArmorSalvageItem($item)
 	Return DllStructGetData($item, 'type') == $ID_Type_Armor_Salvage
-EndFunc
+EndFunc   ;==>IsArmorSalvageItem
 
 
 ;~ Returns true if the item is a book
 Func IsBook($item)
 	Return DllStructGetData($item, 'type') == $ID_Type_Book
-EndFunc
+EndFunc   ;==>IsBook
 
 
 ;~ Returns true if the item is stackable
 Func IsStackable($item)
 	Return BitAND(DllStructGetData($item, 'Interaction'), 0x80000) <> 0
-EndFunc
+EndFunc   ;==>IsStackable
 
 
 ;~ Returns true if the item is inscribable
 Func IsInscribable($item)
 	Return BitAND(DllStructGetData($item, 'Interaction'), 0x08000000) <> 0
-EndFunc
+EndFunc   ;==>IsInscribable
 
 
 ;~ Returns true if the item is a material, basic or rare
 Func IsMaterial($item)
 	Return DllStructGetData($item, 'Type') == 11 And $Map_All_Materials[DllStructGetData($item, 'ModelID')] <> Null
-EndFunc
+EndFunc   ;==>IsMaterial
 
 
 ;~ Returns true if the item is a basic material
 Func IsBasicMaterial($item)
 	Return DllStructGetData($item, 'Type') == 11 And $Map_Basic_Materials[DllStructGetData($item, 'ModelID')] <> Null
-EndFunc
+EndFunc   ;==>IsBasicMaterial
 
 
 ;~ Returns true if the item is a rare material
 Func IsRareMaterial($item)
 	Return DllStructGetData($item, 'Type') == 11 And $Map_Rare_Materials[DllStructGetData($item, 'ModelID')] <> Null
-EndFunc
+EndFunc   ;==>IsRareMaterial
 
 
 ;~ Returns true if the item is a consumable
 Func IsConsumable($itemID)
 	Return IsAlcohol($itemID) Or IsFestive($itemID) Or IsTownSweet($itemID) Or IsPCon($itemID) Or IsDPRemovalSweet($itemID) Or IsSpecialDrop($itemID) Or IsSummoningStone($itemID) Or IsPartyTonic($itemID) Or IsEverlastingTonic($itemID)
-EndFunc
+EndFunc   ;==>IsConsumable
 
 
 ;~ Returns true if the item is an alcohol
 Func IsAlcohol($itemID)
 	Return $Map_Alcohols[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsAlcohol
 
 
 ;~ Returns true if the item is a festive item
 Func IsFestive($itemID)
 	Return $Map_Festive[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsFestive
 
 
 ;~ Returns true if the item is a sweet
 Func IsTownSweet($itemID)
 	Return $Map_Town_Sweets[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsTownSweet
 
 
 ;~ Returns true if the item is a PCon
 Func IsPCon($itemID)
 	Return $Map_Sweet_Pcons[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsPCon
 
 
 ;~ Return true if the item is a sweet removing doubl... death penalty
 Func IsDPRemovalSweet($itemID)
 	Return $Map_DPRemoval_Sweets[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsDPRemovalSweet
 
 
 ;~ Return true if the item is a special drop
 Func IsSpecialDrop($itemID)
 	Return $Map_Special_Drops[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsSpecialDrop
 
 
 ;~ Return true if the item is a summoning stone
 Func IsSummoningStone($itemID)
 	Return $Map_Summoning_Stones[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsSummoningStone
 
 
 ;~ Return true if the item is a party tonic
 Func IsPartyTonic($itemID)
 	Return $Map_Party_Tonics[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsPartyTonic
 
 
 ;~ Return true if the item is an everlasting tonic
 Func IsEverlastingTonic($itemID)
 	Return $Map_EL_Tonics[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsEverlastingTonic
 
 
 ;~ Return true if the item is a trophy
 Func IsTrophy($itemID)
 	Return $Map_Trophies[$itemID] <> Null Or $Map_Reward_Trophies[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsTrophy
 
 
 ;~ Return true if the item is an armor
 Func IsArmor($item)
 	Return $Map_Armor_Types[DllStructGetData($item, 'type')] <> Null
-EndFunc
+EndFunc   ;==>IsArmor
 
 
 ;~ Return true if the item is a weapon
 Func IsWeapon($item)
 	Return $Map_Weapon_Types[DllStructGetData($item, 'type')] <> Null
-EndFunc
+EndFunc   ;==>IsWeapon
 
 
 ;~ Return true if the item is a weapon mod
 Func IsWeaponMod($itemID)
 	Return $Map_Weapon_Mods[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsWeaponMod
 
 
 ;~ Return true if the item is a tome
 Func IsTome($itemID)
 	Return $Map_Tomes[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsTome
 
 
 ;~ Return true if the item is a gold scroll
 Func IsGoldScroll($itemID)
 	Return $Map_Gold_Scrolls[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsGoldScroll
 
 
 ;~ Return true if the item is a blue scroll
 Func IsBlueScroll($itemID)
 	Return $Map_Blue_Scrolls[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsBlueScroll
 
 
 ;~ Return true if the item is a key
 Func IsKey($itemID)
 	Return $Map_Keys[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsKey
 
 
 ;~ Return true if the item is a map piece
 Func IsMapPiece($itemID)
 	Return $Map_Map_Pieces[$itemID] <> Null
-EndFunc
+EndFunc   ;==>IsMapPiece
 
 
 ;~ Identify is an item is q7-q8 with max damage
@@ -1878,7 +1878,7 @@ Func IsLowReqMaxDamage($item)
 	If Not IsWeapon($item) Then Return False
 	Local $requirement = GetItemReq($item)
 	Return $requirement < 9 And IsMaxDamageForReq($item)
-EndFunc
+EndFunc   ;==>IsLowReqMaxDamage
 
 
 ;~ Identify if an item is q0 with max damage
@@ -1886,7 +1886,7 @@ Func IsNoReqMaxDamage($item)
 	If Not IsWeapon($item) Then Return False
 	Local $requirement = GetItemReq($item)
 	Return $requirement == 0 And IsMaxDamageForReq($item)
-EndFunc
+EndFunc   ;==>IsNoReqMaxDamage
 
 
 ;~ Identify if an item has max damage for its requirement
@@ -1899,7 +1899,7 @@ Func IsMaxDamageForReq($item)
 	Local $maxDamage = $weaponMaxDamages[$requirement]
 	If $damage == $maxDamage Then Return True
 	Return False
-EndFunc
+EndFunc   ;==>IsMaxDamageForReq
 #EndRegion Items tests
 
 
@@ -1912,7 +1912,7 @@ Func ToggleMapping($mappingMode = 0, $mappingPath = @ScriptDir & '/logs/mapping.
 	Local Static $mappingFile
 	Local Static $chestFile
 	If $isMapping Then
-		AdlibUnregister('MappingWrite')
+		AdlibUnRegister('MappingWrite')
 		FileClose($mappingFile)
 		FileClose($chestFile)
 		$isMapping = False
@@ -1925,7 +1925,7 @@ Func ToggleMapping($mappingMode = 0, $mappingPath = @ScriptDir & '/logs/mapping.
 		AdlibRegister('MappingWrite', 1000)
 		$isMapping = True
 	EndIf
-EndFunc
+EndFunc   ;==>ToggleMapping
 
 
 ;~ Write mapping log in file
@@ -1959,7 +1959,7 @@ Func MappingWrite($mapfile = Null, $chestingFile = Null, $mode = Null)
 			_FileWriteLog($chestFile, $chestString)
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>MappingWrite
 
 
 ;~ Scans for chests and return the first one found around the player or the given coordinates
@@ -1984,13 +1984,13 @@ Func ScanForChests($range, $flagged = False, $X = Null, $Y = Null)
 		EndIf
 	Next
 	Return Null
-EndFunc
+EndFunc   ;==>ScanForChests
 
 
 ;~ Return the value if it's not Null else the defaultValue
 Func GetOrDefault($value, $defaultValue)
 	Return ($value == Null) ? $defaultValue : $value
-EndFunc
+EndFunc   ;==>GetOrDefault
 
 
 ;~ Returns True if item is present in array, else False, assuming that array is indexed from 0
@@ -1999,7 +1999,7 @@ Func ArrayContains($array, $item)
 		If $arrayItem == $item Then Return True
 	Next
 	Return False
-EndFunc
+EndFunc   ;==>ArrayContains
 
 
 ;~ Fill 1D or 2D array by reference with a specified value, assuming that array is indexed from 0
@@ -2015,7 +2015,7 @@ Func FillArray(ByRef $array, $value)
 			Next
 		Next
 	EndIf
-EndFunc
+EndFunc   ;==>FillArray
 
 
 ;~ Add to a Map of arrays (create key and new array if unexisting, add to existent array if existing)
@@ -2027,7 +2027,7 @@ Func AppendArrayMap($map, $key, $element)
 		_ArrayAdd($map[$key], $element)
 	EndIf
 	Return $map
-EndFunc
+EndFunc   ;==>AppendArrayMap
 
 
 ;~ Create a map from an array to have a one liner map instantiation
@@ -2037,7 +2037,7 @@ Func MapFromArray($keys)
 		$map[$key] = 1
 	Next
 	Return $map
-EndFunc
+EndFunc   ;==>MapFromArray
 
 
 ;~ Create a map from a double array of dimensions [N, 2] to have a one liner map instantiation with values
@@ -2047,7 +2047,7 @@ Func MapFromDoubleArray($keysAndValues)
 		$map[$keysAndValues[$i][0]] = $keysAndValues[$i][1]
 	Next
 	Return $map
-EndFunc
+EndFunc   ;==>MapFromDoubleArray
 
 
 ;~ Create a map from two arrays to have a one liner map instantiation with values
@@ -2057,7 +2057,7 @@ Func MapFromArrays($keys, $values)
 		$map[$keys[$i]] = $values[$i]
 	Next
 	Return $map
-EndFunc
+EndFunc   ;==>MapFromArrays
 
 
 ;~ Clone a map
@@ -2067,7 +2067,7 @@ Func CloneMap($original)
 		$clone[$key] = $original[$key]
 	Next
 	Return $clone
-EndFunc
+EndFunc   ;==>CloneMap
 
 
 ;~ Clone a dictiomary map. Dictionary map has an advantage that it is inherently passed by reference to functions as the same object without the need of copying
@@ -2077,7 +2077,7 @@ Func CloneDictMap($original)
 		$clone.Add($key, $original.Item($key))
 	Next
 	Return $clone
-EndFunc
+EndFunc   ;==>CloneDictMap
 
 
 ;~ Find common longest substring in two strings
@@ -2094,8 +2094,8 @@ Func LongestCommonSubstringOfTwoStrings($string1, $string2)
 
 	For $i = 1 To UBound($string1characters)
 		For $j = 1 To UBound($string2characters)
-			If ($string1characters[$i-1] == $string2characters[$j-1]) Then
-				$array[$i][$j] = $array[$i-1][$j-1] + 1
+			If ($string1characters[$i - 1] == $string2characters[$j - 1]) Then
+				$array[$i][$j] = $array[$i - 1][$j - 1] + 1
 				If $array[$i][$j] > $LongestCommonSubstringSize Then
 					$LongestCommonSubstringSize = $array[$i][$j]
 					Local $longestCommonSubstrings[0] ; resetting to empty array
@@ -2110,7 +2110,7 @@ Func LongestCommonSubstringOfTwoStrings($string1, $string2)
 	Next
 
 	Return $longestCommonSubstrings[0] ; return first string from the array of longest substrings (there might be more than 1 with the same maximal size)
-EndFunc
+EndFunc   ;==>LongestCommonSubstringOfTwoStrings
 
 
 ;~ Find common longest substring in array of strings, indexed from 0
@@ -2130,8 +2130,8 @@ Func LongestCommonSubstring($strings)
 			Next
 		Next
 	EndIf
-	Return $LongestCommonSubstring
-EndFunc
+	Return $longestCommonSubstring
+EndFunc   ;==>LongestCommonSubstring
 
 
 ;~ Returns True if find substring is in every string in the array of strings
@@ -2145,7 +2145,7 @@ Func IsSubstring($find, $strings)
 		EndIf
 	Next
 	Return True
-EndFunc
+EndFunc   ;==>IsSubstring
 
 
 ;~ Return True if the point X, Y is over the line defined by aX + bY + c = 0
@@ -2155,38 +2155,38 @@ Func IsOverLine($coefficientX, $coefficientY, $fixedCoefficient, $posX, $posY)
 		Return True
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>IsOverLine
 
 
 ;~ Is agent in range of coordinates
 Func IsAgentInRange($agent, $X, $Y, $range)
 	If GetDistanceToPoint($agent, $X, $Y) < $range Then Return True
 	Return False
-EndFunc
+EndFunc   ;==>IsAgentInRange
 
 
 ;~ Alias function for DllStructCreate. Can be used optionally. It can improve readability at the cost of performance, 1 additional layer in function call stack
 Func CreateStruct($structDefinition)
 	Return DllStructCreate($structDefinition)
-EndFunc
+EndFunc   ;==>CreateStruct
 
 
 ;~ Alias function for DllStructSetData. Can be used optionally. It can improve readability at the cost of performance, 1 additional layer in function call stack
 Func SetStructData($object, $dataString, $value)
 	DllStructSetData($object, $dataString, $value)
-EndFunc
+EndFunc   ;==>SetStructData
 
 
 ;~ Alias function for DllStructGetData. Can be used optionally. It can improve readability at the cost of performance, 1 additional layer in function call stack
 Func GetStructData($object, $dataString)
 	Return DllStructGetData($object, $dataString)
-EndFunc
+EndFunc   ;==>GetStructData
 
 
 ;~ Alias function for DllStructGetSize. Can be used optionally. It can improve readability at the cost of performance, 1 additional layer in function call stack
 Func GetStructSize($object)
 	Return DllStructGetSize($object)
-EndFunc
+EndFunc   ;==>GetStructSize
 #EndRegion Utils
 
 
@@ -2206,7 +2206,7 @@ Func PrintNPCInformations($npc)
 	Info('Type: ' & DllStructGetData($npc, 'Type'))
 	Info('ExtraType: ' & DllStructGetData($npc, 'ExtraType'))
 	Info('GadgetID: ' & DllStructGetData($npc, 'GadgetID'))
-EndFunc
+EndFunc   ;==>PrintNPCInformations
 
 
 ;~ Print Item informations
@@ -2227,32 +2227,32 @@ Func PrintItemInformations($item)
 	Info('Profession: ' & DllStructGetData($item, 'Profession'))
 	Info('Type2: ' & DllStructGetData($item, 'Type2'))
 	Info('Slot: ' & DllStructGetData($item, 'Slot'))
-EndFunc
+EndFunc   ;==>PrintItemInformations
 
 
 #Region Counting NPCs
 ;~ Count foes in range of the given agent
 Func CountFoesInRangeOfAgent($agent, $range = $RANGE_AREA, $condition = Null)
 	Return CountNPCsInRangeOfAgent($agent, 3, $range, $condition)
-EndFunc
+EndFunc   ;==>CountFoesInRangeOfAgent
 
 
 ;~ Count foes in range of the given coordinates
 Func CountFoesInRangeOfCoords($xCoord = Null, $yCoord = Null, $range = $RANGE_AREA, $condition = Null)
 	Return CountNPCsInRangeOfCoords($xCoord, $yCoord, 3, $range, $condition)
-EndFunc
+EndFunc   ;==>CountFoesInRangeOfCoords
 
 
 ;~ Count allies in range of the given coordinates
 Func CountAlliesInRangeOfCoords($xCoord = Null, $yCoord = Null, $range = $RANGE_AREA, $condition = Null)
 	Return CountNPCsInRangeOfCoords($xCoord, $yCoord, 6, $range, $condition)
-EndFunc
+EndFunc   ;==>CountAlliesInRangeOfCoords
 
 
 ;~ Count NPCs in range of the given agent
 Func CountNPCsInRangeOfAgent($agent, $npcAllegiance = Null, $range = $RANGE_AREA, $condition = Null)
 	Return CountNPCsInRangeOfCoords(DllStructGetData($agent, 'X'), DllStructGetData($agent, 'Y'), $npcAllegiance, $range, $condition)
-EndFunc
+EndFunc   ;==>CountNPCsInRangeOfAgent
 #EndRegion Counting NPCs
 
 
@@ -2273,7 +2273,7 @@ Func MoveToMiddleOfPartyWithTimeout($timeOut)
 		Sleep(200)
 		$me = GetMyAgent()
 	WEnd
-EndFunc
+EndFunc   ;==>MoveToMiddleOfPartyWithTimeout
 
 
 ;~ Returns the coordinates in the middle of the party team in 2 elements array
@@ -2293,7 +2293,7 @@ Func FindMiddleOfParty()
 	$position[0] = $position[0] / $partySize ; arithmetic mean calculation for X axis
 	$position[1] = $position[1] / $partySize ; arithmetic mean calculation for Y axis
 	Return $position
-EndFunc
+EndFunc   ;==>FindMiddleOfParty
 
 
 ;~ Returns the coordinates in the middle of a group of foes nearest to provided position
@@ -2305,40 +2305,40 @@ Func FindMiddleOfFoes($posX, $posY, $range = $RANGE_AREA)
 		$position[0] += DllStructGetData($foe, 'X')
 		$position[1] += DllStructGetData($foe, 'Y')
 	Next
-	$position[0] = $position[0] / Ubound($foes) ; arithmetic mean calculation for X axis
-	$position[1] = $position[1] / Ubound($foes) ; arithmetic mean calculation for Y axis
+	$position[0] = $position[0] / UBound($foes) ; arithmetic mean calculation for X axis
+	$position[1] = $position[1] / UBound($foes) ; arithmetic mean calculation for Y axis
 	Return $position
-EndFunc
+EndFunc   ;==>FindMiddleOfFoes
 
 
 ;~ Get foes in range of the given agent
 Func GetFoesInRangeOfAgent($agent, $range = $RANGE_AREA, $condition = Null)
 	Return GetNPCsInRangeOfAgent($agent, 3, $range, $condition)
-EndFunc
+EndFunc   ;==>GetFoesInRangeOfAgent
 
 
 ;~ Get foes in range of the given coordinates
 Func GetFoesInRangeOfCoords($xCoord = Null, $yCoord = Null, $range = $RANGE_AREA, $condition = Null)
 	Return GetNPCsInRangeOfCoords($xCoord, $yCoord, 3, $range, $condition)
-EndFunc
+EndFunc   ;==>GetFoesInRangeOfCoords
 
 
 ;~ Get NPCs in range of the given agent
 Func GetNPCsInRangeOfAgent($agent, $npcAllegiance = Null, $range = $RANGE_AREA, $condition = Null)
 	Return GetNPCsInRangeOfCoords(DllStructGetData($agent, 'X'), DllStructGetData($agent, 'Y'), $npcAllegiance, $range, $condition)
-EndFunc
+EndFunc   ;==>GetNPCsInRangeOfAgent
 
 
 ;~ Get party members in range of the given agent
 Func GetPartyInRangeOfAgent($agent, $range = $RANGE_AREA)
 	Return GetNPCsInRangeOfCoords(DllStructGetData($agent, 'X'), DllStructGetData($agent, 'Y'), 1, $range, PartyMemberFilter)
-EndFunc
+EndFunc   ;==>GetPartyInRangeOfAgent
 
 
 ;~ Small helper to filter party members
 Func PartyMemberFilter($agent)
 	Return BitAND(DllStructGetData($agent, 'TypeMap'), 0x20000)
-EndFunc
+EndFunc   ;==>PartyMemberFilter
 #EndRegion Getting NPCs
 
 
@@ -2363,7 +2363,7 @@ Func CountNPCsInRangeOfCoords($coordX = Null, $coordY = Null, $npcAllegiance = N
 		$count += 1
 	Next
 	Return $count
-EndFunc
+EndFunc   ;==>CountNPCsInRangeOfCoords
 
 
 ;~ Get NPCs in range of the given coordinates. If range is Null then all found NPCs are retuned, as with infinite range
@@ -2392,7 +2392,7 @@ Func GetNPCsInRangeOfCoords($coordX = Null, $coordY = Null, $npcAllegiance = Nul
 		$npcAgents[$i] = $allAgents[$i]
 	Next
 	Return $npcAgents
-EndFunc
+EndFunc   ;==>GetNPCsInRangeOfCoords
 
 
 ;~ Get NPC closest to the player and within specified range of the given coordinates. If range is Null then all found NPCs are checked, as with infinite range
@@ -2420,7 +2420,7 @@ Func GetNearestNPCInRangeOfCoords($coordX = Null, $coordY = Null, $npcAllegiance
 		EndIf
 	Next
 	Return $nearestAgent
-EndFunc
+EndFunc   ;==>GetNearestNPCInRangeOfCoords
 
 
 ;~ Get NPC furthest to the player and within specified range of the given coordinates. If range is Null then all found NPCs are checked, as with infinite range
@@ -2448,7 +2448,7 @@ Func GetFurthestNPCInRangeOfCoords($npcAllegiance = Null, $coordX = Null, $coord
 		EndIf
 	Next
 	Return $furthestAgent
-EndFunc
+EndFunc   ;==>GetFurthestNPCInRangeOfCoords
 
 
 ;~ TODO: check that this method is still better, I improved the original
@@ -2477,7 +2477,7 @@ Func BetterGetNearestNPCToCoords($npcAllegiance = Null, $coordX = Null, $coordY 
 		EndIf
 	Next
 	Return $nearestAgent
-EndFunc
+EndFunc   ;==>BetterGetNearestNPCToCoords
 #EndRegion NPCs
 
 
@@ -2496,7 +2496,7 @@ Func TakeQuestOrReward($npc, $questID, $dialogID, $expectedState = 0)
 		RandomSleep(GetPing() + 750)
 		$questState = DllStructGetData(GetQuestByID($questID), 'LogState')
 	WEnd
-EndFunc
+EndFunc   ;==>TakeQuestOrReward
 
 
 Func SwitchToHardModeIfEnabled()
@@ -2505,18 +2505,18 @@ Func SwitchToHardModeIfEnabled()
 	Else
 		SwitchMode($ID_NORMAL_MODE)
 	EndIf
-EndFunc
+EndFunc   ;==>SwitchToHardModeIfEnabled
 
 
 ;~ Count number of alive heroes of the player's party
 Func CountAliveHeroes()
 	Local $aliveHeroes = 0
-	For $i = 1 to 7
+	For $i = 1 To 7
 		Local $heroID = GetHeroID($i)
 		If GetAgentExists($heroID) And Not GetIsDead(GetAgentById($heroID)) Then $aliveHeroes += 1
 	Next
 	Return $aliveHeroes
-EndFunc
+EndFunc   ;==>CountAliveHeroes
 
 
 ;~ Count number of alive members of the player's party including 7 heroes and player
@@ -2524,50 +2524,50 @@ Func CountAlivePartyMembers()
 	Local $alivePartyMembers = CountAliveHeroes()
 	If Not IsPlayerDead Then $alivePartyMembers += 1
 	Return $alivePartyMembers
-EndFunc
+EndFunc   ;==>CountAlivePartyMembers
 
 
 Func IsPlayerDead()
 	Return BitAND(DllStructGetData(GetMyAgent(), 'Effects'), 0x0010) > 0
-EndFunc
+EndFunc   ;==>IsPlayerDead
 
 
 Func IsPlayerAlive()
 	Return BitAND(DllStructGetData(GetMyAgent(), 'Effects'), 0x0010) == 0
-EndFunc
+EndFunc   ;==>IsPlayerAlive
 
 
 Func IsPlayerAndPartyWiped()
 	Return IsPlayerDead() And Not HasRezMemberAlive()
-EndFunc
+EndFunc   ;==>IsPlayerAndPartyWiped
 
 
 Func IsPlayerOrPartyAlive()
 	Return IsPlayerAlive() Or HasRezMemberAlive()
-EndFunc
+EndFunc   ;==>IsPlayerOrPartyAlive
 
 
 ;~ Did run fail ?
-Func IsRunFailed($number_of_fails=5)
+Func IsRunFailed($number_of_fails = 5)
 	If ($partyFailuresCount >= $number_of_fails) Then
 		Notice('Party wiped ' & $partyFailuresCount & ' times, run is considered failed.')
 		Return True
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>IsRunFailed
 
 
 ;~ Is party alive right now
 Func IsPartyCurrentlyAlive()
 	Return $partyIsAlive
-EndFunc
+EndFunc   ;==>IsPartyCurrentlyAlive
 
 
 ;~ Reset the failures counter
 Func ResetFailuresCounter()
 	$partyFailuresCount = 0
 	$partyIsAlive = True
-EndFunc
+EndFunc   ;==>ResetFailuresCounter
 
 
 ;~ Updates the partyIsAlive variable, this function is run on a fixed timer (10s)
@@ -2580,7 +2580,7 @@ Func TrackPartyStatus()
 	Else
 		$partyIsAlive = True
 	EndIf
-EndFunc
+EndFunc   ;==>TrackPartyStatus
 
 
 ;~ Returns True if the party is alive, that is if there is still an alive hero with resurrection skill
@@ -2591,7 +2591,7 @@ Func HasRezMemberAlive()
 		If GetAgentExists($heroID) And Not GetIsDead(GetAgentById($heroID)) Then Return True
 	Next
 	Return False
-EndFunc
+EndFunc   ;==>HasRezMemberAlive
 
 
 ;~ Return an array of heroes in the party with a resurrection skill, indexed from 0
@@ -2613,21 +2613,21 @@ Func FindHeroesWithRez()
 		$heroesWithRez[$i] = $heroes[$i]
 	Next
 	Return $heroesWithRez
-EndFunc
+EndFunc   ;==>FindHeroesWithRez
 
 
 ;~ Return true if the provided skill is a rez skill - signets excluded
 Func IsRezSkill($skill)
 	Switch $skill
 		Case $ID_By_Urals_Hammer, $ID_Junundu_Wail, _ ;$ID_Resurrection_Signet, $ID_Sunspear_Rebirth_Signet _
-			$ID_Eternal_Aura, _
-			$ID_We_Shall_Return, $ID_Signet_of_Return, _
-			$ID_Death_Pact_Signet, $ID_Flesh_of_My_Flesh, $ID_Lively_Was_Naomei, $ID_Restoration, _
-			$ID_Light_of_Dwayna, $ID_Rebirth, $ID_Renew_Life, $ID_Restore_Life, $ID_Resurrect, $ID_Resurrection_Chant, $ID_Unyielding_Aura, $ID_Vengeance
+				$ID_Eternal_Aura, _
+				$ID_We_Shall_Return, $ID_Signet_of_Return, _
+				$ID_Death_Pact_Signet, $ID_Flesh_of_My_Flesh, $ID_Lively_Was_Naomei, $ID_Restoration, _
+				$ID_Light_of_Dwayna, $ID_Rebirth, $ID_Renew_Life, $ID_Restore_Life, $ID_Resurrect, $ID_Resurrection_Chant, $ID_Unyielding_Aura, $ID_Vengeance
 			Return True
 	EndSwitch
 	Return False
-EndFunc
+EndFunc   ;==>IsRezSkill
 #EndRegion Quests and party status
 
 
@@ -2656,16 +2656,16 @@ Func MoveAvoidingBodyBlock($coordX, $coordY, $timeOut)
 		$me = GetMyAgent()
 	WEnd
 	Return True
-EndFunc
+EndFunc   ;==>MoveAvoidingBodyBlock
 
 
 ;~ Go to the NPC closest to the given coordinates
-Func GoNearestNPCToCoords($x, $y)
-	Local $npc = GetNearestNPCToCoords($x, $y)
+Func GoNearestNPCToCoords($X, $Y)
+	Local $npc = GetNearestNPCToCoords($X, $Y)
 	Local $me = GetMyAgent()
 	While DllStructGetData($npc, 'ID') == 0
 		RandomSleep(100)
-		$npc = GetNearestNPCToCoords($x, $y)
+		$npc = GetNearestNPCToCoords($X, $Y)
 	WEnd
 	ChangeTarget($npc)
 	RandomSleep(250)
@@ -2681,7 +2681,7 @@ Func GoNearestNPCToCoords($x, $y)
 		$me = GetMyAgent()
 	WEnd
 	RandomSleep(250)
-EndFunc
+EndFunc   ;==>GoNearestNPCToCoords
 
 
 ;~ Aggro a foe
@@ -2690,7 +2690,7 @@ Func AggroAgent($targetAgent)
 		Move(DllStructGetData($targetAgent, 'X'), DllStructGetData($targetAgent, 'Y'))
 		RandomSleep(200)
 	WEnd
-EndFunc
+EndFunc   ;==>AggroAgent
 
 
 ;~ Get close to a mob without aggroing it
@@ -2709,7 +2709,7 @@ Func GetAlmostInRangeOfAgent($targetAgent, $proximity = ($RANGE_SPELLCAST + 100)
 	Local $goX = $myX + ($targetX - $myX) * (1 - $ratio)
 	Local $goY = $myY + ($targetY - $myY) * (1 - $ratio)
 	MoveTo($goX, $goY, 0)
-EndFunc
+EndFunc   ;==>GetAlmostInRangeOfAgent
 
 
 ;~ Attack and use one of the skill provided if available, else wait for specified duration
@@ -2734,15 +2734,15 @@ Func AttackOrUseSkill($attackSleep, $skill1 = Null, $skill2 = Null, $skill3 = Nu
 		EndIf
 	Next
 	If Not $skillUsed Then RandomSleep($attackSleep)
-EndFunc
+EndFunc   ;==>AttackOrUseSkill
 
 
 Func AllHeroesUseSkill($skillSlot, $target = 0)
-	For $i = 1 to 7
+	For $i = 1 To 7
 		Local $heroID = GetHeroID($i)
 		If GetAgentExists($heroID) And Not GetIsDead(GetAgentById($heroID)) Then UseHeroSkill($i, $skillSlot, $target)
 	Next
-EndFunc
+EndFunc   ;==>AllHeroesUseSkill
 
 
 #Region Map Clearing Utilities
@@ -2792,8 +2792,8 @@ Func WaitAndFightEnemiesInArea($options = $Default_MoveAggroAndKill_Options)
 		$me = GetMyAgent()
 		$foesCount = CountFoesInRangeOfAgent($me, $fightRange)
 	WEnd
-	Return IsPlayerOrPartyAlive()? $SUCCESS : $FAIL
-EndFunc
+	Return IsPlayerOrPartyAlive() ? $SUCCESS : $FAIL
+EndFunc   ;==>WaitAndFightEnemiesInArea
 
 
 ;~ Move, aggro and vanquish groups of mobs specified in 2D $foes array
@@ -2807,45 +2807,45 @@ Func MoveAggroAndKillGroups($foes, $firstGroup, $lastGroup)
 	If UBound($foes, $UBOUND_COLUMNS) <> 3 And UBound($foes, $UBOUND_COLUMNS) <> 4 Then Return $FAIL
 	If $firstGroup < 1 Or UBound($foes) < $lastGroup Then Return $FAIL
 	If $firstGroup > $lastGroup Then Return $FAIL
-	Local $x, $y, $log, $range
+	Local $X, $Y, $log, $range
 	For $i = $firstGroup - 1 To $lastGroup - 1 ; Caution, groups are indexed from 1, but $foes array is indexed from 0
 		If IsPlayerAndPartyWiped() Then Return $FAIL
-		$x = $foes[$i][0]
-		$y = $foes[$i][1]
+		$X = $foes[$i][0]
+		$Y = $foes[$i][1]
 		$log = $foes[$i][2]
-		$range = (UBound($foes, $UBOUND_COLUMNS) == 4)? $foes[$i][3] : $AGGRO_RANGE
-		If MoveAggroAndKillInRange($x, $y, $log, $range) == $FAIL Then Return $FAIL
+		$range = (UBound($foes, $UBOUND_COLUMNS) == 4) ? $foes[$i][3] : $AGGRO_RANGE
+		If MoveAggroAndKillInRange($X, $Y, $log, $range) == $FAIL Then Return $FAIL
 	Next
 	Return $SUCCESS
-EndFunc
+EndFunc   ;==>MoveAggroAndKillGroups
 
 
 ;~ Version to flag heroes before fights
 ;~ Better against heavy AoE - dangerous when flags can end up in a non accessible spot
-Func FlagMoveAggroAndKill($x, $y, $log = '', $options = $Default_FlagMoveAggroAndKill_Options)
-	Return MoveAggroAndKill($x, $y, $log, $options)
-EndFunc
+Func FlagMoveAggroAndKill($X, $Y, $log = '', $options = $Default_FlagMoveAggroAndKill_Options)
+	Return MoveAggroAndKill($X, $Y, $log, $options)
+EndFunc   ;==>FlagMoveAggroAndKill
 
 
 ;~ Version to specify fight range as parameter instead of in options map
-Func MoveAggroAndKillInRange($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
+Func MoveAggroAndKillInRange($X, $Y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
 	If $options = Null Then $options = CloneDictMap($Default_MoveAggroAndKill_Options)
 	$options.Item('fightRange') = $range
-	Return MoveAggroAndKill($x, $y, $log, $options)
-EndFunc
+	Return MoveAggroAndKill($X, $Y, $log, $options)
+EndFunc   ;==>MoveAggroAndKillInRange
 
 
 ;~ Version to specify fight range as parameter instead of in options map and also flag heroes before fights
-Func FlagMoveAggroAndKillInRange($x, $y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
+Func FlagMoveAggroAndKillInRange($X, $Y, $log = '', $range = $RANGE_EARSHOT * 1.5, $options = Null)
 	If $options = Null Then $options = CloneDictMap($Default_FlagMoveAggroAndKill_Options)
 	$options.Item('fightRange') = $range
-	Return MoveAggroAndKill($x, $y, $log, $options)
-EndFunc
+	Return MoveAggroAndKill($X, $Y, $log, $options)
+EndFunc   ;==>FlagMoveAggroAndKillInRange
 
 
 ;~ Clear a zone around the coordinates provided
 ;~ Credits to Shiva for auto-attack improvement
-Func MoveAggroAndKill($x, $y, $log = '', $options = $Default_MoveAggroAndKill_Options)
+Func MoveAggroAndKill($X, $Y, $log = '', $options = $Default_MoveAggroAndKill_Options)
 	If IsPlayerAndPartyWiped() Then Return $FAIL
 
 	Local $openChests = ($options.Item('openChests') <> Null) ? $options.Item('openChests') : True
@@ -2859,13 +2859,13 @@ Func MoveAggroAndKill($x, $y, $log = '', $options = $Default_MoveAggroAndKill_Op
 	Local $myY = DllStructGetData($me, 'Y')
 	Local $blocked = 0
 
-	$MoveBar($x, $y)
+	$MoveBar($X, $Y)
 
 	Local $oldMyX
 	Local $oldMyY
 	Local $target
 	Local $chest
-	While IsPlayerOrPartyAlive() And GetDistanceToPoint(GetMyAgent(), $x, $y) > $RANGE_NEARBY And $blocked < 10
+	While IsPlayerOrPartyAlive() And GetDistanceToPoint(GetMyAgent(), $X, $Y) > $RANGE_NEARBY And $blocked < 10
 		$oldMyX = $myX
 		$oldMyY = $myY
 		$me = GetMyAgent() ; updating/sampling player's agent data
@@ -2886,7 +2886,7 @@ Func MoveAggroAndKill($x, $y, $log = '', $options = $Default_MoveAggroAndKill_Op
 			If $blocked > 6 Then
 				Move($myX, $myY, 500)
 				RandomSleep(500)
-				Move($x, $y)
+				Move($X, $Y)
 			EndIf
 		Else
 			$blocked = 0 ; reset of block count if player got unstuck
@@ -2902,8 +2902,8 @@ Func MoveAggroAndKill($x, $y, $log = '', $options = $Default_MoveAggroAndKill_Op
 		EndIf
 		Debug("End of MoveAggroAndKill Loop")
 	WEnd
-	Return IsPlayerOrPartyAlive()? $SUCCESS : $FAIL
-EndFunc
+	Return IsPlayerOrPartyAlive() ? $SUCCESS : $FAIL
+EndFunc   ;==>MoveAggroAndKill
 
 
 ;~ Kill foes by casting skills from 1 to 8
@@ -2943,7 +2943,7 @@ Func KillFoesInArea($options = $Default_MoveAggroAndKill_Options)
 				If IsPlayerDead() Then ExitLoop
 
 				$i = Mod($i, 8) + 1 ; incrementation of skill index and capping it by number of skills, range <1..8>
-				If $skillsMask <> Null And $skillsMask[$i-1] == False Then ContinueLoop ; optional skillsMask indexed from 0, tells which skills to use or skip
+				If $skillsMask <> Null And $skillsMask[$i - 1] == False Then ContinueLoop ; optional skillsMask indexed from 0, tells which skills to use or skip
 
 				Attack($target) ; Always ensure auto-attack is active before using skills
 				Sleep(100)
@@ -2963,8 +2963,8 @@ Func KillFoesInArea($options = $Default_MoveAggroAndKill_Options)
 	WEnd
 	If $flagHeroes Then CancelAllHeroes()
 	If IsPlayerAlive() Then PickUpItems(Null, DefaultShouldPickItem, $fightRange)
-	Return IsPlayerOrPartyAlive()? $SUCCESS : $FAIL
-EndFunc
+	Return IsPlayerOrPartyAlive() ? $SUCCESS : $FAIL
+EndFunc   ;==>KillFoesInArea
 
 ;~ Kill foes by casting skills from 1 to 8
 Func KillFoesHrSlavers($flagHeroesOnFight = False)
@@ -2984,23 +2984,23 @@ Func KillFoesHrSlavers($flagHeroesOnFight = False)
 			Sleep(GetPing() + 20)
 		EndIf
 		If $target <> Null Then
-			If TimerDiff($FrozenSoilTimer) > 30000 and GetIsDead($me) == False Then
+			If TimerDiff($FrozenSoilTimer) > 30000 And GetIsDead($me) == False Then
 				UseHeroSkill(7, 8) ; Use Frozen Soil
 				$FrozenSoilTimer = TimerInit()
 			EndIf
-			If IsRecharged(1) and GetEnergy() >= 10 Then
+			If IsRecharged(1) And GetEnergy() >= 10 Then
 				UseSkillEx(1)
 				RndSleep(20)
 			EndIf
-			If IsRecharged(2) and GetEnergy() >= 10 Then
+			If IsRecharged(2) And GetEnergy() >= 10 Then
 				UseSkillEx(2)
 				RndSleep(20)
 			EndIf
-			If IsRecharged(3) and GetEnergy() >= 5 Then
+			If IsRecharged(3) And GetEnergy() >= 5 Then
 				UseSkillEx(3)
 				RndSleep(20)
 			EndIf
-			If IsRecharged(4) and GetSkillbarSkillAdrenaline(4) == 200 Then
+			If IsRecharged(4) And GetSkillbarSkillAdrenaline(4) == 200 Then
 				Debug("Adrenaline: " & GetSkillbarSkillAdrenaline(4))
 				UseSkillEx(4)
 				RndSleep(20)
@@ -3011,30 +3011,30 @@ Func KillFoesHrSlavers($flagHeroesOnFight = False)
 	WEnd
 	RndSleep(1000)
 	PickUpItems()
-EndFunc
+EndFunc   ;==>KillFoesHrSlavers
 
 ;~ Create a map containing foes and their priority level
 Func CreateMobsPriorityMap()
 	; Voltaic farm foes model IDs
-	Local $PN_SS_Dominator		= 6493
-	Local $PN_SS_Dreamer		= 6494
-	Local $PN_SS_Contaminator	= 6495
-	Local $PN_SS_Blasphemer		= 6496
-	Local $PN_SS_Warder			= 6497
-	Local $PN_SS_Priest			= 6498
-	Local $PN_SS_Defender		= 6499
-	Local $PN_SS_Summoner		= 6507
-	Local $PN_Modniir_Priest	= 6512
+	Local $PN_SS_Dominator = 6493
+	Local $PN_SS_Dreamer = 6494
+	Local $PN_SS_Contaminator = 6495
+	Local $PN_SS_Blasphemer = 6496
+	Local $PN_SS_Warder = 6497
+	Local $PN_SS_Priest = 6498
+	Local $PN_SS_Defender = 6499
+	Local $PN_SS_Summoner = 6507
+	Local $PN_Modniir_Priest = 6512
 
 	; Gemstone farm foes model IDs
-	Local $Gem_AnurKaya			= 5166
-	Local $Gem_AnurSu			= 5168
-	Local $Gem_AnurKi			= 5169
-	Local $Gem_RageTitan		= 5196
-	Local $Gem_WaterTormentor	= 5206
-	Local $Gem_HeartTormentor	= 5207
-	Local $Gem_Dryder			= 5215
-	Local $Gem_Dreamer			= 5216
+	Local $Gem_AnurKaya = 5166
+	Local $Gem_AnurSu = 5168
+	Local $Gem_AnurKi = 5169
+	Local $Gem_RageTitan = 5196
+	Local $Gem_WaterTormentor = 5206
+	Local $Gem_HeartTormentor = 5207
+	Local $Gem_Dryder = 5215
+	Local $Gem_Dreamer = 5216
 
 	; War Supply farm foes model IDs, why so many? (o_O)
 	;Local $WarSupply_Peacekeeper_1	= 8095
@@ -3050,35 +3050,35 @@ Func CreateMobsPriorityMap()
 	;Local $WarSupply_Enforcer_3	= 8183
 	;Local $WarSupply_Enforcer_4	= 8184
 	;Local $WarSupply_Enforcer_5	= 8185
-	Local $WarSupply_Sycophant_1	= 8186
-	Local $WarSupply_Sycophant_2	= 8187
-	Local $WarSupply_Sycophant_3	= 8188
-	Local $WarSupply_Sycophant_4	= 8189
-	Local $WarSupply_Sycophant_5	= 8190
-	Local $WarSupply_Sycophant_6	= 8191
-	Local $WarSupply_Ritualist_1	= 8192
-	Local $WarSupply_Ritualist_2	= 8193
-	Local $WarSupply_Ritualist_3	= 8194
-	Local $WarSupply_Ritualist_4	= 8195
-	Local $WarSupply_Fanatic_1		= 8196
-	Local $WarSupply_Fanatic_2		= 8197
-	Local $WarSupply_Fanatic_3		= 8198
-	Local $WarSupply_Fanatic_4		= 8199
-	Local $WarSupply_Savant_1		= 8200
-	Local $WarSupply_Savant_2		= 8201
-	Local $WarSupply_Savant_3		= 8202
-	Local $WarSupply_Adherent_1		= 8203
-	Local $WarSupply_Adherent_2		= 8204
-	Local $WarSupply_Adherent_3		= 8205
-	Local $WarSupply_Adherent_4		= 8206
-	Local $WarSupply_Adherent_5		= 8207
-	Local $WarSupply_Priest_1		= 8208
-	Local $WarSupply_Priest_2		= 8209
-	Local $WarSupply_Priest_3		= 8210
-	Local $WarSupply_Priest_4		= 8211
-	Local $WarSupply_Abbot_1		= 8212
-	Local $WarSupply_Abbot_2		= 8213
-	Local $WarSupply_Abbot_3		= 8214
+	Local $WarSupply_Sycophant_1 = 8186
+	Local $WarSupply_Sycophant_2 = 8187
+	Local $WarSupply_Sycophant_3 = 8188
+	Local $WarSupply_Sycophant_4 = 8189
+	Local $WarSupply_Sycophant_5 = 8190
+	Local $WarSupply_Sycophant_6 = 8191
+	Local $WarSupply_Ritualist_1 = 8192
+	Local $WarSupply_Ritualist_2 = 8193
+	Local $WarSupply_Ritualist_3 = 8194
+	Local $WarSupply_Ritualist_4 = 8195
+	Local $WarSupply_Fanatic_1 = 8196
+	Local $WarSupply_Fanatic_2 = 8197
+	Local $WarSupply_Fanatic_3 = 8198
+	Local $WarSupply_Fanatic_4 = 8199
+	Local $WarSupply_Savant_1 = 8200
+	Local $WarSupply_Savant_2 = 8201
+	Local $WarSupply_Savant_3 = 8202
+	Local $WarSupply_Adherent_1 = 8203
+	Local $WarSupply_Adherent_2 = 8204
+	Local $WarSupply_Adherent_3 = 8205
+	Local $WarSupply_Adherent_4 = 8206
+	Local $WarSupply_Adherent_5 = 8207
+	Local $WarSupply_Priest_1 = 8208
+	Local $WarSupply_Priest_2 = 8209
+	Local $WarSupply_Priest_3 = 8210
+	Local $WarSupply_Priest_4 = 8211
+	Local $WarSupply_Abbot_1 = 8212
+	Local $WarSupply_Abbot_2 = 8213
+	Local $WarSupply_Abbot_3 = 8214
 	;Local $WarSupply_Zealot_1		= 8216
 	;Local $WarSupply_Zealot_2		= 8217
 	;Local $WarSupply_Zealot_3		= 8218
@@ -3097,78 +3097,78 @@ Func CreateMobsPriorityMap()
 	;Local $WarSupply_Seeker_6		= 8233
 	;Local $WarSupply_Seeker_7		= 8234
 	;Local $WarSupply_Seeker_8		= 8235
-	Local $WarSupply_Ritualist_5	= 8236
-	Local $WarSupply_Ritualist_6	= 8237
-	Local $WarSupply_Ritualist_7	= 8238
-	Local $WarSupply_Ritualist_8	= 8239
-	Local $WarSupply_Ritualist_9	= 8240
-	Local $WarSupply_Ritualist_10	= 8241
-	Local $WarSupply_Ritualist_11	= 8242
+	Local $WarSupply_Ritualist_5 = 8236
+	Local $WarSupply_Ritualist_6 = 8237
+	Local $WarSupply_Ritualist_7 = 8238
+	Local $WarSupply_Ritualist_8 = 8239
+	Local $WarSupply_Ritualist_9 = 8240
+	Local $WarSupply_Ritualist_10 = 8241
+	Local $WarSupply_Ritualist_11 = 8242
 	;Local $WarSupply_Champion_1	= 8244
 	;Local $WarSupply_Champion_2	= 8245
 	;Local $WarSupply_Champion_3	= 8246
 	;Local $WarSupply_Zealot_5		= 8341
 
 	; Priority map : 0 highest kill priority, bigger numbers mean lesser priority
-	Local $PN_SS_Zealot			= 6506
+	Local $PN_SS_Zealot = 6506
 
 	; Priority map : 0 biggest kill priority, and then it's decreasing
 	Local $map[]
-	$map[$PN_SS_Defender]		= 0
-	$map[$PN_SS_Priest]			= 0
-	$map[$PN_Modniir_Priest]	= 0
-	$map[$PN_SS_Summoner]		= 1
-	$map[$PN_SS_Warder]			= 2
-	$map[$PN_SS_Dominator]		= 2
-	$map[$PN_SS_Blasphemer]		= 2
-	$map[$PN_SS_Dreamer]		= 2
-	$map[$PN_SS_Contaminator]	= 2
+	$map[$PN_SS_Defender] = 0
+	$map[$PN_SS_Priest] = 0
+	$map[$PN_Modniir_Priest] = 0
+	$map[$PN_SS_Summoner] = 1
+	$map[$PN_SS_Warder] = 2
+	$map[$PN_SS_Dominator] = 2
+	$map[$PN_SS_Blasphemer] = 2
+	$map[$PN_SS_Dreamer] = 2
+	$map[$PN_SS_Contaminator] = 2
 
-	$map[$Gem_Dryder]			= 0
-	$map[$Gem_RageTitan]		= 1
-	$map[$Gem_AnurKi]			= 2
-	$map[$Gem_AnurSu]			= 3
-	$map[$Gem_AnurKaya]			= 4
-	$map[$Gem_Dreamer]			= 5
-	$map[$Gem_HeartTormentor]	= 6
-	$map[$Gem_WaterTormentor]	= 7
+	$map[$Gem_Dryder] = 0
+	$map[$Gem_RageTitan] = 1
+	$map[$Gem_AnurKi] = 2
+	$map[$Gem_AnurSu] = 3
+	$map[$Gem_AnurKaya] = 4
+	$map[$Gem_Dreamer] = 5
+	$map[$Gem_HeartTormentor] = 6
+	$map[$Gem_WaterTormentor] = 7
 
-	$map[$WarSupply_Savant_1]		= 0
-	$map[$WarSupply_Savant_2]		= 0
-	$map[$WarSupply_Savant_3]		= 0
-	$map[$WarSupply_Adherent_1]		= 0
-	$map[$WarSupply_Adherent_2]		= 0
-	$map[$WarSupply_Adherent_3]		= 0
-	$map[$WarSupply_Adherent_4]		= 0
-	$map[$WarSupply_Adherent_5]		= 0
-	$map[$WarSupply_Priest_1]		= 1
-	$map[$WarSupply_Priest_2]		= 1
-	$map[$WarSupply_Priest_3]		= 1
-	$map[$WarSupply_Priest_4]		= 1
-	$map[$WarSupply_Ritualist_1]	= 2
-	$map[$WarSupply_Ritualist_2]	= 2
-	$map[$WarSupply_Ritualist_3]	= 2
-	$map[$WarSupply_Ritualist_4]	= 2
-	$map[$WarSupply_Ritualist_5]	= 2
-	$map[$WarSupply_Ritualist_6]	= 2
-	$map[$WarSupply_Ritualist_7]	= 2
-	$map[$WarSupply_Ritualist_8]	= 2
-	$map[$WarSupply_Ritualist_9]	= 2
-	$map[$WarSupply_Ritualist_10]	= 2
-	$map[$WarSupply_Ritualist_11]	= 2
-	$map[$WarSupply_Abbot_1]		= 3
-	$map[$WarSupply_Abbot_2]		= 3
-	$map[$WarSupply_Abbot_3]		= 3
-	$map[$WarSupply_Sycophant_1]	= 4
-	$map[$WarSupply_Sycophant_2]	= 4
-	$map[$WarSupply_Sycophant_3]	= 4
-	$map[$WarSupply_Sycophant_4]	= 4
-	$map[$WarSupply_Sycophant_5]	= 4
-	$map[$WarSupply_Sycophant_6]	= 4
-	$map[$WarSupply_Fanatic_1]		= 5
-	$map[$WarSupply_Fanatic_2]		= 5
-	$map[$WarSupply_Fanatic_3]		= 5
-	$map[$WarSupply_Fanatic_4]		= 5
+	$map[$WarSupply_Savant_1] = 0
+	$map[$WarSupply_Savant_2] = 0
+	$map[$WarSupply_Savant_3] = 0
+	$map[$WarSupply_Adherent_1] = 0
+	$map[$WarSupply_Adherent_2] = 0
+	$map[$WarSupply_Adherent_3] = 0
+	$map[$WarSupply_Adherent_4] = 0
+	$map[$WarSupply_Adherent_5] = 0
+	$map[$WarSupply_Priest_1] = 1
+	$map[$WarSupply_Priest_2] = 1
+	$map[$WarSupply_Priest_3] = 1
+	$map[$WarSupply_Priest_4] = 1
+	$map[$WarSupply_Ritualist_1] = 2
+	$map[$WarSupply_Ritualist_2] = 2
+	$map[$WarSupply_Ritualist_3] = 2
+	$map[$WarSupply_Ritualist_4] = 2
+	$map[$WarSupply_Ritualist_5] = 2
+	$map[$WarSupply_Ritualist_6] = 2
+	$map[$WarSupply_Ritualist_7] = 2
+	$map[$WarSupply_Ritualist_8] = 2
+	$map[$WarSupply_Ritualist_9] = 2
+	$map[$WarSupply_Ritualist_10] = 2
+	$map[$WarSupply_Ritualist_11] = 2
+	$map[$WarSupply_Abbot_1] = 3
+	$map[$WarSupply_Abbot_2] = 3
+	$map[$WarSupply_Abbot_3] = 3
+	$map[$WarSupply_Sycophant_1] = 4
+	$map[$WarSupply_Sycophant_2] = 4
+	$map[$WarSupply_Sycophant_3] = 4
+	$map[$WarSupply_Sycophant_4] = 4
+	$map[$WarSupply_Sycophant_5] = 4
+	$map[$WarSupply_Sycophant_6] = 4
+	$map[$WarSupply_Fanatic_1] = 5
+	$map[$WarSupply_Fanatic_2] = 5
+	$map[$WarSupply_Fanatic_3] = 5
+	$map[$WarSupply_Fanatic_4] = 5
 
 	$map[$PN_SS_Defender] = 0
 	$map[$PN_SS_Priest] = 0
@@ -3180,7 +3180,7 @@ Func CreateMobsPriorityMap()
 	$map[$PN_SS_Blasphemer] = 2
 	$map[$PN_SS_Dreamer] = 2
 	Return $map
-EndFunc
+EndFunc   ;==>CreateMobsPriorityMap
 
 
 ;~ Returns the highest priority foe around a target agent
@@ -3211,7 +3211,7 @@ Func GetHighestPriorityFoe($targetAgent, $range = $RANGE_SPELLCAST)
 		EndIf
 	Next
 	Return $highestPriorityTarget
-EndFunc
+EndFunc   ;==>GetHighestPriorityFoe
 
 
 ;~ Take current character's position (AND orientation) to flag heroes in a fan position
@@ -3220,11 +3220,11 @@ Func FanFlagHeroes($range = $RANGE_AREA)
 	; Change your hero locations here
 	Switch $heroCount
 		Case 3
-			Local $heroFlagPositions[3] = [1, 2, 3]				; right, left, behind
+			Local $heroFlagPositions[3] = [1, 2, 3] ; right, left, behind
 		Case 5
-			Local $heroFlagPositions[5] = [1, 2, 3, 4, 5]		; right, left, behind, behind right, behind left
+			Local $heroFlagPositions[5] = [1, 2, 3, 4, 5] ; right, left, behind, behind right, behind left
 		Case 7
-			Local $heroFlagPositions[7] = [1, 2, 6, 3, 4, 5, 7]	; right, left, behind, behind right, behind left, way behind right, way behind left
+			Local $heroFlagPositions[7] = [1, 2, 6, 3, 4, 5, 7] ; right, left, behind, behind right, behind left, way behind right, way behind left
 		Case Else
 			Local $heroFlagPositions[0] = []
 	EndSwitch
@@ -3260,7 +3260,7 @@ Func FanFlagHeroes($range = $RANGE_AREA)
 	; To the left, way behind
 	If $heroCount > 6 Then CommandHero($heroFlagPositions[6], $X - ($rotationY / 2 + 2 * $rotationX) * $distance, $Y + ($rotationX / 2 - 2 * $rotationY) * $distance)
 
-EndFunc
+EndFunc   ;==>FanFlagHeroes
 #EndRegion Map Clearing Utilities
 #EndRegion Actions
 
@@ -3273,20 +3273,20 @@ Func LoadSkillTemplate($buildTemplate, $heroIndex = 0)
 	; deleting first element of string array (which has the count of characters in AutoIT) to have string array indexed from 0
 	_ArrayDelete($BuildTemplateChars, 0)
 
-	Local $tempValuelateType	; 4 Bits
-	Local $versionNumber		; 4 Bits
-	Local $professionBits		; 2 Bits -> P
-	Local $primaryProfession	; P Bits
-	Local $secondaryProfession	; P Bits
-	Local $attributesCount		; 4 Bits
-	Local $attributesBits		; 4 Bits -> A
-	Local $attributes[10][2]	; A Bits + 4 Bits (for each Attribute)
-	Local $skillsBits			; 4 Bits -> S
-	Local $skills[8]			; S Bits * 8
-	Local $opTail				; 1 Bit
+	Local $tempValuelateType ; 4 Bits
+	Local $versionNumber ; 4 Bits
+	Local $professionBits ; 2 Bits -> P
+	Local $primaryProfession ; P Bits
+	Local $secondaryProfession ; P Bits
+	Local $attributesCount ; 4 Bits
+	Local $attributesBits ; 4 Bits -> A
+	Local $attributes[10][2] ; A Bits + 4 Bits (for each Attribute)
+	Local $skillsBits ; 4 Bits -> S
+	Local $skills[8] ; S Bits * 8
+	Local $opTail ; 1 Bit
 
 	$buildTemplate = ''
-	For $character in $BuildTemplateChars
+	For $character In $BuildTemplateChars
 		$buildTemplate &= Base64ToBin64($character)
 	Next
 
@@ -3336,7 +3336,7 @@ Func LoadSkillTemplate($buildTemplate, $heroIndex = 0)
 	LoadAttributes($attributes, $secondaryProfession, $heroIndex)
 
 	LoadSkillBar($skills[0], $skills[1], $skills[2], $skills[3], $skills[4], $skills[5], $skills[6], $skills[7], $heroIndex)
-EndFunc
+EndFunc   ;==>LoadSkillTemplate
 
 
 ;~ Load attributes from a two dimensional array.
@@ -3381,7 +3381,7 @@ Func LoadAttributes($attributesArray, $secondaryProfession, $heroIndex = 0)
 		IncreaseAttribute($primaryAttribute, $heroIndex)
 		Sleep(GetPing() + 100)
 	Next
-EndFunc
+EndFunc   ;==>LoadAttributes
 
 
 ;~ Set all attributes of the character/hero to 0
@@ -3399,7 +3399,7 @@ Func EmptyAttributes($secondaryProfession, $heroIndex = 0)
 			Sleep(GetPing() + 20)
 		Next
 	Next
-EndFunc
+EndFunc   ;==>EmptyAttributes
 #EndRegion Skill and Templates
 
 
@@ -3409,7 +3409,7 @@ Func _dlldisplay($struct, $fieldNames = Null)
 	Local $offset = 0, $dllSize = DllStructGetSize($struct)
 	Local $elementValue, $type, $typeSize, $elementSize, $arrayCount, $aligns
 
-	Local $structArray[1][6] = [['-', '-', $currentPtr, '<struct>', 0, '-']]	; #|Offset|Type|Size|Value'
+	Local $structArray[1][6] = [['-', '-', $currentPtr, '<struct>', 0, '-']] ; #|Offset|Type|Size|Value'
 
 	; loop through elements
 	For $i = 1 To 2 ^ 63
@@ -3468,7 +3468,7 @@ Func _dlldisplay($struct, $fieldNames = Null)
 		Switch $type
 			Case 'wchar', 'char', 'byte'
 				_ArrayAdd($structArray, $i & '|' & ($fieldNames <> Null ? $fieldNames[$i] : '-') & '|' & $offset & '|' & $type & '[' & $arrayCount & ']|' & $elementSize & '|' & DllStructGetData($struct, $i))
-			; 'uint', 'int', 'ushort', 'short', 'double', 'float', 'ptr'
+				; 'uint', 'int', 'ushort', 'short', 'double', 'float', 'ptr'
 			Case Else
 				If $arrayCount > 1 Then
 					_ArrayAdd($structArray, $i & '|' & ($fieldNames <> Null ? $fieldNames[$i] : '-') & '|' & $offset & '|' & $type & '[' & $arrayCount & ']' & '|' & $elementSize & ' (' & $typeSize & ')|' & (DllStructGetData($struct, $i) ? '[1] ' & $elementValue : '-'))
@@ -3499,4 +3499,4 @@ Func _dlldisplay($struct, $fieldNames = Null)
 	_ArrayDisplay($structArray, '', '', 64, Default, '#|Name|Offset|Type|Size|Value')
 
 	Return $structArray
-EndFunc
+EndFunc   ;==>_dlldisplay

@@ -35,7 +35,7 @@ Global $SQLITE_DB
 ; Those tables are built automatically and one is completed by the user
 Global $TABLE_DATA_RAW = 'DATA_RAW'
 Global $SCHEMA_DATA_RAW = ['batch', 'bag', 'slot', 'model_ID', 'type_ID', 'min_stat', 'max_stat', 'requirement', 'attribute_ID', 'name_string', 'OS', 'modstruct', 'quantity', 'value', 'rarity_ID', 'dye_color', 'ID']
-							;address ? interaction ? model_file_id ? name enc ? desc enc ? several modstruct (4, 8 ?) - identifier, arg1, arg2
+;address ? interaction ? model_file_id ? name enc ? desc enc ? several modstruct (4, 8 ?) - identifier, arg1, arg2
 
 Global $TABLE_DATA_USER = 'DATA_USER'
 Global $SCHEMA_DATA_USER = ['batch', 'bag', 'slot', 'rarity', 'type', 'requirement', 'attribute', 'value', 'name', 'OS', 'prefix', 'suffix', 'inscription', 'type_ID', 'model_ID', 'name_string', 'modstruct', 'dye_color', 'ID']
@@ -66,7 +66,7 @@ Func ManageInventory($STATUS)
 	;SellItemsToMerchant(DefaultShouldSellItem, True)
 	ActiveInventoryManagement()
 	Return $PAUSE
-EndFunc
+EndFunc   ;==>ManageInventory
 
 
 ;~ Function to deal with inventory after farm
@@ -123,7 +123,7 @@ Func ActiveInventoryManagement()
 		If GetGoldCharacter() > 60000 Then BalanceCharacterGold(10000)
 		SellItemsToMerchant()
 	EndIf
-	If GUICtrlRead($GUI_CheckBox_StoreGold) == $GUI_CHECKED AND GetGoldCharacter() > 60000 And GetGoldStorage() <= (1000000 - 60000) Then ; max gold in Xunlai chest is 1000 platinums
+	If GUICtrlRead($GUI_CheckBox_StoreGold) == $GUI_CHECKED And GetGoldCharacter() > 60000 And GetGoldStorage() <= (1000000 - 60000) Then ; max gold in Xunlai chest is 1000 platinums
 		DepositGold(60000)
 		Info('Deposited Gold')
 	EndIf
@@ -134,7 +134,7 @@ Func ActiveInventoryManagement()
 	If GUICtrlRead($GUI_Checkbox_BuyEctoplasm) == $GUI_CHECKED And GetGoldCharacter() > 10000 Then BuyRareMaterialFromMerchantUntilPoor($ID_Glob_of_Ectoplasm, 10000, $ID_Obsidian_Shard)
 	If GUICtrlRead($GUI_Checkbox_StoreTheRest) == $GUI_CHECKED Then StoreEverythingInXunlaiStorage()
 	If GUICtrlRead($GUI_Checkbox_MidStorageOptions_BuyKits) == $GUI_CHECKED Then BuyKitsForMidRun()
-EndFunc
+EndFunc   ;==>ActiveInventoryManagement
 
 
 ;~ Function to deal with inventory during farm
@@ -166,7 +166,7 @@ Func PassiveInventoryManagement()
 		If MoveItemsOutOfEquipmentBag() > 0 Then SalvageAllItems(False)
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>PassiveInventoryManagement
 
 
 #Region Reading items data
@@ -176,7 +176,7 @@ Func ReadOneItemData($bagIndex, $slot)
 	Local $output = GetOneItemData($bagIndex, $slot)
 	If $output == '' Then Return
 	Info($output)
-EndFunc
+EndFunc   ;==>ReadOneItemData
 
 
 ;~ Read data from all items in inventory and print it in the console
@@ -192,7 +192,7 @@ Func ReadAllItemsData()
 			RandomSleep(50)
 		Next
 	Next
-EndFunc
+EndFunc   ;==>ReadAllItemsData
 
 
 ;~ Get data from an item into a string
@@ -215,7 +215,7 @@ Func GetOneItemData($bagIndex, $slot)
 		$output &= GetOrDefault(DllStructGetData($item, 'Value') & ';', 0)
 	EndIf
 	Return $output
-EndFunc
+EndFunc   ;==>GetOneItemData
 #EndRegion Reading items data
 
 
@@ -229,14 +229,14 @@ Func ConnectToDatabase()
 	If @error Then Exit MsgBox(16, 'SQLite Error', 'Failed to open database: ' & _SQLite_ErrMsg())
 	;_SQLite_SetSafeMode(False)
 	Info('Opened database at ' & @ScriptDir & '\data\items_database.db3')
-EndFunc
+EndFunc   ;==>ConnectToDatabase
 
 
 ;~ Disconnect from the database
 Func DisconnectFromDatabase()
 	_SQLite_Close()
 	_SQLite_Shutdown()
-EndFunc
+EndFunc   ;==>DisconnectFromDatabase
 
 
 ;~ Create tables and views and fill the ones that need it
@@ -255,7 +255,7 @@ Func InitializeDatabase()
 	If TableIsEmpty($TABLE_LOOKUP_TYPE) Then FillTable($TABLE_LOOKUP_TYPE, $columnsTypeIsNumber, $Item_Types_Double_Array)
 	If TableIsEmpty($TABLE_LOOKUP_ATTRIBUTE) Then FillTable($TABLE_LOOKUP_ATTRIBUTE, $columnsTypeIsNumber, $Attributes_Double_Array)
 	If TableIsEmpty($TABLE_LOOKUP_RARITY) Then FillTable($TABLE_LOOKUP_RARITY, $columnsTypeIsNumber, $Rarities_Double_Array)
-EndFunc
+EndFunc   ;==>InitializeDatabase
 
 
 ;~ Create a table
@@ -263,20 +263,20 @@ Func CreateTable($tableName, $tableColumns, $ifNotExists = True)
 	Local $query = 'CREATE TABLE '
 	If $ifNotExists Then $query &= 'IF NOT EXISTS '
 	$query &= $tableName & ' ('
-	For $column in $tableColumns
+	For $column In $tableColumns
 		$query &= $column & ', '
 	Next
 	$query = StringLeft($query, StringLen($query) - 2)
 	$query &= ');'
 	SQLExecute($query)
-EndFunc
+EndFunc   ;==>CreateTable
 
 
 ;~ Drop a table
 Func DropTable($tableName)
 	Local $query = 'DROP TABLE IF EXISTS ' & $tableName & ';'
 	SQLExecute($query)
-EndFunc
+EndFunc   ;==>DropTable
 
 
 ;~ Fill a table with the given values (bidimensional array)
@@ -284,7 +284,7 @@ Func FillTable($table, Const ByRef $isNumber, Const ByRef $values)
 	Local $query = 'INSERT INTO ' & $table & ' VALUES '
 	For $i = 0 To UBound($values) - 1
 		$query &= '('
-		For $j = 0 To UBound($values,2) - 1
+		For $j = 0 To UBound($values, 2) - 1
 			If $isNumber[$j] Then
 				$query &= $values[$i][$j] & ', '
 			Else
@@ -298,7 +298,7 @@ Func FillTable($table, Const ByRef $isNumber, Const ByRef $values)
 	$query = StringLeft($query, StringLen($query) - 2)
 	$query &= ';'
 	SQLExecute($query)
-EndFunc
+EndFunc   ;==>FillTable
 
 
 #Region Database Utils
@@ -310,7 +310,7 @@ Func TableExists($table)
 		$lastBatchID = $row[0]
 	WEnd
 	Return $lastBatchID
-EndFunc
+EndFunc   ;==>TableExists
 
 
 ;~ Returns true if a table is empty
@@ -321,7 +321,7 @@ Func TableIsEmpty($table)
 		$rowCount = $row[0]
 	WEnd
 	Return $rowCount == 0
-EndFunc
+EndFunc   ;==>TableIsEmpty
 
 
 ;~ Query database
@@ -329,7 +329,7 @@ Func SQLQuery($query, ByRef $queryResult)
 	Debug($query)
 	Local $result = _SQLite_Query($SQLITE_DB, $query, $queryResult)
 	If $result <> 0 Then Error('Query failed ! Failure on : ' & @CRLF & $query)
-EndFunc
+EndFunc   ;==>SQLQuery
 
 
 ;~ Execute a request on the database
@@ -337,7 +337,7 @@ Func SQLExecute($query)
 	Debug($query)
 	Local $result = _SQLite_Exec($SQLITE_DB, $query)
 	If $result <> 0 Then Error('Query failed ! Failure on : ' & @CRLF & $query & @CRLF & @error)
-EndFunc
+EndFunc   ;==>SQLExecute
 #EndRegion Database Utils
 
 
@@ -384,23 +384,23 @@ Func StoreAllItemsData()
 
 	AddToFilledData($batchID)
 	CompleteItemsMods($batchID)
-EndFunc
+EndFunc   ;==>StoreAllItemsData
 
 
 ;~ Insert data into the RAW data table
 Func AddToFilledData($batchID)
 	Local $InsertQuery = 'WITH raw AS (' & @CRLF _
-		& '	SELECT batch, bag, slot, value, requirement, rarity_ID, type_ID, attribute_ID, model_ID, type_ID, model_ID, name_string, OS, modstruct, dye_color, ID FROM ' & $TABLE_DATA_RAW & ' WHERE batch = ' & $batchID & @CRLF _
-		& ')' & @CRLF _
-		& 'INSERT INTO ' & $TABLE_DATA_USER & @CRLF _
-		& 'SELECT raw.batch, raw.bag, raw.slot, rarities.rarity, types.type, requirement, attributes.attribute, raw.value, names.model_name, raw.OS, NULL, NULL, NULL, raw.type_ID, raw.model_ID, raw.name_string, raw.modstruct, raw.dye_color, raw.ID' & @CRLF _
-		& 'FROM raw' & @CRLF _
-		& 'LEFT JOIN ' & $TABLE_LOOKUP_RARITY & ' rarities ON raw.rarity_ID = rarities.rarity_ID' & @CRLF _
-		& 'LEFT JOIN ' & $TABLE_LOOKUP_TYPE & ' types ON raw.type_ID = types.type_ID' & @CRLF _
-		& 'LEFT JOIN ' & $TABLE_LOOKUP_ATTRIBUTE & ' attributes ON raw.attribute_ID = attributes.attribute_ID' & @CRLF _
-		& 'LEFT JOIN ' & $TABLE_LOOKUP_MODEL & ' names ON raw.type_ID = names.type_ID AND raw.model_ID = names.model_ID;'
+			 & '	SELECT batch, bag, slot, value, requirement, rarity_ID, type_ID, attribute_ID, model_ID, type_ID, model_ID, name_string, OS, modstruct, dye_color, ID FROM ' & $TABLE_DATA_RAW & ' WHERE batch = ' & $batchID & @CRLF _
+			 & ')' & @CRLF _
+			 & 'INSERT INTO ' & $TABLE_DATA_USER & @CRLF _
+			 & 'SELECT raw.batch, raw.bag, raw.slot, rarities.rarity, types.type, requirement, attributes.attribute, raw.value, names.model_name, raw.OS, NULL, NULL, NULL, raw.type_ID, raw.model_ID, raw.name_string, raw.modstruct, raw.dye_color, raw.ID' & @CRLF _
+			 & 'FROM raw' & @CRLF _
+			 & 'LEFT JOIN ' & $TABLE_LOOKUP_RARITY & ' rarities ON raw.rarity_ID = rarities.rarity_ID' & @CRLF _
+			 & 'LEFT JOIN ' & $TABLE_LOOKUP_TYPE & ' types ON raw.type_ID = types.type_ID' & @CRLF _
+			 & 'LEFT JOIN ' & $TABLE_LOOKUP_ATTRIBUTE & ' attributes ON raw.attribute_ID = attributes.attribute_ID' & @CRLF _
+			 & 'LEFT JOIN ' & $TABLE_LOOKUP_MODEL & ' names ON raw.type_ID = names.type_ID AND raw.model_ID = names.model_ID;'
 	SQLExecute($InsertQuery)
-EndFunc
+EndFunc   ;==>AddToFilledData
 
 
 ;~ Auto fill the items mods based on the known modstructs
@@ -410,29 +410,29 @@ Func CompleteItemsMods($batchID)
 	Local $query
 	For $upgradeType In $upgradeTypes
 		$query = 'UPDATE ' & $TABLE_DATA_USER & @CRLF _
-			& 'SET ' & $upgradeType & ' = (' & @CRLF _
-			& '	SELECT upgrades.effect' & @CRLF _
-			& '	FROM ' & $TABLE_LOOKUP_UPGRADES & ' upgrades' & @CRLF _
-			& '	WHERE upgrades.propagate = 1' & @CRLF _
-			& '		AND upgrades.weapon = type_ID' & @CRLF _
-			& '		AND upgrades.hexa IS NOT NULL' & @CRLF _
-			& "		AND upgrades.upgrade_type = '" & $upgradeType & "'" & @CRLF _
-			& "		AND modstruct LIKE ('%' || upgrades.hexa || '%')" & @CRLF _
-			& ')' & @CRLF _
-			& 'WHERE ' & $upgradeType & ' IS NULL' & @CRLF _
-			& '	AND batch = ' & $batchID & @CRLF _
-			& '	AND EXISTS (' & @CRLF _
-			& '		SELECT upgrades.effect' & @CRLF _
-			& '		FROM ' & $TABLE_LOOKUP_UPGRADES & ' upgrades' & @CRLF _
-			& '		WHERE upgrades.propagate = 1' & @CRLF _
-			& '			AND upgrades.weapon = type_ID' & @CRLF _
-			& '			AND upgrades.hexa IS NOT NULL' & @CRLF _
-			& "			AND upgrades.upgrade_type = '" & $upgradeType & "'" & @CRLF _
-			& "			AND modstruct LIKE ('%' || upgrades.hexa || '%')" & @CRLF _
-			& ');'
+				 & 'SET ' & $upgradeType & ' = (' & @CRLF _
+				 & '	SELECT upgrades.effect' & @CRLF _
+				 & '	FROM ' & $TABLE_LOOKUP_UPGRADES & ' upgrades' & @CRLF _
+				 & '	WHERE upgrades.propagate = 1' & @CRLF _
+				 & '		AND upgrades.weapon = type_ID' & @CRLF _
+				 & '		AND upgrades.hexa IS NOT NULL' & @CRLF _
+				 & "		AND upgrades.upgrade_type = '" & $upgradeType & "'" & @CRLF _
+				 & "		AND modstruct LIKE ('%' || upgrades.hexa || '%')" & @CRLF _
+				 & ')' & @CRLF _
+				 & 'WHERE ' & $upgradeType & ' IS NULL' & @CRLF _
+				 & '	AND batch = ' & $batchID & @CRLF _
+				 & '	AND EXISTS (' & @CRLF _
+				 & '		SELECT upgrades.effect' & @CRLF _
+				 & '		FROM ' & $TABLE_LOOKUP_UPGRADES & ' upgrades' & @CRLF _
+				 & '		WHERE upgrades.propagate = 1' & @CRLF _
+				 & '			AND upgrades.weapon = type_ID' & @CRLF _
+				 & '			AND upgrades.hexa IS NOT NULL' & @CRLF _
+				 & "			AND upgrades.upgrade_type = '" & $upgradeType & "'" & @CRLF _
+				 & "			AND modstruct LIKE ('%' || upgrades.hexa || '%')" & @CRLF _
+				 & ');'
 		SQLExecute($query)
 	Next
-EndFunc
+EndFunc   ;==>CompleteItemsMods
 
 
 ;~ Get the previous batchID or -1 if no batch has been added into database
@@ -444,7 +444,7 @@ Func GetPreviousBatchID()
 		$lastBatchID = $row[0]
 	WEnd
 	Return $lastBatchID
-EndFunc
+EndFunc   ;==>GetPreviousBatchID
 
 
 ;~ Complete model name lookup table
@@ -452,12 +452,12 @@ Func CompleteModelLookupTable()
 	Local $query
 	Info('Completing model lookup ')
 	$query = 'INSERT INTO ' & $TABLE_LOOKUP_MODEL & @CRLF _
-		& 'SELECT DISTINCT type_id, model_id, name, OS' & @CRLF _
-		& 'FROM ' & $TABLE_DATA_USER & @CRLF _
-		& 'WHERE name IS NOT NULL' & @CRLF _
-		& '	AND (type_ID, model_ID) NOT IN (SELECT type_ID, model_ID FROM ' & $TABLE_LOOKUP_MODEL & ');'
+			 & 'SELECT DISTINCT type_id, model_id, name, OS' & @CRLF _
+			 & 'FROM ' & $TABLE_DATA_USER & @CRLF _
+			 & 'WHERE name IS NOT NULL' & @CRLF _
+			 & '	AND (type_ID, model_ID) NOT IN (SELECT type_ID, model_ID FROM ' & $TABLE_LOOKUP_MODEL & ');'
 	SQLExecute($query)
-EndFunc
+EndFunc   ;==>CompleteModelLookupTable
 
 
 ;~ Complete mods data by cross-comparing all modstructs from items that have the same mods and deduce the mod hexa from it
@@ -469,18 +469,18 @@ Func CompleteUpgradeLookupTable()
 		UpdateNewUpgrades($upgradeType)
 		ValidateNewUpgrades($upgradeType)
 	Next
-EndFunc
+EndFunc   ;==>CompleteUpgradeLookupTable
 
 
 ;~ Insert upgrades not already present in database
 Func InsertNewUpgrades($upgradeType)
 	Local $query = 'INSERT INTO ' & $TABLE_LOOKUP_UPGRADES & @CRLF _
-		& "SELECT DISTINCT OS, '" & $upgradeType & "', type_ID, " & $upgradeType & ', NULL, NULL, 0' & @CRLF _
-		& 'FROM ' & $TABLE_DATA_USER & @CRLF _
-		& 'WHERE ' & $upgradeType & ' IS NOT NULL' & @CRLF _
-		& "AND (OS, '" & $upgradeType & "', type_ID, " & $upgradeType & ') NOT IN (SELECT OS, upgrade_type, weapon, effect FROM ' & $TABLE_LOOKUP_UPGRADES & ');'
+			 & "SELECT DISTINCT OS, '" & $upgradeType & "', type_ID, " & $upgradeType & ', NULL, NULL, 0' & @CRLF _
+			 & 'FROM ' & $TABLE_DATA_USER & @CRLF _
+			 & 'WHERE ' & $upgradeType & ' IS NOT NULL' & @CRLF _
+			 & "AND (OS, '" & $upgradeType & "', type_ID, " & $upgradeType & ') NOT IN (SELECT OS, upgrade_type, weapon, effect FROM ' & $TABLE_LOOKUP_UPGRADES & ');'
 	SQLExecute($query)
-EndFunc
+EndFunc   ;==>InsertNewUpgrades
 
 
 ;~ Update upgrades with their hexa struct if we manage to find enough similarities
@@ -488,13 +488,13 @@ Func UpdateNewUpgrades($upgradeType)
 	Local $queryResult, $row
 	Local $mapItemStruct[]
 	Local $query = 'WITH valid_groups AS (' & @CRLF _
-		& '	SELECT OS, type_ID AS weapon, ' & $upgradeType & ' FROM ' & $TABLE_DATA_USER & ' WHERE ' & $upgradeType & ' IS NOT NULL GROUP BY OS, weapon, ' & $upgradeType & ' HAVING COUNT(*) > 3' & @CRLF _
-		& ')' & @CRLF _
-		& 'SELECT valid_groups.OS, weapon, valid_groups.' & $upgradeType & ', data.modstruct' & @CRLF _
-		& 'FROM ' & $TABLE_DATA_USER & ' data' & @CRLF _
-		& 'INNER JOIN valid_groups' & @CRLF _
-		& '	ON valid_groups.OS = data.OS AND valid_groups.weapon = data.type_ID AND valid_groups.' & $upgradeType & ' = data.' & $upgradeType & @CRLF _
-		& 'ORDER BY valid_groups.' & $upgradeType & ';'
+			 & '	SELECT OS, type_ID AS weapon, ' & $upgradeType & ' FROM ' & $TABLE_DATA_USER & ' WHERE ' & $upgradeType & ' IS NOT NULL GROUP BY OS, weapon, ' & $upgradeType & ' HAVING COUNT(*) > 3' & @CRLF _
+			 & ')' & @CRLF _
+			 & 'SELECT valid_groups.OS, weapon, valid_groups.' & $upgradeType & ', data.modstruct' & @CRLF _
+			 & 'FROM ' & $TABLE_DATA_USER & ' data' & @CRLF _
+			 & 'INNER JOIN valid_groups' & @CRLF _
+			 & '	ON valid_groups.OS = data.OS AND valid_groups.weapon = data.type_ID AND valid_groups.' & $upgradeType & ' = data.' & $upgradeType & @CRLF _
+			 & 'ORDER BY valid_groups.' & $upgradeType & ';'
 	SQLQuery($query, $queryResult)
 	While _SQLite_FetchData($queryResult, $row) = $SQLITE_OK
 		$mapItemStruct = AppendArrayMap($mapItemStruct, $row[0] & '|' & $row[1] & '|' & $row[2], $row[3])
@@ -506,30 +506,30 @@ Func UpdateNewUpgrades($upgradeType)
 		Local $bananaSplit = StringSplit($OSWeaponUpgradeType, '|')
 
 		$query = 'UPDATE ' & $TABLE_LOOKUP_UPGRADES & @CRLF _
-			& "	SET hexa = '" & $modStruct & "' WHERE OS = " & $bananaSplit[1] & " AND upgrade_type = '" & $upgradeType & "' AND weapon = " & $bananaSplit[2] & " AND effect = '" & $bananaSplit[3] & "';"
+				 & "	SET hexa = '" & $modStruct & "' WHERE OS = " & $bananaSplit[1] & " AND upgrade_type = '" & $upgradeType & "' AND weapon = " & $bananaSplit[2] & " AND effect = '" & $bananaSplit[3] & "';"
 		SQLExecute($query)
 	Next
-EndFunc
+EndFunc   ;==>UpdateNewUpgrades
 
 
 ;~ Validate that the upgrades hexa structs we found are correct
 Func ValidateNewUpgrades($upgradeType)
 	Local $query
 	$query = 'UPDATE ' & $TABLE_LOOKUP_UPGRADES & @CRLF _
-		& 'SET propagate = 2' & @CRLF _
-		& 'WHERE hexa IS NOT NULL' & @CRLF _
-		& 'AND EXISTS (' & @CRLF _
-		& "	SELECT data.OS, type_ID, '" & $upgradeType & "', " & $upgradeType & @CRLF _
-		& '	FROM ' & $TABLE_DATA_USER & ' data' & @CRLF _
-		& '	WHERE data.OS = ' & $TABLE_LOOKUP_UPGRADES & '.OS' & @CRLF _
-		& "		AND upgrade_type = '" & $upgradeType & "'" & @CRLF _
-		& "		AND data.rarity = 'Gold'" & @CRLF _
-		& '		AND data.type_ID = weapon' & @CRLF _
-		& "		AND data.modstruct LIKE ('%' || hexa || '%')" & @CRLF _
-		& '		AND data.' & $upgradeType & ' <> effect' & @CRLF _
-		& ');'
+			 & 'SET propagate = 2' & @CRLF _
+			 & 'WHERE hexa IS NOT NULL' & @CRLF _
+			 & 'AND EXISTS (' & @CRLF _
+			 & "	SELECT data.OS, type_ID, '" & $upgradeType & "', " & $upgradeType & @CRLF _
+			 & '	FROM ' & $TABLE_DATA_USER & ' data' & @CRLF _
+			 & '	WHERE data.OS = ' & $TABLE_LOOKUP_UPGRADES & '.OS' & @CRLF _
+			 & "		AND upgrade_type = '" & $upgradeType & "'" & @CRLF _
+			 & "		AND data.rarity = 'Gold'" & @CRLF _
+			 & '		AND data.type_ID = weapon' & @CRLF _
+			 & "		AND data.modstruct LIKE ('%' || hexa || '%')" & @CRLF _
+			 & '		AND data.' & $upgradeType & ' <> effect' & @CRLF _
+			 & ');'
 	SQLExecute($query)
-EndFunc
+EndFunc   ;==>ValidateNewUpgrades
 #EndRegion Database
 
 
@@ -560,7 +560,7 @@ Func MoveItemsOutOfEquipmentBag()
 		EndIf
 	Next
 	Return $cursor
-EndFunc
+EndFunc   ;==>MoveItemsOutOfEquipmentBag
 
 
 ;~ Sell general items to trader
@@ -591,25 +591,25 @@ Func SellItemsToMerchant($shouldSellItem = DefaultShouldSellItem, $dryRun = Fals
 			EndIf
 		Next
 	Next
-EndFunc
+EndFunc   ;==>SellItemsToMerchant
 
 
 ;~ Returns true if there are materials in inventory
 Func HasMaterials()
 	Return HasInInventory(IsMaterial)
-EndFunc
+EndFunc   ;==>HasMaterials
 
 
 ;~ Returns true if there are basic materials in inventory
 Func HasBasicMaterials()
 	Return HasInInventory(IsBasicMaterial)
-EndFunc
+EndFunc   ;==>HasBasicMaterials
 
 
 ;~ Returns true if there are rare materials in inventory
 Func HasRareMaterials()
 	Return HasInInventory(IsRareMaterial)
-EndFunc
+EndFunc   ;==>HasRareMaterials
 
 
 ;~ Returns true if there are items in inventory satisfying condition
@@ -623,7 +623,7 @@ Func HasInInventory($condition)
 		Next
 	Next
 	Return False
-EndFunc
+EndFunc   ;==>HasInInventory
 
 
 ;~ Sell materials to materials merchant in EOTN
@@ -659,7 +659,7 @@ Func SellMaterialsToMerchant($shouldSellItem = DefaultShouldSellMaterial)
 			EndIf
 		Next
 	Next
-EndFunc
+EndFunc   ;==>SellMaterialsToMerchant
 
 
 ;~ Sell rare materials to rare materials merchant in EOTN
@@ -695,7 +695,7 @@ Func SellRareMaterialsToMerchant($shouldSellItem = DefaultShouldSellRareMaterial
 			EndIf
 		Next
 	Next
-EndFunc
+EndFunc   ;==>SellRareMaterialsToMerchant
 
 
 ;~ Buy rare material from rare materials merchant in EOTN
@@ -716,7 +716,7 @@ Func BuyRareMaterialFromMerchant($materialModelID, $amount)
 		Sleep(GetPing() + 200)
 	Next
 	; TODO: add safety net to check amount of items bought and buy some more if needed
-EndFunc
+EndFunc   ;==>BuyRareMaterialFromMerchant
 
 
 ;~ Buy rare material from rare materials merchant in EOTN until you have little or no money left
@@ -761,43 +761,43 @@ Func BuyRareMaterialFromMerchantUntilPoor($materialModelID, $poorThreshold = 200
 		$traderPrice = GetTraderCostValue()
 		$amount -= 1
 	WEnd
-EndFunc
+EndFunc   ;==>BuyRareMaterialFromMerchantUntilPoor
 
 
 ;~ Tests if an item is an identified gold item
 Func IsIdentifiedGoldItem($item)
 	Return GetIsIdentified($item) And (GetRarity($item) == $RARITY_Gold)
-EndFunc
+EndFunc   ;==>IsIdentifiedGoldItem
 
 
 ;~ Tests if an item is an identified blue item
 Func IsIdentifiedBlueItem($item)
 	Return GetIsIdentified($item) And (GetRarity($item) == $RARITY_Blue)
-EndFunc
+EndFunc   ;==>IsIdentifiedBlueItem
 
 
 ;~ Tests if an item is an identified purple item
 Func IsIdentifiedPurpleItem($item)
 	Return GetIsIdentified($item) And (GetRarity($item) == $RARITY_Purple)
-EndFunc
+EndFunc   ;==>IsIdentifiedPurpleItem
 
 
 ;~ Tests if an item is an unidentified gold item
 Func IsUnidentifiedGoldItem($item)
 	Return Not GetIsIdentified($item) And (GetRarity($item) == $RARITY_Gold)
-EndFunc
+EndFunc   ;==>IsUnidentifiedGoldItem
 
 
 ;~ helper function for StoreEverythingInXunlaiStorage function
 Func StoreAllItems($item = Null)
 	Return True
-EndFunc
+EndFunc   ;==>StoreAllItems
 
 
 ;~ Store all items in the Xunlai Storage
 Func StoreEverythingInXunlaiStorage($shouldStoreItem = DefaultShouldStoreItem)
 	StoreItemsInXunlaiStorage(StoreAllItems)
-EndFunc
+EndFunc   ;==>StoreEverythingInXunlaiStorage
 
 
 ;~ Store selected items in the Xunlai Storage
@@ -816,7 +816,7 @@ Func StoreItemsInXunlaiStorage($shouldStoreItem = DefaultShouldStoreItem)
 			EndIf
 		Next
 	Next
-EndFunc
+EndFunc   ;==>StoreItemsInXunlaiStorage
 
 Func BuyKitsForMidRun()
 	; Buy kits for mid run salvage.
@@ -832,7 +832,7 @@ Func BuyKitsForMidRun()
 		If GetMapID() <> $ID_Eye_of_the_North Then DistrictTravel($ID_Eye_of_the_North, $DISTRICT_NAME)
 		BuySuperiorIdentificationKitInEOTN($identification_kits_required)
 	EndIf
-EndFunc
+EndFunc   ;==>BuyKitsForMidRun
 
 
 ;~ Store an item in the Xunlai Storage
@@ -876,14 +876,14 @@ Func StoreItemInXunlaiStorage($item)
 	MoveItem($item, $storageSlot[0], $storageSlot[1])
 	RandomSleep(GetPing() + 20)
 	Return True
-EndFunc
+EndFunc   ;==>StoreItemInXunlaiStorage
 
 
 ;~ Return True if the item should be stored in Xunlai Storage
 Func DefaultShouldStoreItem($item)
 	Local $itemID = DllStructGetData(($item), 'ModelID')
 	Local $rarity = GetRarity($item)
-	local $quantity = DllStructGetData($item, 'Quantity')
+	Local $quantity = DllStructGetData($item, 'Quantity')
 	If IsConsumable($itemID) Then
 		Return True
 	ElseIf IsBasicMaterial($item) Then
@@ -908,12 +908,12 @@ Func DefaultShouldStoreItem($item)
 		Return ShouldKeepWeapon($item)
 	ElseIf isArmorSalvageItem($item) Then
 		Return ContainsValuableUpgrades($item)
-	; Storing trophies only if we have a full stack of 250
-	ElseIf (IsTrophy($itemID) and $quantity == 250) Then
+		; Storing trophies only if we have a full stack of 250
+	ElseIf (IsTrophy($itemID) And $quantity == 250) Then
 		Return True
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>DefaultShouldStoreItem
 
 
 ;~ Return True if the item should be sold to the merchant
@@ -936,7 +936,7 @@ Func DefaultShouldSellItem($item)
 		If $itemID == $ID_Tanned_Hide_Square Then Return True
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>DefaultShouldSellItem
 
 
 ;~ Return True if the item should be salvaged
@@ -946,7 +946,7 @@ Func DefaultShouldSalvageItem($item)
 	Local $rarity = GetRarity($item)
 
 	If $rarity == $RARITY_Green Then Return False
-	If IsTrophy($itemID) and GUICtrlRead($GUI_Checkbox_SalvageTrophies) == $GUI_CHECKED Then
+	If IsTrophy($itemID) And GUICtrlRead($GUI_Checkbox_SalvageTrophies) == $GUI_CHECKED Then
 		Return True
 	EndIf
 	If IsArmorSalvageItem($item) Then Return GetIsIdentified($item) And Not ContainsValuableUpgrades($item)
@@ -958,13 +958,13 @@ Func DefaultShouldSalvageItem($item)
 			Debug('ShouldKeepWeapon: ' & $shouldKeepWeapon)
 			Local $checkSalvageOptions = CheckSalvageOptions($item)
 			Debug('CheckSalvageOptions: ' & $checkSalvageOptions)
-			If ($shouldKeepWeapon == False and $checkSalvageOptions == True) Then Return True
+			If ($shouldKeepWeapon == False And $checkSalvageOptions == True) Then Return True
 		Else
 			Return Not ShouldKeepWeapon($item)
 		EndIf
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>DefaultShouldSalvageItem
 
 
 ;~ Return True if the item should not be sold or salvaged
@@ -990,7 +990,7 @@ Func ShouldKeepWeapon($item)
 	; Keeping unidentified items
 	If Not GetIsIdentified($item) Then Return True
 	; Keeping super-rare items, good in all cases, items (BDS, voltaic, etc)
-	If $Map_UltraRareWeapons[$itemID] <> null Then Return True
+	If $Map_UltraRareWeapons[$itemID] <> Null Then Return True
 	; Keeping items that contain good upgrades
 	If ContainsValuableUpgrades($item) Then Return True
 	; Throwing items without good damage/energy/armor
@@ -1000,7 +1000,7 @@ Func ShouldKeepWeapon($item)
 		If IsLowReqMaxDamage($item) And $lowReqValuableWeaponTypesMap[DllStructGetData($item, 'type')] <> Null Then Return True
 		If GetItemReq($item) == 9 And $Map_RareWeapons[$itemID] <> Null Then Return True
 		Return False
-	; OS ... it's more complicated
+		; OS ... it's more complicated
 	Else
 		If GetItemReq($item) >= 9 Then
 			; OS high req are kept only if : 1) perfect mods and good type or good skin 2) rare skin and almost perfect mods
@@ -1017,7 +1017,7 @@ Func ShouldKeepWeapon($item)
 		EndIf
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>ShouldKeepWeapon
 
 Func ShoppingListWeapons($item)
 	Local $req = GetItemReq($item)
@@ -1025,7 +1025,7 @@ Func ShoppingListWeapons($item)
 	Local $type = DllStructGetData($item, 'Type')
 	Local $rarity = GetRarity($item)
 	Local $itemID = DllStructGetData($item, 'ModelID')
-	If IsInscribable($item) AND $req == 9 AND $rarity == $RARITY_Gold Then
+	If IsInscribable($item) And $req == 9 And $rarity == $RARITY_Gold Then
 		; Staffs
 		If $type == $ID_Type_Staff Then
 			If $attribute == $ID_Spawning_Power Then Return True
@@ -1035,15 +1035,15 @@ Func ShoppingListWeapons($item)
 		EndIf
 		; Wands
 		If $type == $ID_Type_Wand Then
-			;If $attribute == $ID_Domination_Magic Then Return True
-			;If $attribute == $ID_Restoration_Magic Then Return True
-			If $attribute == $ID_Spawning_Power Then Return True
+			If $attribute == $ID_Domination_Magic Then Return True
+			If $attribute == $ID_Restoration_Magic Then Return True
+			;If $attribute == $ID_Spawning_Power Then Return True
 		EndIf
 		; Off Hands
 		If $type == $ID_Type_Offhand Then
-		;	If $attribute == $ID_Domination_Magic Then Return True
-		;	If $attribute == $ID_Restoration_Magic Then Return True
-			If $attribute == $ID_Spawning_Power Then Return True
+			;	If $attribute == $ID_Domination_Magic Then Return True
+			;	If $attribute == $ID_Restoration_Magic Then Return True
+			;If $attribute == $ID_Spawning_Power Then Return True
 		EndIf
 		; Spears
 		;If $type == $ID_Type_Spear Then Return True
@@ -1067,21 +1067,26 @@ Func ShoppingListWeapons($item)
 		If $attribute == $ID_Restoration_Magic Then Return True
 	EndIf
 	; Amethyst Aegis
-	If $itemID = $ID_Amethyst_Aegis_1 or $itemID = $ID_Amethyst_Aegis_2 Then Return True
-EndFunc
+	If $itemID = $ID_Amethyst_Aegis_1 Or $itemID = $ID_Amethyst_Aegis_2 Then Return True
+EndFunc   ;==>ShoppingListWeapons
 
-;~ Return true if the item should be sold to the material merchant
 Func DefaultShouldSellMaterial($item)
+	; Only consider basic materials
 	If Not IsBasicMaterial($item) Then Return False
 
-	; Lazy instantiation
-	Local Static $materialsKeptArray = [$ID_Feather]
-	;Local Static $materialsKeptArray = []
-	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
+	; Get the ModelID of the item
+	Local $modelID = DllStructGetData($item, "ModelID")
 
-	Local $modelID = DllStructGetData($item, 'ModelID')
-	Return $mapMaterialsKept[$modelId] == Null
-EndFunc
+	; Lookup the checkbox in the dictionary
+	If $CommonMaterialCheckboxes.Exists($modelID) Then
+		Local $ctrlID = $CommonMaterialCheckboxes.Item($modelID)
+		; Only sell if the checkbox is checked
+		Return GUICtrlRead($ctrlID) == $GUI_CHECKED
+	EndIf
+
+	; If no checkbox exists for this item, default to keep
+	Return False
+EndFunc   ;==>DefaultShouldSellMaterial
 
 
 ;~ Return true if the item should be sold to the material merchant
@@ -1093,17 +1098,17 @@ Func DefaultShouldSellRareMaterial($item)
 	Local Static $mapMaterialsKept = MapFromArray($materialsKeptArray)
 
 	Local $modelID = DllStructGetData($item, 'ModelID')
-	Return $mapMaterialsKept[$modelId] == Null
-EndFunc
+	Return $mapMaterialsKept[$modelID] == Null
+EndFunc   ;==>DefaultShouldSellRareMaterial
 
 
 ;~ Returns true if an item has a 'Salvageable' inscription
 Func HasSalvageInscription($item)
 	Local $salvageableInscription[] = ['1F0208243E0432251', '0008260711A8A7000000C', '0008261323A8A7000000C', '00082600011826900098260F1CA8A7000000C']
-	Local $modstruct = GetModStruct($item)
-	For $salvageableModStruct in $salvageableInscription
-		If StringInStr($modstruct, $salvageableModStruct) Then Return True
+	Local $modStruct = GetModStruct($item)
+	For $salvageableModStruct In $salvageableInscription
+		If StringInStr($modStruct, $salvageableModStruct) Then Return True
 	Next
 	Return False
-EndFunc
+EndFunc   ;==>HasSalvageInscription
 #EndRegion Inventory
