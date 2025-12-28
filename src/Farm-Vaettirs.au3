@@ -20,23 +20,23 @@ Opt('MustDeclareVars', 1)
 ; ==== Constants ====
 Global Const $AMeVaettirsFarmerSkillbar = 'OwVUI2h5lPP8Id2BkAiANBLhbKA'
 Global Const $VaettirsFarmInformations = 'For best results, have :' & @CRLF _
-	& '- +4 Shadow Arts' & @CRLF _
-	& '- Blessed insignias'& @CRLF _
-	& '- A shield with the inscription Like a rolling stone (+10 armor against earth damage)' & @CRLF _
-	& '- A main hand with +20% enchantments duration' & @CRLF _
-	& '- Cupcakes'
+		 & '- +4 Shadow Arts' & @CRLF _
+		 & '- Blessed insignias' & @CRLF _
+		 & '- A shield with the inscription Like a rolling stone (+10 armor against earth damage)' & @CRLF _
+		 & '- A main hand with +20% enchantments duration' & @CRLF _
+		 & '- Cupcakes'
 ; Average duration ~ 3m40 ~ First run is 6m30s with setup and run
 Global Const $VAETTIRS_FARM_DURATION = 4 * 60 * 1000
 
 ; Skill numbers declared to make the code WAY more readable (UseSkillEx($Skill_Shadow_Form) is better than UseSkillEx(2))
-Global Const $Skill_Deadly_Paradox		= 1
-Global Const $Skill_Shadow_Form			= 2
-Global Const $Skill_Shroud_of_Distress	= 3
-Global Const $Skill_Way_of_Perfection	= 4
-Global Const $Skill_Heart_of_Shadow		= 5
-Global Const $Skill_Channeling			= 6
-Global Const $Skill_Arcane_Echo			= 7
-Global Const $Skill_Wastrels_Demise		= 8
+Global Const $Skill_Deadly_Paradox = 1
+Global Const $Skill_Shadow_Form = 2
+Global Const $Skill_Shroud_of_Distress = 3
+Global Const $Skill_Way_of_Perfection = 4
+Global Const $Skill_Heart_of_Shadow = 5
+Global Const $Skill_Channeling = 6
+Global Const $Skill_Arcane_Echo = 7
+Global Const $Skill_Wastrels_Demise = 8
 
 ; ==== Global variables ====
 Global $ChatStuckTimer = TimerInit()
@@ -54,7 +54,7 @@ Func VaettirFarm($STATUS)
 
 	If $STATUS <> 'RUNNING' Then Return $PAUSE
 	Return VaettirsFarmLoop()
-EndFunc
+EndFunc   ;==>VaettirFarm
 
 
 ;~ Zones to Longeye if we are not there, and travel to Jaga Moraine
@@ -79,43 +79,43 @@ Func RunToJagaMoraine()
 
 	Info('Running to Jaga Moraine')
 	Local $pathToJaga[30][2] = [ _
-		[15003.8,	-16598.1], _
-		[15003.8,	-16598.1], _
-		[12699.5,	-14589.8], _
-		[11628,		-13867.9], _
-		[10891.5,	-12989.5], _
-		[10517.5,	-11229.5], _
-		[10209.1,	-9973.1], _
-		[9296.5,	-8811.5], _
-		[7815.6,	-7967.1], _
-		[6266.7,	-6328.5], _
-		[4940,		-4655.4], _
-		[3867.8,	-2397.6], _
-		[2279.6,	-1331.9], _
-		[7.2,		-1072.6], _
-		[7.2,		-1072.6], _
-		[-1752.7,	-1209], _
-		[-3596.9,	-1671.8], _
-		[-5386.6,	-1526.4], _
-		[-6904.2,	-283.2], _
-		[-7711.6,	364.9], _
-		[-9537.8,	1265.4], _
-		[-11141.2,	857.4], _
-		[-12730.7,	371.5], _
-		[-13379,	40.5], _
-		[-14925.7,	1099.6], _
-		[-16183.3,	2753], _
-		[-17803.8,	4439.4], _
-		[-18852.2,	5290.9], _
-		[-19250,	5431], _
-		[-19968,	5564] _
-	]
+			[15003.8, -16598.1], _
+			[15003.8, -16598.1], _
+			[12699.5, -14589.8], _
+			[11628, -13867.9], _
+			[10891.5, -12989.5], _
+			[10517.5, -11229.5], _
+			[10209.1, -9973.1], _
+			[9296.5, -8811.5], _
+			[7815.6, -7967.1], _
+			[6266.7, -6328.5], _
+			[4940, -4655.4], _
+			[3867.8, -2397.6], _
+			[2279.6, -1331.9], _
+			[7.2, -1072.6], _
+			[7.2, -1072.6], _
+			[-1752.7, -1209], _
+			[-3596.9, -1671.8], _
+			[-5386.6, -1526.4], _
+			[-6904.2, -283.2], _
+			[-7711.6, 364.9], _
+			[-9537.8, 1265.4], _
+			[-11141.2, 857.4], _
+			[-12730.7, 371.5], _
+			[-13379, 40.5], _
+			[-14925.7, 1099.6], _
+			[-16183.3, 2753], _
+			[-17803.8, 4439.4], _
+			[-18852.2, 5290.9], _
+			[-19250, 5431], _
+			[-19968, 5564] _
+			]
 	For $i = 0 To UBound($pathToJaga) - 1
 		If MoveRunning($pathToJaga[$i][0], $pathToJaga[$i][1]) == $FAIL Then Return $FAIL
 	Next
 	Move(-20076, 5580, 30)
 	WaitMapLoading($ID_Jaga_Moraine)
-EndFunc
+EndFunc   ;==>RunToJagaMoraine
 
 
 ;~ Move to X, Y. This is to be used in the run from across Bjora Marches
@@ -141,8 +141,8 @@ Func MoveRunning($X, $Y)
 		RandomSleep(500)
 		$me = GetMyAgent()
 	WEnd
-	Return $SUCCESS
-EndFunc
+	Return $success
+EndFunc   ;==>MoveRunning
 
 
 ;~ Farm loop
@@ -159,14 +159,14 @@ Func VaettirsFarmLoop()
 	PickUpItems()
 
 	Local $success = RezoneToJagaMoraine()
-	
+
 	; Count slots
-	Local $slots_empty = CountSlots(1, _Min($BAG_NUMBER, 4))
+	Local $slots_empty = CountSlots(1, _Min($BAG_COUNT, 4))
 	Debug('Slots empty: ' & $slots_empty)
 
 	If GUICtrlRead($GUI_Checkbox_MidStorageOptions_Enable) == $GUI_CHECKED Then
 		; If we dont have enough space, attempt to identify and salvage.
-		If (CountSlots(1, _Min($BAG_NUMBER, 4)) <= ($INVENTORY_SPACE_NEEDED + 5)) Then
+		If (CountSlots(1, _Min($BAG_COUNT, 4)) <= ($INVENTORY_SPACE_NEEDED + 5)) Then
 			Debug('Not enough space, identifying and salvaging')
 			; Identify everything
 			Local $identified = IdentifyAllItems(False) ; Don't attempt to buy a kit, as we don't want to travel back.
@@ -178,7 +178,7 @@ Func VaettirsFarmLoop()
 	EndIf
 
 	Return $success
-EndFunc
+EndFunc   ;==>VaettirsFarmLoop
 
 
 ;~ Get Norn blessing only if title is not maxed yet
@@ -191,7 +191,7 @@ Func GetVaettirsNornBlessing()
 		Dialog(0x84)
 	EndIf
 	RandomSleep(350)
-EndFunc
+EndFunc   ;==>GetVaettirsNornBlessing
 
 
 ;~ Self explanatory
@@ -256,7 +256,7 @@ Func AggroAllMobs()
 	MoveAggroing(12518, -17305, 20)
 	;VaettirsSleepAndStayAlive(300)
 	MoveAggroing(12445, -17327, 10)
-EndFunc
+EndFunc   ;==>AggroAllMobs
 
 
 ;~ Kill a mob group
@@ -295,12 +295,12 @@ Func VaettirsKillSequence()
 			$foesCount = CountFoesInRangeOfAgent(GetMyAgent(), $RANGE_AREA)
 		WEnd
 	EndIf
-EndFunc
+EndFunc   ;==>VaettirsKillSequence
 
 
 ;~ Exit Jaga Moraine to Bjora Marches and get back into Jaga Moraine
 Func RezoneToJagaMoraine()
-	Local $result = $SUCCESS
+	Local $result = $success
 	If IsPlayerDead() Then $result = $FAIL
 
 	Info('Zoning out and back in')
@@ -324,7 +324,7 @@ Func RezoneToJagaMoraine()
 	WaitMapLoading($ID_Jaga_Moraine)
 
 	Return $result
-EndFunc
+EndFunc   ;==>RezoneToJagaMoraine
 
 
 ;~ Move to destX, destY, while staying alive vs vaettirs
@@ -358,7 +358,7 @@ Func MoveAggroing($X, $Y, $random = 150)
 				Move($X, $Y, $random)
 			ElseIf $blockedCount < 10 Then
 				$angle += 40
-				Move(DllStructGetData($me, 'X') + 300 * sin($angle), DllStructGetData($me, 'Y') + 300 * cos($angle))
+				Move(DllStructGetData($me, 'X') + 300 * Sin($angle), DllStructGetData($me, 'Y') + 300 * Cos($angle))
 			ElseIf IsRecharged($Skill_Heart_of_Shadow) Then
 				If $heartOfShadowUsageCount == 0 And GetDistance($me, $target) < $RANGE_SPELLCAST Then
 					UseSkillEx($Skill_Heart_of_Shadow, $target)
@@ -396,8 +396,8 @@ Func MoveAggroing($X, $Y, $random = 150)
 		RandomSleep(100)
 		$me = GetMyAgent()
 	WEnd
-	Return $SUCCESS
-EndFunc
+	Return $success
+EndFunc   ;==>MoveAggroing
 
 
 ;~ Wait while staying alive at the same time (like Sleep(..), but without the dying part)
@@ -409,7 +409,7 @@ Func VaettirsSleepAndStayAlive($waitingTime)
 		If IsPlayerDead() Then Return
 		VaettirsStayAlive()
 	WEnd
-EndFunc
+EndFunc   ;==>VaettirsSleepAndStayAlive
 
 
 ;~ Use whatever skills you need to keep yourself alive.
@@ -441,7 +441,7 @@ Func VaettirsStayAlive()
 	If $foesNear And GetEnergy() > 20 Then TryUseShadowForm()
 	If $areaCount > 5 Then TryUseChanneling()
 	If $foesNear And GetEnergy() > 20 Then TryUseShadowForm()
-EndFunc
+EndFunc   ;==>VaettirsStayAlive
 
 
 ;~ Uses Shadow Form if its recharged
@@ -452,7 +452,7 @@ Func TryUseShadowForm()
 		UseSkillEx($Skill_Way_of_Perfection)
 		$shadowFormTimer = TimerInit()
 	EndIf
-EndFunc
+EndFunc   ;==>TryUseShadowForm
 
 
 ;~ Uses Shroud of distress if its recharged
@@ -461,7 +461,7 @@ Func TryUseShroudOfDistress()
 		UseSkillEx($Skill_Shroud_of_Distress)
 		$shroudOfDistressTimer = TimerInit()
 	EndIf
-EndFunc
+EndFunc   ;==>TryUseShroudOfDistress
 
 
 ;~ Uses Channeling if its recharged
@@ -470,7 +470,7 @@ Func TryUseChanneling()
 		UseSkillEx($Skill_Channeling)
 		$channelingTimer = TimerInit()
 	EndIf
-EndFunc
+EndFunc   ;==>TryUseChanneling
 
 
 ;~ Returns a good target for wastrels
@@ -482,4 +482,4 @@ Func GetWastrelsTarget()
 		Return $foe
 	Next
 	Return Null
-EndFunc
+EndFunc   ;==>GetWastrelsTarget

@@ -15,7 +15,7 @@ Global $MyMods_StaffHeadInsightful = False
 Global $MyMods_StaffHeadAdept = False
 Global $MyMods_StaffHeadSwift = False
 Global $MyMods_StaffWrappingFortitude = False
-Global $MyMods_StaffWrappingEnchanting = False
+Global $MyMods_StaffWrappingEnchanting = True
 
 ; Wand
 Global $MyMods_WandWrappingMemory = False

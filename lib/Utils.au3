@@ -216,7 +216,7 @@ Func PickUpItems($defendFunction = Null, $shouldPickItem = DefaultShouldPickItem
 		EndIf
 	Next
 
-	;If $BAG_NUMBER == 5 And CountSlots(1, 3) == 0 Then
+	;If $BAG_COUNT == 5 And CountSlots(1, 3) == 0 Then
 	;	MoveItemsToEquipmentBag()
 	;EndIf
 EndFunc   ;==>PickUpItems
@@ -1551,7 +1551,7 @@ EndFunc   ;==>SalvageItem
 
 Func CountSalvageKits()
 	Local $SalvageCount = 0
-	For $bagIndex = 1 To _Min(4, $BAG_NUMBER)
+	For $bagIndex = 1 To _Min(4, $BAG_COUNT)
 		Local $bagSize = DllStructGetData(GetBag($bagIndex), 'slots')
 		For $slot = 1 To $bagSize
 			Local $item = GetItemBySlot($bagIndex, $slot)
@@ -1608,7 +1608,7 @@ EndFunc   ;==>BuySuperiorSalvageKitInEOTN
 
 Func CountIdentificationKits()
 	Local $IdentificationCount = 0
-	For $bagIndex = 1 To _Min(4, $BAG_NUMBER)
+	For $bagIndex = 1 To _Min(4, $BAG_COUNT)
 		Local $bagSize = DllStructGetData(GetBag($bagIndex), 'slots')
 		For $slot = 1 To $bagSize
 			Local $item = GetItemBySlot($bagIndex, $slot)

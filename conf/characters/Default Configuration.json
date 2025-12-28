@@ -1,6 +1,6 @@
 ﻿{
 	"main": {
-		"character": "Jacko Terra",
+		"character": "Whacking Lines",
 		"farm": "Choose a farm"
 	},
 	"run": {
@@ -18,7 +18,7 @@
 		"store_leftovers": false,
 		"store_gold": false,
 		"district": "Random",
-		"bag_number": 4,
+		"bags_count": 0,
 		"farm_materials": false,
 		"disable_rendering": false
 	},
@@ -225,13 +225,13 @@
 		"sell": {
 			"common": {
 				"Bolt_of_Cloth": true,
-				"Bone": true,
+				"Bone": false,
 				"Chitin_Fragment": true,
 				"Feather": true,
 				"Granite_Slab": true,
 				"Iron_Ingot": true,
-				"Pile_of_Glittering_Dust": true,
-				"Plant_Fiber": true,
+				"Pile_of_Glittering_Dust": false,
+				"Plant_Fiber": false,
 				"Scale": true,
 				"Tanned_Hide_Square": true,
 				"Wood_Plank": true
