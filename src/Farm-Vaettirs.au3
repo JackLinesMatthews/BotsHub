@@ -161,12 +161,12 @@ Func VaettirsFarmLoop()
 	Local $success = RezoneToJagaMoraine()
 
 	; Count slots
-	Local $slots_empty = CountSlots(1, _Min($BAG_COUNT, 4))
+	Local $slots_empty = CountSlots(1, _Min($BAGS_COUNT, 4))
 	Debug('Slots empty: ' & $slots_empty)
 
 	If GUICtrlRead($GUI_Checkbox_MidStorageOptions_Enable) == $GUI_CHECKED Then
 		; If we dont have enough space, attempt to identify and salvage.
-		If (CountSlots(1, _Min($BAG_COUNT, 4)) <= ($INVENTORY_SPACE_NEEDED + 5)) Then
+		If (CountSlots(1, _Min($BAGS_COUNT, 4)) <= ($INVENTORY_SPACE_NEEDED + 5)) Then
 			Debug('Not enough space, identifying and salvaging')
 			; Identify everything
 			Local $identified = IdentifyAllItems(False) ; Don't attempt to buy a kit, as we don't want to travel back.

@@ -3,7 +3,7 @@
 
 Func IsModIWant($item)
 	Local $ModStruct = GetModStruct($item)
-	If Not $modstruct Then Return False
+	If Not $ModStruct Then Return False
 	Local $Type = DllStructGetData($item, 'Type')
 	; Daggers
 	If $Type = 32 Then
@@ -150,6 +150,12 @@ Func IsModIWant($item)
 			Return True
 		EndIf
 	EndIf
+	; Have Faith
+	If $MyMods_HaveFaith = True Then
+		If StringInStr($ModStruct, $STRUCT_INSCRIPTION_HAVE_FAITH) > 0 Then
+			Return True
+		EndIf
+	EndIf
 	; Sheltered By Faith
 	If $MyMods_ShelteredByFaith = True Then
 		If StringInStr($ModStruct, '02008820') > 0 Then
@@ -259,4 +265,4 @@ Func IsModIWant($item)
 		EndIf
 	EndIf
 	Return False
-EndFunc
+EndFunc   ;==>IsModIWant

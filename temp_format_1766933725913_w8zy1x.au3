@@ -1156,9 +1156,6 @@ Func RunFarmLoop($Farm)
 		Case 'Mantids'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = MantidsFarm($STATUS)
-		Case 'Norn'
-			$INVENTORY_SPACE_NEEDED = 5
-			$result = NornTitleFarm($STATUS)
 		Case 'Ministerial Commendations'
 			$INVENTORY_SPACE_NEEDED = 5
 			$result = MinisterialCommendationsFarm($STATUS)

@@ -41,6 +41,7 @@ Global $MyMods_AptitudeNotAttitude = True
 Global $MyMods_ForgetMeNot = True
 Global $MyMods_HaleAndHearty = False
 Global $MyMods_IHaveThePower = True
+Global $MyMods_HaveFaith = True
 Global $MyMods_MeasureForMeasure = False
 Global $MyMods_ShelteredByFaith = False
 Global $MyMods_StrengthAndHonor = False

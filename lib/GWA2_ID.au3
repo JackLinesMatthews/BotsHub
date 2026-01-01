@@ -2199,4 +2199,5 @@ Global $RareWeapons_Array = [ _
 		$ID_Tigers_Pride_Fast_Casting, $ID_Tigers_Pride_Soul_Reaping, $ID_Tigers_Pride_Energy_Storage, $ID_Tigers_Pride_Divine_Favor, $ID_Tigers_Pride_Communing _
 		]
 Global Const $Map_RareWeapons = MapFromArray($RareWeapons_Array)
+
 #EndRegion Items
