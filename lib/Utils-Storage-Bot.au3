@@ -796,7 +796,7 @@ EndFunc   ;==>StoreAllItems
 
 ;~ Store all items in the Xunlai Storage
 Func StoreEverythingInXunlaiStorage($shouldStoreItem = DefaultShouldStoreItem)
-	StoreItemsInXunlaiStorage(StoreAllItems)
+	StoreItemsInXunlaiStorage()
 EndFunc   ;==>StoreEverythingInXunlaiStorage
 
 

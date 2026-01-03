@@ -185,6 +185,7 @@ Global Const $ID_Doomlore_Shrine = 648
 Global Const $ID_Longeyes_Ledge = 650
 Global Const $ID_Boreal_Station = 675
 Global Const $ID_Magus_Stones = 569
+Global Const $ID_Secret_Lair_Of_The_Snowmen = 701
 ; Prophecies
 Global Const $ID_Elona_Reach = 118
 Global Const $ID_Augury_Rock = 38
